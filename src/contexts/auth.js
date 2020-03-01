@@ -15,16 +15,10 @@ function Auth ({ children }) {
     ajax().post('http://localhost:8080/token', {
       email: 'usuario3@email.com',
       senha: '123456'
+    }).then((response) => {
+      console.log(response)
+      window.location = 'http://localhost:3000/'
     })
-      .then((result) => {
-        if (result.data) {
-          setUserInfo({
-            isUserLoggedIn: true,
-            user: result.data,
-            token: result.token
-          })
-        }
-      })
   }, [])
 
   const handleLogout = useCallback(() => {

@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-import React, { lazy, Suspense, useState, useContext, useEffect } from 'react'
+import React, { lazy, Suspense, useState, useEffect, useContext } from 'react'
 import ajax from '@fdaciuk/ajax'
 import t from 'prop-types'
 import { Route, Switch, Redirect } from 'react-router-dom'
@@ -14,32 +14,26 @@ function App () {
   const { userInfo, setUserInfo, handleLogout } = useContext(AuthContext)
   const [didCheckUserIn, setDidCheckUserIn] = useState(false)
 
-  const { isUserLoggedIn, token } = userInfo
+  const { isUserLoggedIn } = userInfo
 
   useEffect(() => {
-    console.log(token)
-    // Deveria verificar se é um usuário valido atraves do token, porém o token está null
-    ajax({
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      }
-    }).get('http://localhost:8080/usuario/3')
-      .then((result) => {
-        console.log(result)
-        if (result.data) {
-          setUserInfo({
-            isUserLoggedIn: true,
-            user: result.data
-          })
-        }
-        setDidCheckUserIn(true)
-        window.logout = handleLogout
+    ajax().post('http://localhost:8080/token', {
+      email: 'usuario3@email.com',
+      senha: '123456'
+    }).then((result) => {
+      console.log(result)
+      setUserInfo({
+        isUserLoggedIn: !!result.data,
+        user: result.data
       })
+      setDidCheckUserIn(true)
+    })
+
+    window.logout = handleLogout
   }, [])
 
   if (!didCheckUserIn) {
-    /* return <LinearProgress /> */
+    return <LinearProgress />
   }
 
   if (isUserLoggedIn && location.pathname === '/login') {
