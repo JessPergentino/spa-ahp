@@ -1,4 +1,5 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
+import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 import LockIcon from '@material-ui/icons/Lock'
 import { TextField, Button, Grid } from '@material-ui/core'
@@ -7,10 +8,30 @@ import Checkbox from './checkbox'
 import { AuthContext } from 'contexts/auth'
 
 const Login = () => {
-  const { handleLogin } = useContext(AuthContext)
+  const [userInfo, setUserInfo] = useState({
+    email: '',
+    senha: '',
+    error: ''
+  })
+  const { login } = useContext(AuthContext)
+
+  const handleLogin = async e => {
+    e.preventDefault()
+    const { email, senha } = userInfo
+    if (!email || !senha) {
+      setUserInfo(prevState => {
+        return {
+          ...prevState,
+          error: 'Preencha e-mail e senha para continuar!'
+        }
+      })
+    } else {
+      login(email, senha)
+    }
+  }
 
   return (
-    <Form noValidate autoComplete='off'>
+    <Form onSubmit={handleLogin} noValidate autoComplete='off'>
       <Container>
         <Grid container justify='center' spacing={2}>
           <Grid item container justify='center'>
@@ -21,12 +42,26 @@ const Login = () => {
             <h1>Login</h1>
           </Grid>
 
+          {userInfo.error && <p>{userInfo.error}</p>}
+
           <Grid item container justify='center'>
-            <EmailText />
+            <EmailText onChange={(e) => {
+              const val = e.target.value
+              setUserInfo(prevState => {
+                return { ...prevState, email: val }
+              })
+            }}
+            />
           </Grid>
 
           <Grid item container justify='center'>
-            <PasswordText />
+            <PasswordText onChange={(e) => {
+              const val = e.target.value
+              setUserInfo(prevState => {
+                return { ...prevState, senha: val }
+              })
+            }}
+            />
           </Grid>
 
           <Grid item container justify='center'>
@@ -34,7 +69,7 @@ const Login = () => {
           </Grid>
 
           <Grid item container justify='center'>
-            <Button onClick={handleLogin} variant='contained' color='primary'>
+            <Button type='submit' variant='contained' color='primary'>
               Entrar
             </Button>
           </Grid>
@@ -82,4 +117,4 @@ const PasswordText = styled(TextField).attrs({
 }
 `
 
-export default Login
+export default withRouter(Login)

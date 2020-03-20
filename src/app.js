@@ -1,53 +1,48 @@
 /* eslint-disable no-restricted-globals */
-import React, { lazy, Suspense, useState, useEffect, useContext } from 'react'
-import ajax from '@fdaciuk/ajax'
+import React, { lazy, Suspense, useContext, useEffect } from 'react'
 import t from 'prop-types'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import { LinearProgress } from '@material-ui/core'
+import { LOGIN, HOME } from 'routes'
+import { get } from 'idb-keyval'
 
 import { AuthContext } from 'contexts/auth'
+import { ProjetoContext } from 'contexts/projetos'
 
 const MainPage = lazy(() => import('pages/main'))
 const Login = lazy(() => import('pages/login'))
 
 function App () {
-  const { userInfo, setUserInfo, handleLogout } = useContext(AuthContext)
-  const [didCheckUserIn, setDidCheckUserIn] = useState(false)
-
-  const { isUserLoggedIn } = userInfo
+  const { userLogin, setUserLogin } = useContext(AuthContext)
+  const { listarProjetos } = useContext(ProjetoContext)
+  const { isUserLoggedIn } = userLogin
 
   useEffect(() => {
-    ajax().post('http://localhost:8080/token', {
-      email: 'usuario3@email.com',
-      senha: '123456'
-    }).then((result) => {
-      console.log(result)
-      setUserInfo({
-        isUserLoggedIn: !!result.data,
-        user: result.data
+    get('usuario')
+      .then((usuario) => {
+        if (usuario) {
+          setUserLogin({
+            isUserLoggedIn: true,
+            user: usuario,
+            primeiroNome: usuario.nome.split(' ')[0]
+          })
+          listarProjetos()
+        }
       })
-      setDidCheckUserIn(true)
-    })
+  }, [setUserLogin, listarProjetos])
 
-    window.logout = handleLogout
-  }, [])
-
-  if (!didCheckUserIn) {
-    return <LinearProgress />
+  if (isUserLoggedIn && location.pathname === LOGIN) {
+    return <Redirect to={HOME} />
   }
 
-  if (isUserLoggedIn && location.pathname === '/login') {
-    return <Redirect to='/' />
-  }
-
-  if (!isUserLoggedIn && location.pathname !== '/login') {
-    return <Redirect to='/login' />
+  if (!isUserLoggedIn && location.pathname !== LOGIN) {
+    return <Redirect to={LOGIN} />
   }
 
   return (
     <Suspense fallback={<LinearProgress />}>
       <Switch>
-        <Route path='/login' component={Login} />
+        <Route path={LOGIN} component={Login} />
         <Route component={MainPage} />
       </Switch>
     </Suspense>

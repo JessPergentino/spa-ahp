@@ -1,31 +1,39 @@
-import React, { createContext, useCallback, useState } from 'react'
-import ajax from '@fdaciuk/ajax'
+import React, { createContext, useState, useCallback } from 'react'
 import t from 'prop-types'
+import api from 'services/api'
+import { set, del } from 'idb-keyval'
+
+import { AUTENTICAR, LOGOUT } from 'routes'
 
 export const AuthContext = createContext()
 
 function Auth ({ children }) {
-  const [userInfo, setUserInfo] = useState({
-    isUserLoggedIn: false,
+  const [userLogin, setUserLogin] = useState({
     user: null,
+    isUserLoggedIn: false,
     token: null
   })
 
-  const handleLogin = useCallback(() => {
-    ajax().post('http://localhost:8080/token', {
-      email: 'usuario3@email.com',
-      senha: '123456'
-    }).then((response) => {
-      console.log(response)
-      window.location = 'http://localhost:3000/'
-    })
+  const login = useCallback((email, senha) => {
+    api.post(AUTENTICAR, { email, senha })
+      .then((response) => {
+        set('usuario', response.data.data)
+        set('token', response.data.token)
+        setUserLogin({
+          isUserLoggedIn: true,
+          user: response.data.data,
+          token: response.data.token,
+          primeiroNome: response.data.data.nome.split(' ')[0]
+        })
+      })
   }, [])
 
-  const handleLogout = useCallback(() => {
-    ajax().get('http://localhost:8080/logout')
-      .then((result) => {
-        if (result.status) {
-          setUserInfo({
+  const logout = useCallback(() => {
+    api.get(LOGOUT)
+      .then((response) => {
+        if (response.status === 200) {
+          del('usuario')
+          setUserLogin({
             isUserLoggedIn: false,
             user: null,
             token: null
@@ -36,10 +44,10 @@ function Auth ({ children }) {
 
   return (
     <AuthContext.Provider value={{
-      handleLogin,
-      handleLogout,
-      userInfo,
-      setUserInfo
+      login,
+      logout,
+      userLogin,
+      setUserLogin
     }}
     >
       {children}
