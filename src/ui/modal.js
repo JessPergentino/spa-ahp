@@ -5,18 +5,15 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
-  Grid
+  DialogTitle
 } from '@material-ui/core'
 
-const Modal = ({ children, open, handleClose, handleSave, titulo }) => {
+const Modal = ({ children, open, handleClose, handleSave, titulo, operacao }) => {
   return (
     <Dialog open={open} onClose={handleClose} aria-labelledby='form-dialog-title'>
       <DialogTitle id='form-dialog-title'>{titulo}</DialogTitle>
       <DialogContent>
-        <Grid container spacing={2}>
-          {children}
-        </Grid>
+        {children}
       </DialogContent>
 
       <DialogActions>
@@ -24,7 +21,7 @@ const Modal = ({ children, open, handleClose, handleSave, titulo }) => {
           Cancelar
         </Button>
         <Button onClick={handleSave} color='primary'>
-          Salvar
+          {operacao}
         </Button>
       </DialogActions>
     </Dialog>
@@ -36,7 +33,8 @@ Modal.propTypes = {
   open: t.bool.isRequired,
   handleClose: t.func.isRequired,
   handleSave: t.func.isRequired,
-  titulo: t.string.isRequired
+  titulo: t.string.isRequired,
+  operacao: t.string.isRequired
 }
 
 export default Modal

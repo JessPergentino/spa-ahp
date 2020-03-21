@@ -1,172 +1,168 @@
 import React, { useState, useContext } from 'react'
 import { Link } from 'react-router-dom'
-import { TextField, Grid, IconButton } from '@material-ui/core'
+import { TextField, IconButton, Typography } from '@material-ui/core'
 import InfoIcon from '@material-ui/icons/Info'
+
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker
 } from '@material-ui/pickers'
 import DateFnsUtils from '@date-io/date-fns'
-import MaterialTable from 'material-table'
 
+import api from 'services/api'
+
+import { AuthContext } from 'contexts/auth'
 import { ProjetoContext } from 'contexts/projetos'
 
 import { DETALHE_PROJETO } from 'routes'
 
-import { Modal } from 'ui'
+import { Modal, TabelaDefault } from 'ui'
 
 const TabelaProjetos = () => {
-  const { projetos } = useContext(ProjetoContext)
-  const [selectedDate, setSelectedDate] = useState(null)
-  const [openAdd, setOpenAdd] = useState(false)
-  const [openEdt, setOpenEdt] = useState(false)
+  const { projetos, listarProjetos } = useContext(ProjetoContext)
+  const { userLogin } = useContext(AuthContext)
+  const [dataSelecionada, setDataSelecionada] = useState(null)
+  const [abrirModalAdd, setAbrirModalAdd] = useState(false)
+  const [abrirModalEdt, setAbrirModalEdt] = useState(false)
+  const [abrirModalDel, setAbrirModalDel] = useState(false)
   const [projetoInfo, setProjetoInfo] = useState({
+    id: null,
     nome: '',
     descricao: '',
-    owner: '',
-    membros: 2,
-    dataEntrega: null,
-    dataCriacao: new Date()
+    ownerId: null,
+    membros: null,
+    dataEntrega: '',
+    dataCriacao: ''
   })
 
-  const [state, setState] = useState({
-    columns: [
-      {
-        title: 'Nome',
-        field: 'nome'
-      },
-      {
-        title: 'Owner',
-        field: 'owner',
-        render: (rowData) => {
-          const ownerId = rowData.ownerId
-          return rowData.usuarios.filter((item) => item.id === ownerId)[0].nome
-        }
-      },
-      {
-        title: 'Data de Criação',
-        field: 'createdAt',
-        type: 'date'
-      },
-      {
-        title: 'Data de Entrega',
-        field: 'dataEntrega',
-        type: 'date'
-      }
-    ],
-    data: projetos
-  })
+  const dados = projetos
 
-  const handleDateChange = date => {
-    setSelectedDate(date)
-    setProjetoInfo(prevState => {
-      return { ...prevState, dataEntrega: date }
+  const colunas = [
+    {
+      title: 'Nome',
+      field: 'nome'
+    },
+    {
+      title: 'Owner',
+      field: 'owner',
+      render: (linha) => linha.usuarios ? linha.usuarios.filter((item) => item.id === linha.ownerId)[0].nome : 0
+    },
+    {
+      title: 'Data de Criação',
+      field: 'createdAt',
+      type: 'date'
+    },
+    {
+      title: 'Data de Entrega',
+      field: 'dataEntrega',
+      type: 'date'
+    }
+  ]
+
+  const handleAlterarData = data => {
+    setDataSelecionada(data)
+    setProjetoInfo(estadoAnterior => {
+      return { ...estadoAnterior, dataEntrega: data }
     })
   }
 
-  const handleClickOpenAdd = () => {
-    setOpenAdd(true)
+  const handleSalvarNovoProjeto = () => {
+    const { nome, descricao, dataEntrega } = projetoInfo
+
+    const novoProjeto = {
+      nome,
+      descricao,
+      dataEntrega,
+      ownerId: userLogin.user.id
+    }
+
+    api.post('/projeto', novoProjeto)
+      .then((response) => {
+        listarProjetos()
+      })
+    setAbrirModalAdd(false)
+    setDataSelecionada(null)
   }
 
-  const handleCloseAdd = () => {
-    setOpenAdd(false)
-  }
-
-  const handleSaveAdd = () => {
-    const newData = projetoInfo
-
-    setState(prevState => {
-      const data = [...prevState.data]
-      data.push(newData)
-      return { ...prevState, data }
-    })
-    handleCloseAdd()
-    setSelectedDate(null)
-  }
-
-  const handleClickOpenEdt = (evt, data) => {
-    setOpenEdt(true)
-    setSelectedDate(data.dataEntrega)
+  const handleAbriModalEdt = (evt, data) => {
+    setAbrirModalEdt(true)
+    setDataSelecionada(data.dataEntrega)
     setProjetoInfo({ ...data })
   }
 
-  const handleCloseEdt = () => {
-    setOpenEdt(false)
+  const handleAbriModalDel = (evt, data) => {
+    setAbrirModalDel(true)
+    setProjetoInfo({ ...data })
   }
 
-  const handleSaveEdt = () => {
-    const { nome, descricao, dataEntrega, tableData } = projetoInfo
+  const handleFecharModalEdt = () => {
+    setAbrirModalEdt(false)
+    setDataSelecionada(null)
+  }
 
-    setState(prevState => {
-      const data = [...prevState.data]
+  const handleSalvarProjetoAlterado = () => {
+    const { nome, descricao, dataEntrega } = projetoInfo
 
-      const newData = {
-        nome,
-        descricao,
-        membros: data[tableData.id].membros,
-        owner: data[tableData.id].owner,
-        dataCriacao: data[tableData.id].dataCriacao,
-        dataEntrega
+    const novoProjeto = {
+      nome,
+      descricao,
+      dataEntrega
+    }
+
+    api.put(`/projeto/${projetoInfo.id}`, novoProjeto)
+      .then((response) => {
+        listarProjetos()
+      })
+
+    handleFecharModalEdt()
+    setDataSelecionada(null)
+  }
+
+  const handleDelete = () => {
+    api.delete(`/projeto/${projetoInfo.id}`)
+      .then((response) => {
+        listarProjetos()
+      })
+
+    setAbrirModalDel(false)
+  }
+
+  const actions = [
+    {
+      icon: () => (
+        <IconButton component={Link} to={{ pathname: DETALHE_PROJETO }} color='inherit'>
+          <InfoIcon />
+        </IconButton>),
+      tooltip: 'info',
+      onClick: (evt, data) => {
+        window.location.state = data
       }
-
-      data[tableData.id] = newData
-      return { ...prevState, data }
-    })
-
-    handleCloseEdt()
-    setSelectedDate(null)
-  }
+    },
+    {
+      icon: 'add',
+      tooltip: 'Add Projeto',
+      isFreeAction: true,
+      onClick: () => setAbrirModalAdd(true)
+    },
+    {
+      icon: 'edit',
+      tooltip: 'Editar Projeto',
+      isFreeAction: false,
+      onClick: (evt, data) => handleAbriModalEdt(evt, data)
+    },
+    {
+      icon: 'delete',
+      tooltip: 'Delete User',
+      onClick: (evt, data) => handleAbriModalDel(evt, data)
+    }
+  ]
 
   return (
     <>
-      <MaterialTable
-        title='Projetos'
-        columns={state.columns}
-        data={state.data}
-        options={{
-          actionsColumnIndex: -1
-        }}
-        actions={[
-          {
-            icon: () => (
-              <IconButton component={Link} to={{ pathname: DETALHE_PROJETO }} color='inherit'>
-                <InfoIcon />
-              </IconButton>),
-            tooltip: 'info',
-            onClick: (evt, data) => {
-              window.location.state = data
-            }
-          },
-          {
-            icon: 'add',
-            tooltip: 'Add Projeto',
-            isFreeAction: true,
-            onClick: handleClickOpenAdd
-          },
-          {
-            icon: 'edit',
-            tooltip: 'Editar Projeto',
-            isFreeAction: false,
-            onClick: (evt, data) => handleClickOpenEdt(evt, data)
-          }
 
-        ]}
-        editable={{
-          onRowDelete: oldData =>
-            new Promise(resolve => {
-              setTimeout(() => {
-                resolve()
-                setState(prevState => {
-                  const data = [...prevState.data]
-                  data.splice(data.indexOf(oldData), 1)
-                  return { ...prevState, data }
-                })
-              }, 600)
-            })
-        }}
-      />
+      <TabelaDefault titulo='Projetos' columns={colunas} data={dados} actions={actions} />
 
-      <Modal titulo='Novo Projeto' open={openAdd} handleClose={handleCloseAdd} handleSave={handleSaveAdd}>
+      <Modal titulo='Novo Projeto' open={abrirModalAdd} handleClose={() => setAbrirModalAdd(false)} handleSave={handleSalvarNovoProjeto} operacao='Salvar'>
         <TextField
           onChange={(e) => {
             const val = e.target.value
@@ -175,7 +171,7 @@ const TabelaProjetos = () => {
             })
           }}
           autoFocus
-          margin='dense'
+          margin='normal'
           id='nome'
           label='Nome'
           type='text'
@@ -188,7 +184,7 @@ const TabelaProjetos = () => {
               return { ...prevState, descricao: val }
             })
           }}
-          margin='dense'
+          margin='normal'
           id='descricao'
           label='Descrição'
           type='text'
@@ -197,36 +193,20 @@ const TabelaProjetos = () => {
           fullWidth
         />
 
-        <Grid item xs>
-          <TextField
-            onChange={(e) => {
-              const val = e.target.value
-              setProjetoInfo(prevState => {
-                return { ...prevState, owner: val }
-              })
-            }}
-            margin='dense'
-            id='owner'
-            label='Owner'
-            type='text'
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <KeyboardDatePicker
+            label='Data de Entrega'
+            clearable
+            value={dataSelecionada}
+            onChange={date => handleAlterarData(date)}
+            minDate={new Date()}
+            format='dd/MM/yyyy'
           />
-        </Grid>
+        </MuiPickersUtilsProvider>
 
-        <Grid item xs>
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <KeyboardDatePicker
-              label='Data de Entrega'
-              clearable
-              value={selectedDate}
-              onChange={date => handleDateChange(date)}
-              minDate={new Date()}
-              format='dd/MM/yyyy'
-            />
-          </MuiPickersUtilsProvider>
-        </Grid>
       </Modal>
 
-      <Modal titulo='Editar Projeto' open={openEdt} handleClose={handleCloseEdt} handleSave={handleSaveEdt}>
+      <Modal titulo='Editar Projeto' open={abrirModalEdt} handleClose={handleFecharModalEdt} handleSave={handleSalvarProjetoAlterado} operacao='Alterar'>
         <TextField
           onChange={(e) => {
             const val = e.target.value
@@ -236,12 +216,14 @@ const TabelaProjetos = () => {
           }}
           value={projetoInfo.nome}
           autoFocus
-          margin='dense'
           id='nome'
           label='Nome'
           type='text'
+          width='100%'
+          margin='normal'
           fullWidth
         />
+
         <TextField
           onChange={(e) => {
             const val = e.target.value
@@ -250,38 +232,32 @@ const TabelaProjetos = () => {
             })
           }}
           value={projetoInfo.descricao}
-          margin='dense'
           id='descricao'
           label='Descrição'
           type='text'
           multiline
           rows='4'
+          width='100%'
+          margin='normal'
           fullWidth
         />
 
-        <Grid item xs>
-          <TextField
-            value={projetoInfo.owner}
-            margin='dense'
-            id='owner'
-            label='Owner'
-            type='text'
-            disabled
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <KeyboardDatePicker
+            label='Data de Entrega'
+            clearable
+            value={dataSelecionada}
+            onChange={date => handleAlterarData(date)}
+            minDate={new Date()}
+            format='dd/MM/yyyy'
           />
-        </Grid>
+        </MuiPickersUtilsProvider>
+      </Modal>
 
-        <Grid item xs>
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <KeyboardDatePicker
-              label='Data de Entrega'
-              clearable
-              value={selectedDate}
-              onChange={date => handleDateChange(date)}
-              minDate={new Date()}
-              format='dd/MM/yyyy'
-            />
-          </MuiPickersUtilsProvider>
-        </Grid>
+      <Modal titulo='Deseja mesmo deletar este projeto?' open={abrirModalDel} handleClose={() => setAbrirModalDel(false)} handleSave={handleDelete} operacao='Deletar'>
+        <Typography>
+          O projeto {projetoInfo.nome} e todas as suas dependencias serão deletadas!
+        </Typography>
       </Modal>
     </>
   )

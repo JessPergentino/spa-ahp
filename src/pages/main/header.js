@@ -81,14 +81,14 @@ const Header = () => {
           open={Boolean(anchorProjeto)}
           onClose={handleCloseProjeto}
         >
-          {projetos.map((projeto) => (
+          {projetos ? projetos.map((projeto) => (
             <MenuItem
               key={projeto.id}
               onClick={(e) => handleClickProjetoItem(projeto)}
             >
               {projeto.nome}
             </MenuItem>
-          ))}
+          )) : []}
         </Menu>
 
         <Typography color='inherit'>Olá, {userLogin.primeiroNome}</Typography>
