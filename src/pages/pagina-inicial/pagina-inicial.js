@@ -14,7 +14,7 @@ import { ProjetoContext } from 'contexts/projetos'
 
 const PaginaInical = () => {
   const { userLogin } = useContext(AuthContext)
-  const { projetoAtual, projetos } = useContext(ProjetoContext)
+  const { projetoAtual } = useContext(ProjetoContext)
 
   return (
     <>
@@ -24,7 +24,7 @@ const PaginaInical = () => {
         </Title>
 
         <Title variant='h4'>
-          Este é o dashboard do {projetoAtual ? projetoAtual.nome : projetos[0] ? projetos[0].nome : ' '}
+          Este é o dashboard do {projetoAtual.nome}
         </Title>
       </Grid>
 

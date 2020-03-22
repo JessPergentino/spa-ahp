@@ -8,13 +8,15 @@ import { get } from 'idb-keyval'
 
 import { AuthContext } from 'contexts/auth'
 import { ProjetoContext } from 'contexts/projetos'
+import { RequisitoContext } from 'contexts/requisitos'
 
 const MainPage = lazy(() => import('pages/main'))
 const Login = lazy(() => import('pages/login'))
 
 function App () {
   const { userLogin, setUserLogin } = useContext(AuthContext)
-  const { listarProjetos } = useContext(ProjetoContext)
+  const { listarProjetos, setProjetoAtual } = useContext(ProjetoContext)
+  const { listarRequisitos } = useContext(RequisitoContext)
   const { isUserLoggedIn } = userLogin
 
   useEffect(() => {
@@ -27,9 +29,11 @@ function App () {
             primeiroNome: usuario.nome.split(' ')[0]
           })
           listarProjetos()
+          listarRequisitos()
+          setProjetoAtual(usuario.projetos[0])
         }
       })
-  }, [setUserLogin, listarProjetos])
+  }, [setUserLogin, listarProjetos, listarRequisitos])
 
   if (isUserLoggedIn && location.pathname === LOGIN) {
     return <Redirect to={HOME} />

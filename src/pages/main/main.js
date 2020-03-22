@@ -6,7 +6,18 @@ import { withStyles, LinearProgress } from '@material-ui/core'
 import Header from './header'
 import Drawer from './drawer'
 
-import { HOME, PROJETOS, DETALHE_PROJETO, REQUISITOS, PRIORIZACAO, GRAFICOS, CONFIGURACOES, TUTORIAIS } from 'routes'
+import {
+  HOME,
+  PROJETOS,
+  DETALHE_PROJETO,
+  REQUISITOS,
+  PRIORIZACAO,
+  GRAFICOS,
+  CONFIGURACOES,
+  TUTORIAIS,
+  DETALHE_MEMBRO,
+  DETALHE_REQUISITO
+} from 'routes'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -22,8 +33,10 @@ const useStyles = makeStyles(theme => ({
 
 const PaginaInicial = React.lazy(() => import('pages/pagina-inicial'))
 const Projetos = React.lazy(() => import('pages/projetos'))
-const Detalhe = React.lazy(() => import('pages/detalhe-projeto'))
+const DetalheProjeto = React.lazy(() => import('pages/detalhe-projeto'))
+const DetalheMembro = React.lazy(() => import('pages/detalhe-membro'))
 const Requisitos = React.lazy(() => import('pages/requisitos'))
+const DetalheRequisito = React.lazy(() => import('pages/detalhe-requisito'))
 const Priorizacao = React.lazy(() => import('pages/priorizacao'))
 const Graficos = React.lazy(() => import('pages/graficos'))
 const Configuracoes = React.lazy(() => import('pages/configuracoes'))
@@ -46,8 +59,10 @@ const Main = () => {
             <Switch>
               <Route path={HOME} exact component={PaginaInicial} />
               <Route path={PROJETOS} component={Projetos} />
-              <Route path={DETALHE_PROJETO} component={Detalhe} />
+              <Route path={DETALHE_PROJETO} component={DetalheProjeto} />
+              <Route path={DETALHE_MEMBRO} component={DetalheMembro} />
               <Route path={REQUISITOS} component={Requisitos} />
+              <Route path={DETALHE_REQUISITO} component={DetalheRequisito} />
               <Route path={PRIORIZACAO} component={Priorizacao} />
               <Route path={GRAFICOS} component={Graficos} />
               <Route path={CONFIGURACOES} component={Configuracoes} />

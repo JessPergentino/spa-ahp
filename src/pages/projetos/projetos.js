@@ -19,8 +19,9 @@ import { DETALHE_PROJETO } from 'routes'
 import { Modal, TabelaDefault } from 'ui'
 
 const TabelaProjetos = () => {
-  const { projetos, listarProjetos } = useContext(ProjetoContext)
+  const { projetos, listarProjetos, setProjetoAtual } = useContext(ProjetoContext)
   const { userLogin } = useContext(AuthContext)
+
   const [dataSelecionada, setDataSelecionada] = useState(null)
   const [abrirModalAdd, setAbrirModalAdd] = useState(false)
   const [abrirModalEdt, setAbrirModalEdt] = useState(false)
@@ -59,6 +60,52 @@ const TabelaProjetos = () => {
     }
   ]
 
+  const actions = [
+    {
+      icon: () => (
+        <IconButton component={Link} to={{ pathname: DETALHE_PROJETO }} color='inherit'>
+          <InfoIcon />
+        </IconButton>),
+      tooltip: 'info',
+      onClick: (evt, data) => {
+        setProjetoAtual(data)
+      }
+    },
+    {
+      icon: 'add',
+      tooltip: 'Add Projeto',
+      isFreeAction: true,
+      onClick: () => setAbrirModalAdd(true)
+    },
+    {
+      icon: 'edit',
+      tooltip: 'Editar Projeto',
+      isFreeAction: false,
+      onClick: (evt, data) => handleAbriModalEdt(evt, data)
+    },
+    {
+      icon: 'delete',
+      tooltip: 'Deletar Projeto',
+      onClick: (evt, data) => handleAbriModalDel(evt, data)
+    }
+  ]
+
+  const handleAbriModalEdt = (evt, data) => {
+    setAbrirModalEdt(true)
+    setDataSelecionada(data.dataEntrega)
+    setProjetoInfo({ ...data })
+  }
+
+  const handleAbriModalDel = (evt, data) => {
+    setAbrirModalEdt(true)
+    setProjetoInfo({ ...data })
+  }
+
+  const handleFecharModalEdt = () => {
+    setAbrirModalEdt(false)
+    setDataSelecionada(null)
+  }
+
   const handleAlterarData = data => {
     setDataSelecionada(data)
     setProjetoInfo(estadoAnterior => {
@@ -84,32 +131,8 @@ const TabelaProjetos = () => {
     setDataSelecionada(null)
   }
 
-  const handleAbriModalEdt = (evt, data) => {
-    setAbrirModalEdt(true)
-    setDataSelecionada(data.dataEntrega)
-    setProjetoInfo({ ...data })
-  }
-
-  const handleAbriModalDel = (evt, data) => {
-    setAbrirModalDel(true)
-    setProjetoInfo({ ...data })
-  }
-
-  const handleFecharModalEdt = () => {
-    setAbrirModalEdt(false)
-    setDataSelecionada(null)
-  }
-
   const handleSalvarProjetoAlterado = () => {
-    const { nome, descricao, dataEntrega } = projetoInfo
-
-    const novoProjeto = {
-      nome,
-      descricao,
-      dataEntrega
-    }
-
-    api.put(`/projeto/${projetoInfo.id}`, novoProjeto)
+    api.put(`/projeto/${projetoInfo.id}`, projetoInfo)
       .then((response) => {
         listarProjetos()
       })
@@ -118,7 +141,7 @@ const TabelaProjetos = () => {
     setDataSelecionada(null)
   }
 
-  const handleDelete = () => {
+  const handleDeletarProjeto = () => {
     api.delete(`/projeto/${projetoInfo.id}`)
       .then((response) => {
         listarProjetos()
@@ -127,39 +150,8 @@ const TabelaProjetos = () => {
     setAbrirModalDel(false)
   }
 
-  const actions = [
-    {
-      icon: () => (
-        <IconButton component={Link} to={{ pathname: DETALHE_PROJETO }} color='inherit'>
-          <InfoIcon />
-        </IconButton>),
-      tooltip: 'info',
-      onClick: (evt, data) => {
-        window.location.state = data
-      }
-    },
-    {
-      icon: 'add',
-      tooltip: 'Add Projeto',
-      isFreeAction: true,
-      onClick: () => setAbrirModalAdd(true)
-    },
-    {
-      icon: 'edit',
-      tooltip: 'Editar Projeto',
-      isFreeAction: false,
-      onClick: (evt, data) => handleAbriModalEdt(evt, data)
-    },
-    {
-      icon: 'delete',
-      tooltip: 'Delete User',
-      onClick: (evt, data) => handleAbriModalDel(evt, data)
-    }
-  ]
-
   return (
     <>
-
       <TabelaDefault titulo='Projetos' columns={colunas} data={dados} actions={actions} />
 
       <Modal titulo='Novo Projeto' open={abrirModalAdd} handleClose={() => setAbrirModalAdd(false)} handleSave={handleSalvarNovoProjeto} operacao='Salvar'>
@@ -254,7 +246,7 @@ const TabelaProjetos = () => {
         </MuiPickersUtilsProvider>
       </Modal>
 
-      <Modal titulo='Deseja mesmo deletar este projeto?' open={abrirModalDel} handleClose={() => setAbrirModalDel(false)} handleSave={handleDelete} operacao='Deletar'>
+      <Modal titulo='Deseja mesmo deletar este projeto?' open={abrirModalDel} handleClose={() => setAbrirModalDel(false)} handleSave={handleDeletarProjeto} operacao='Deletar'>
         <Typography>
           O projeto {projetoInfo.nome} e todas as suas dependencias serão deletadas!
         </Typography>

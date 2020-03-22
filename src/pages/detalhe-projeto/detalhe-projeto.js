@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
+import { Link } from 'react-router-dom'
 import t from 'prop-types'
 import styled from 'styled-components'
 import {
@@ -7,10 +8,20 @@ import {
   Tab,
   Typography,
   Box,
-  Paper as MaterialPaper
+  Paper as MaterialPaper,
+  IconButton
 } from '@material-ui/core'
+import InfoIcon from '@material-ui/icons/Info'
+/* import RemoveCircleIcon from '@material-ui/icons/RemoveCircle' */
 
-const Detalhe = () => {
+import { ProjetoContext } from 'contexts/projetos'
+import { TabelaDefault, Modal } from 'ui'
+import { DETALHE_MEMBRO } from 'routes'
+
+const DetalheProjeto = () => {
+  const { projetoAtual } = useContext(ProjetoContext)
+  const [abrirModalDel, setAbrirModalDel] = useState(false)
+  const [usuarioAtual/* setUsuarioAtual */] = useState({})
   const [value, setValue] = useState(0)
 
   const handleChange = (event, newValue) => {
@@ -23,6 +34,53 @@ const Detalhe = () => {
       'aria-controls': `simple-tabpanel-${index}`
     }
   }
+
+  const colunas = [
+    {
+      title: 'Nome',
+      field: 'nome'
+    },
+    {
+      title: 'Organização',
+      field: 'organizacao'
+    },
+    {
+      title: 'Nível de Permissão',
+      field: 'PermissaoId',
+      lookup: { 1: 'Administrador', 2: 'Membro' }
+    }
+  ]
+
+  const dados = projetoAtual.usuarios
+
+  const actions = [
+    {
+      icon: () => (
+        <IconButton component={Link} to={{ pathname: DETALHE_MEMBRO }} color='inherit'>
+          <InfoIcon />
+        </IconButton>),
+      tooltip: 'info',
+      onClick: (evt, data) => {
+        window.location.state = data
+      }
+    }/* ,
+    {
+      icon: () => (<RemoveCircleIcon />),
+      tooltip: 'Remover Membro',
+      onClick: (evt, data) => handleAbriModalDel(evt, data)
+    } */
+  ]
+
+  /*   const handleAbriModalDel = (evt, data) => {
+    setUsuarioAtual(data)
+    setAbrirModalDel(true)
+  } */
+
+  const handleDelete = () => {
+    console.log('Removeu')
+    setAbrirModalDel(false)
+  }
+
   return (
     <>
       <AppBar position='static'>
@@ -38,41 +96,46 @@ const Detalhe = () => {
             Nome do Projeto
           </Label>
           <Campo>
-            {window.location.state.nome}
+            {projetoAtual.nome}
           </Campo>
           <Label>
             Descrição
           </Label>
           <Campo>
-            {window.location.state.descricao}
+            {projetoAtual.descricao}
           </Campo>
           <Label>
             Owner
           </Label>
           <Campo>
             {
-              window.location.state.usuarios.filter((item) => item.id === window.location.state.ownerId)[0].nome
+              projetoAtual.usuarios.filter((item) => item.id === projetoAtual.ownerId)[0].nome
             }
           </Campo>
           <Label>
             Data de Criação
           </Label>
           <Campo>
-            {window.location.state.createdAt}
+            {projetoAtual.createdAt}
           </Campo>
           <Label>
             Data de Entrega
           </Label>
           <Campo>
-            {window.location.state.dataEntrega}
+            {projetoAtual.dataEntrega}
           </Campo>
         </Paper>
       </TabPanel>
+
       <TabPanel value={value} index={1}>
-        <Paper>
-          {window.location.state.usuarios[0].nome}
-        </Paper>
+        <TabelaDefault titulo='Membros do Projeto' columns={colunas} data={dados} actions={actions} />
       </TabPanel>
+
+      <Modal titulo='Deseja mesmo remover este membro?' open={abrirModalDel} handleClose={() => setAbrirModalDel(false)} handleSave={handleDelete} operacao='Remover'>
+        <Typography>
+          O membro {usuarioAtual.nome} não fará mais parte deste projeto!
+        </Typography>
+      </Modal>
     </>
   )
 }
@@ -115,4 +178,4 @@ const Label = styled(Typography).attrs({
 })`
 `
 
-export default Detalhe
+export default DetalheProjeto
