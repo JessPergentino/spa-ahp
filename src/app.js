@@ -4,7 +4,7 @@ import t from 'prop-types'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import { LinearProgress } from '@material-ui/core'
 import { LOGIN, HOME } from 'routes'
-import { get } from 'idb-keyval'
+import { get, del } from 'idb-keyval'
 
 import { AuthContext } from 'contexts/auth'
 import { ProjetoContext } from 'contexts/projetos'
@@ -15,7 +15,7 @@ const Login = lazy(() => import('pages/login'))
 
 function App () {
   const { userLogin, setUserLogin } = useContext(AuthContext)
-  const { listarProjetos, setProjetoAtual } = useContext(ProjetoContext)
+  const { listarProjetos, buscarProjeto } = useContext(ProjetoContext)
   const { listarRequisitos } = useContext(RequisitoContext)
   const { isUserLoggedIn } = userLogin
 
@@ -28,12 +28,16 @@ function App () {
             user: usuario,
             primeiroNome: usuario.nome.split(' ')[0]
           })
-          listarProjetos()
-          listarRequisitos()
-          setProjetoAtual(usuario.projetos[0])
+
+          if (usuario.projetos.length > 0) {
+            buscarProjeto(usuario.projetos[0].id)
+            listarRequisitos(usuario.projetos[0].id)
+          }
+          listarProjetos(usuario.id)
         }
       })
-  }, [setUserLogin, listarProjetos, listarRequisitos])
+    window.logout = () => del('usuario')
+  }, [setUserLogin, listarProjetos, listarRequisitos, buscarProjeto])
 
   if (isUserLoggedIn && location.pathname === LOGIN) {
     return <Redirect to={HOME} />

@@ -1,13 +1,15 @@
 import React, { useState, useContext } from 'react'
 import { Link } from 'react-router-dom'
-import { TextField, IconButton, Typography } from '@material-ui/core'
+import { TextField, IconButton, Typography, Select, MenuItem, FormControl, InputLabel } from '@material-ui/core'
 import InfoIcon from '@material-ui/icons/Info'
+import { MTableToolbar } from 'material-table'
 
 import { Modal, TabelaDefault } from 'ui'
 
-import { RequisitoContext } from 'contexts/requisitos'
 import { AuthContext } from 'contexts/auth'
 import { ProjetoContext } from 'contexts/projetos'
+import { RequisitoContext } from 'contexts/requisitos'
+import { UsuarioContext } from 'contexts/usuarios'
 
 import api from 'services/api'
 import { DETALHE_REQUISITO } from 'routes'
@@ -15,18 +17,25 @@ import { DETALHE_REQUISITO } from 'routes'
 const Requisitos = () => {
   const { requisitos, listarRequisitos, setRequisitoAtual } = useContext(RequisitoContext)
   const { userLogin } = useContext(AuthContext)
-  const { projetoAtual } = useContext(ProjetoContext)
+  const { projetoAtual, projetos, setProjetoAtual } = useContext(ProjetoContext)
+  const { buscarUsuario } = useContext(UsuarioContext)
 
   const [abrirModalAdd, setAbrirModalAdd] = useState(false)
   const [abrirModalEdt, setAbrirModalEdt] = useState(false)
   const [abrirModalDel, setAbrirModalDel] = useState(false)
+  const [projetoSelect, setProjetoSelect] = useState('')
 
   const [requisitoInfo, setRequisitoInfo] = useState({
     id: null,
     titulo: '',
     descricao: '',
     codReferencia: '',
-    estimativa: null
+    estimativa: null,
+    prioridade: null,
+    createdAt: '',
+    updatedAt: '',
+    ProjetoId: null,
+    UsuarioId: null
   })
 
   const colunas = [
@@ -44,7 +53,7 @@ const Requisitos = () => {
     }
   ]
 
-  const dados = requisitos
+  const dados = projetoSelect ? requisitos : []
 
   const actions = [
     {
@@ -55,6 +64,7 @@ const Requisitos = () => {
       tooltip: 'info',
       onClick: (evt, data) => {
         setRequisitoAtual(data)
+        buscarUsuario(data.usuarioId)
       }
     },
     {
@@ -87,47 +97,103 @@ const Requisitos = () => {
   }
 
   const handleSalvarNovoRequisito = () => {
-    const { titulo, descricao, estimativa } = requisitoInfo
+    const { titulo, descricao, estimativa, codReferencia } = requisitoInfo
 
     const novoRequisito = {
       titulo,
       descricao,
-      codReferencia: 'RF001',
+      codReferencia,
       estimativa,
       ProjetoId: projetoAtual.id,
       UsuarioId: userLogin.user.id
     }
 
-    api.post('/requisito', novoRequisito)
+    api.post('/requisitos', novoRequisito)
       .then((response) => {
-        listarRequisitos()
+        listarRequisitos(projetoAtual.id)
       })
     setAbrirModalAdd(false)
   }
 
   const handleSalvarRequisitoAlterado = () => {
-    api.put(`/requisito/${requisitoInfo.id}`, requisitoInfo)
+    api.put(`/requisitos/${requisitoInfo.id}`, requisitoInfo)
       .then((response) => {
-        listarRequisitos()
+        listarRequisitos(projetoAtual.id)
       })
 
     setAbrirModalEdt(false)
   }
 
   const handleDeletarRequisito = () => {
-    api.delete(`/requisito/${requisitoInfo.id}`)
+    api.delete(`/requisitos/${requisitoInfo.id}`)
       .then((response) => {
-        listarRequisitos()
+        listarRequisitos(projetoAtual.id)
       })
 
     setAbrirModalDel(false)
   }
 
+  const handleChangeProjeto = (e) => {
+    setProjetoSelect(e.target.value)
+    setProjetoAtual(e.target.value)
+    listarRequisitos(e.target.value.id)
+  }
+
+  const toolbar = {
+    Toolbar: props => (
+      <div>
+        <MTableToolbar {...props} />
+        <div style={{ padding: '0px 10px' }}>
+          <FormControl
+            variant='outlined'
+            style={{
+              margin: '8px',
+              minWidth: 200
+            }}
+          >
+            <InputLabel id='label-select-projeto'>Selecione o Projeto</InputLabel>
+            <Select
+              labelId='label-select-projeto'
+              id='select-projeto'
+              value={projetoSelect}
+              onChange={handleChangeProjeto}
+              label='Selecione o Projeto'
+            >
+              {projetos ? projetos.map((projeto) => (
+                <MenuItem
+                  key={projeto.id}
+                  value={projeto}
+                >
+                  {projeto.nome}
+                </MenuItem>
+              )) : []}
+            </Select>
+          </FormControl>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <>
-      <TabelaDefault titulo={`Requisitos do ${projetoAtual.nome} `} columns={colunas} data={dados} actions={actions} />
+      <TabelaDefault titulo='Requisitos' columns={colunas} data={dados} actions={actions} components={toolbar} />
 
       <Modal titulo='Novo Requisito' open={abrirModalAdd} handleClose={() => setAbrirModalAdd(false)} handleSave={handleSalvarNovoRequisito} operacao='Salvar'>
+        <TextField
+          onChange={(e) => {
+            const val = e.target.value
+            setRequisitoInfo(prevState => {
+              return { ...prevState, codReferencia: val }
+            })
+          }}
+          autoFocus
+          margin='normal'
+          id='codReferencia'
+          label='Código de Referência'
+          type='text'
+          fullWidth
+        />
+
         <TextField
           onChange={(e) => {
             const val = e.target.value
@@ -135,7 +201,6 @@ const Requisitos = () => {
               return { ...prevState, titulo: val }
             })
           }}
-          autoFocus
           margin='normal'
           id='titulo'
           label='Título'
@@ -173,7 +238,23 @@ const Requisitos = () => {
         />
       </Modal>
 
-      <Modal titulo='Editar Projeto' open={abrirModalEdt} handleClose={() => setAbrirModalEdt(false)} handleSave={handleSalvarRequisitoAlterado} operacao='Alterar'>
+      <Modal titulo='Editar Requisito' open={abrirModalEdt} handleClose={() => setAbrirModalEdt(false)} handleSave={handleSalvarRequisitoAlterado} operacao='Alterar'>
+        <TextField
+          onChange={(e) => {
+            const val = e.target.value
+            setRequisitoInfo(prevState => {
+              return { ...prevState, codReferencia: val }
+            })
+          }}
+          autoFocus
+          margin='normal'
+          value={requisitoInfo.codReferencia}
+          id='codReferencia'
+          label='Código de Referência'
+          type='text'
+          fullWidth
+        />
+
         <TextField
           onChange={(e) => {
             const val = e.target.value
@@ -181,7 +262,6 @@ const Requisitos = () => {
               return { ...prevState, titulo: val }
             })
           }}
-          autoFocus
           value={requisitoInfo.titulo}
           margin='normal'
           id='titulo'

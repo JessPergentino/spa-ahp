@@ -44,6 +44,7 @@ const Tutoriais = React.lazy(() => import('pages/tutoriais'))
 
 const Main = () => {
   const classes = useStyles()
+
   return (
     <>
       <div className={classes.root}>

@@ -23,30 +23,33 @@ const PaginaInical = () => {
           Bem vindo, {userLogin.primeiroNome}!
         </Title>
 
-        <Title variant='h4'>
-          Este é o dashboard do {projetoAtual.nome}
-        </Title>
+        {projetoAtual && (<Title variant='h4'>Este é o dashboard do {projetoAtual.nome}</Title>)}
+
+        {!projetoAtual && (<Title variant='h4'> Cadastre um novo projeto para começar </Title>)}
       </Grid>
 
-      <GraficosGrid>
-        <Grid item xs>
-          <PaperGrafico>
-            <Grafico />
+      {projetoAtual &&
+        (
+          <GraficosGrid>
+            <Grid item xs>
+              <PaperGrafico>
+                <Grafico />
 
-            <Divider />
-            <Typography>Titulo do Gráfico</Typography>
-          </PaperGrafico>
-        </Grid>
+                <Divider />
+                <Typography>Titulo do Gráfico</Typography>
+              </PaperGrafico>
+            </Grid>
 
-        <Grid item xs>
-          <PaperGrafico>
-            <Grafico />
+            <Grid item xs>
+              <PaperGrafico>
+                <Grafico />
 
-            <Divider />
-            <Typography>Titulo do Gráfico</Typography>
-          </PaperGrafico>
-        </Grid>
-      </GraficosGrid>
+                <Divider />
+                <Typography>Titulo do Gráfico</Typography>
+              </PaperGrafico>
+            </Grid>
+          </GraficosGrid>
+        )}
     </>
   )
 }

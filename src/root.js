@@ -4,6 +4,7 @@ import { CssBaseline } from '@material-ui/core'
 import AuthProvider from 'contexts/auth'
 import ProjetoProvider from 'contexts/projetos'
 import RequisitoProvider from 'contexts/requisitos'
+import UsuarioProvider from 'contexts/usuarios'
 import App from './app'
 
 function Root () {
@@ -11,10 +12,12 @@ function Root () {
     <AuthProvider>
       <ProjetoProvider>
         <RequisitoProvider>
-          <CssBaseline />
-          <BrowserRouter>
-            <Route component={App} />
-          </BrowserRouter>
+          <UsuarioProvider>
+            <CssBaseline />
+            <BrowserRouter>
+              <Route component={App} />
+            </BrowserRouter>
+          </UsuarioProvider>
         </RequisitoProvider>
       </ProjetoProvider>
     </AuthProvider>

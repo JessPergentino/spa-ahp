@@ -1,5 +1,5 @@
 export const HOME = '/'
-export const AUTENTICAR = '/token'
+export const AUTENTICAR = '/autenticar'
 export const LOGOUT = '/logout'
 export const PROJETOS = '/projetos'
 export const DETALHE_PROJETO = '/detalhe-projeto'

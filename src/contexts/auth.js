@@ -17,28 +17,30 @@ function Auth ({ children }) {
   const login = useCallback((email, senha) => {
     api.post(AUTENTICAR, { email, senha })
       .then((response) => {
-        set('usuario', response.data.data)
+        set('usuario', response.data.usuario)
         set('token', response.data.token)
         setUserLogin({
           isUserLoggedIn: true,
-          user: response.data.data,
+          user: response.data.usuario,
           token: response.data.token,
-          primeiroNome: response.data.data.nome.split(' ')[0]
+          primeiroNome: response.data.usuario.nome.split(' ')[0]
         })
+      }).catch(function (error) {
+        if (error.response) {
+          console.log(error.response.data.message)
+        }
       })
   }, [])
 
   const logout = useCallback(() => {
     api.get(LOGOUT)
       .then((response) => {
-        if (response.status === 200) {
-          del('usuario')
-          setUserLogin({
-            isUserLoggedIn: false,
-            user: null,
-            token: null
-          })
-        }
+        del('usuario')
+        setUserLogin({
+          isUserLoggedIn: false,
+          user: null,
+          token: null
+        })
       })
   }, [])
 

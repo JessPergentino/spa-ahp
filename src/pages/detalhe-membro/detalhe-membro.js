@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import styled from 'styled-components'
 import {
   Paper as MaterialPaper,
@@ -12,24 +12,36 @@ import DomainIcon from '@material-ui/icons/Domain'
 import PermIdentityIcon from '@material-ui/icons/PermIdentity'
 import { TabelaDefault } from 'ui'
 
-/* import api from 'services/api' */
+import { ProjetoContext } from 'contexts/projetos'
 
 const DetalheMembro = () => {
+  const { projetos, buscarOwner, owner } = useContext(ProjetoContext)
+
   const colunas = [
     {
       title: 'Nome',
       field: 'nome'
     },
     {
-      title: 'Nível de Permissão',
-      field: 'PermissaoId',
-      lookup: { 1: 'Administrador', 2: 'Membro' }
+      title: 'Owner',
+      field: 'owner',
+      render: (linha) => handleOwner(linha.ownerId)
     },
     {
-      title: 'Owner',
-      field: 'ownerId'
+      title: 'Data de Criação',
+      field: 'createdAt',
+      type: 'date'
     }
   ]
+
+  const dados = projetos
+
+  const handleOwner = (linha) => {
+    buscarOwner(linha)
+    return owner
+  }
+
+  console.log(window.location.state)
 
   return (
     <>
@@ -93,7 +105,7 @@ const DetalheMembro = () => {
 
                       <Grid item>
                         <Typography>
-                          {window.location.state.PermissaoId === 1 ? 'Administrador' : 'Membro'}
+                          {window.location.state.permissao === 'ADMIN' ? 'Administrador' : 'Membro'}
                         </Typography>
                       </Grid>
                     </Grid>
@@ -105,7 +117,7 @@ const DetalheMembro = () => {
         </Grid>
 
         <Grid item xs={12}>
-          <TabelaDefault titulo='Projetos Participantes' columns={colunas} data={[]} search={false} />
+          <TabelaDefault titulo='Projetos Participantes' columns={colunas} data={dados} search={false} />
         </Grid>
       </Grid>
     </>

@@ -12,16 +12,13 @@ import {
   IconButton
 } from '@material-ui/core'
 import InfoIcon from '@material-ui/icons/Info'
-/* import RemoveCircleIcon from '@material-ui/icons/RemoveCircle' */
 
 import { ProjetoContext } from 'contexts/projetos'
-import { TabelaDefault, Modal } from 'ui'
+import { TabelaDefault } from 'ui'
 import { DETALHE_MEMBRO } from 'routes'
 
 const DetalheProjeto = () => {
   const { projetoAtual } = useContext(ProjetoContext)
-  const [abrirModalDel, setAbrirModalDel] = useState(false)
-  const [usuarioAtual/* setUsuarioAtual */] = useState({})
   const [value, setValue] = useState(0)
 
   const handleChange = (event, newValue) => {
@@ -46,8 +43,8 @@ const DetalheProjeto = () => {
     },
     {
       title: 'Nível de Permissão',
-      field: 'PermissaoId',
-      lookup: { 1: 'Administrador', 2: 'Membro' }
+      field: 'permissao',
+      lookup: { ADMIN: 'Administrador', MEMBRO: 'Membro' }
     }
   ]
 
@@ -63,23 +60,8 @@ const DetalheProjeto = () => {
       onClick: (evt, data) => {
         window.location.state = data
       }
-    }/* ,
-    {
-      icon: () => (<RemoveCircleIcon />),
-      tooltip: 'Remover Membro',
-      onClick: (evt, data) => handleAbriModalDel(evt, data)
-    } */
+    }
   ]
-
-  /*   const handleAbriModalDel = (evt, data) => {
-    setUsuarioAtual(data)
-    setAbrirModalDel(true)
-  } */
-
-  const handleDelete = () => {
-    console.log('Removeu')
-    setAbrirModalDel(false)
-  }
 
   return (
     <>
@@ -87,6 +69,7 @@ const DetalheProjeto = () => {
         <Tabs value={value} onChange={handleChange} aria-label='simple tabs example'>
           <Tab label='Detalhes' {...a11yProps(0)} />
           <Tab label='Membros' {...a11yProps(1)} />
+          <Tab label='Critérios' {...a11yProps(2)} />
         </Tabs>
       </AppBar>
 
@@ -131,11 +114,13 @@ const DetalheProjeto = () => {
         <TabelaDefault titulo='Membros do Projeto' columns={colunas} data={dados} actions={actions} />
       </TabPanel>
 
-      <Modal titulo='Deseja mesmo remover este membro?' open={abrirModalDel} handleClose={() => setAbrirModalDel(false)} handleSave={handleDelete} operacao='Remover'>
-        <Typography>
-          O membro {usuarioAtual.nome} não fará mais parte deste projeto!
-        </Typography>
-      </Modal>
+      <TabPanel value={value} index={2}>
+        <Paper>
+          <Label>
+            Selecione os Critérios de Priorização
+          </Label>
+        </Paper>
+      </TabPanel>
     </>
   )
 }

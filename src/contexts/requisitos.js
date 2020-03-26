@@ -8,10 +8,10 @@ function Requisito ({ children }) {
   const [requisitos, setRequisitos] = useState([])
   const [requisitoAtual, setRequisitoAtual] = useState([])
 
-  const listarRequisitos = useCallback(() => {
-    api.get('/requisito')
+  const listarRequisitos = useCallback((id) => {
+    api.get(`/requisitos_projeto/${id}`)
       .then((response) => {
-        setRequisitos(response.data.data)
+        setRequisitos(response.data)
       })
   }, [])
 

@@ -19,7 +19,7 @@ import { DETALHE_PROJETO } from 'routes'
 import { Modal, TabelaDefault } from 'ui'
 
 const TabelaProjetos = () => {
-  const { projetos, listarProjetos, setProjetoAtual } = useContext(ProjetoContext)
+  const { projetos, listarProjetos, setProjetoAtual, buscarProjeto, buscarOwner, owner } = useContext(ProjetoContext)
   const { userLogin } = useContext(AuthContext)
 
   const [dataSelecionada, setDataSelecionada] = useState(null)
@@ -46,7 +46,7 @@ const TabelaProjetos = () => {
     {
       title: 'Owner',
       field: 'owner',
-      render: (linha) => linha.usuarios ? linha.usuarios.filter((item) => item.id === linha.ownerId)[0].nome : 0
+      render: (linha) => handleOwner(linha.ownerId)
     },
     {
       title: 'Data de Criação',
@@ -68,7 +68,7 @@ const TabelaProjetos = () => {
         </IconButton>),
       tooltip: 'info',
       onClick: (evt, data) => {
-        setProjetoAtual(data)
+        buscarProjeto(data.id)
       }
     },
     {
@@ -89,6 +89,10 @@ const TabelaProjetos = () => {
       onClick: (evt, data) => handleAbriModalDel(evt, data)
     }
   ]
+  const handleOwner = (linha) => {
+    buscarOwner(linha)
+    return owner
+  }
 
   const handleAbriModalEdt = (evt, data) => {
     setAbrirModalEdt(true)
@@ -97,7 +101,7 @@ const TabelaProjetos = () => {
   }
 
   const handleAbriModalDel = (evt, data) => {
-    setAbrirModalEdt(true)
+    setAbrirModalDel(true)
     setProjetoInfo({ ...data })
   }
 
@@ -123,18 +127,21 @@ const TabelaProjetos = () => {
       ownerId: userLogin.user.id
     }
 
-    api.post('/projeto', novoProjeto)
+    api.post('/projetos', novoProjeto)
       .then((response) => {
-        listarProjetos()
+        if (projetos.length === 0) {
+          setProjetoAtual(response.data)
+        }
+        listarProjetos(userLogin.user.id)
       })
     setAbrirModalAdd(false)
     setDataSelecionada(null)
   }
 
   const handleSalvarProjetoAlterado = () => {
-    api.put(`/projeto/${projetoInfo.id}`, projetoInfo)
+    api.put(`/projetos/${projetoInfo.id}`, projetoInfo)
       .then((response) => {
-        listarProjetos()
+        listarProjetos(userLogin.user.id)
       })
 
     handleFecharModalEdt()
@@ -142,9 +149,9 @@ const TabelaProjetos = () => {
   }
 
   const handleDeletarProjeto = () => {
-    api.delete(`/projeto/${projetoInfo.id}`)
+    api.delete(`/projetos/${projetoInfo.id}`)
       .then((response) => {
-        listarProjetos()
+        listarProjetos(userLogin.user.id)
       })
 
     setAbrirModalDel(false)

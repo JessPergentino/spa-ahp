@@ -7,14 +7,14 @@ import {
   Menu,
   MenuItem,
   IconButton,
-  Typography,
-  Button
+  Typography
 } from '@material-ui/core'
 import MenuBookIcon from '@material-ui/icons/MenuBook'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 
 import { AuthContext } from 'contexts/auth'
-import { ProjetoContext } from 'contexts/projetos'
+
+import { DETALHE_MEMBRO, TUTORIAIS } from 'routes'
 
 const drawerWidth = 240
 
@@ -29,23 +29,8 @@ const Header = () => {
   const classes = useStyles()
 
   const [anchorLogin, setAnchorLogin] = useState(null)
-  const [anchorProjeto, setAnchorProjeto] = React.useState(null)
 
   const { userLogin, logout } = useContext(AuthContext)
-  const { projetos, setProjetoAtual } = useContext(ProjetoContext)
-
-  const handleClickProjeto = e => {
-    setAnchorProjeto(e.currentTarget)
-  }
-
-  const handleClickProjetoItem = (projeto) => {
-    setProjetoAtual(projeto)
-    handleCloseProjeto()
-  }
-
-  const handleCloseProjeto = () => {
-    setAnchorProjeto(null)
-  }
 
   const handleOpenLogin = (e) => {
     setAnchorLogin(e.target)
@@ -55,6 +40,10 @@ const Header = () => {
     setAnchorLogin(null)
   }
 
+  const onclickPerfil = (e) => {
+    window.location.state = userLogin.user
+    setAnchorLogin(null)
+  }
   return (
     <AppBar
       position='fixed'
@@ -65,31 +54,12 @@ const Header = () => {
           SPR - AHP
         </Typography>
 
-        <IconButton component={Link} to='/tutoriais' color='inherit'>
+        <IconButton component={Link} to={TUTORIAIS} color='inherit'>
           <MenuBookIcon />
           <Typography>
             Tutoriais
           </Typography>
         </IconButton>
-
-        <Button aria-controls='simple-menu' aria-haspopup='true' color='inherit' onClick={handleClickProjeto}>
-          Projetos
-        </Button>
-        <Menu
-          anchorEl={anchorProjeto}
-          keepMounted
-          open={Boolean(anchorProjeto)}
-          onClose={handleCloseProjeto}
-        >
-          {projetos ? projetos.map((projeto) => (
-            <MenuItem
-              key={projeto.id}
-              onClick={(e) => handleClickProjetoItem(projeto)}
-            >
-              {projeto.nome}
-            </MenuItem>
-          )) : []}
-        </Menu>
 
         <Typography color='inherit'>Olá, {userLogin.primeiroNome}</Typography>
 
@@ -102,6 +72,7 @@ const Header = () => {
           onClose={handleCloseLogin}
           anchorEl={anchorLogin}
         >
+          <MenuItem component={Link} to={DETALHE_MEMBRO} onClick={onclickPerfil}>Perfil</MenuItem>
           <MenuItem onClick={logout}>Sair</MenuItem>
         </Menu>
       </Toolbar>

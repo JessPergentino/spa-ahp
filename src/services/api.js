@@ -2,7 +2,7 @@ import axios from 'axios'
 import { get } from 'idb-keyval'
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080/'
+  baseURL: 'http://localhost:3001/'
 })
 
 api.interceptors.request.use(async config => {

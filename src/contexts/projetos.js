@@ -7,11 +7,26 @@ export const ProjetoContext = createContext()
 function Projeto ({ children }) {
   const [projetos, setProjetos] = useState([])
   const [projetoAtual, setProjetoAtual] = useState(null)
+  const [owner, setOwner] = useState(null)
 
-  const listarProjetos = useCallback(() => {
-    api.get('/projeto')
+  const listarProjetos = useCallback((idUsuario) => {
+    api.get(`/projetos_usuario/${idUsuario}`)
       .then((response) => {
-        setProjetos(response.data.data)
+        setProjetos(response.data)
+      })
+  }, [])
+
+  const buscarOwner = useCallback((idUsuario) => {
+    api.get(`/usuarios/${idUsuario}`)
+      .then((response) => {
+        setOwner(response.data.nome)
+      })
+  }, [])
+
+  const buscarProjeto = useCallback((idProjeto) => {
+    api.get(`/projetos/${idProjeto}`)
+      .then((response) => {
+        setProjetoAtual(response.data)
       })
   }, [])
 
@@ -21,7 +36,11 @@ function Projeto ({ children }) {
       setProjetoAtual,
       projetos,
       setProjetos,
-      listarProjetos
+      listarProjetos,
+      buscarProjeto,
+      buscarOwner,
+      owner,
+      setOwner
     }}
     >
       {children}
