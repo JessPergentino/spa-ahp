@@ -13,7 +13,6 @@ import {
   REQUISITOS,
   PRIORIZACAO,
   GRAFICOS,
-  CONFIGURACOES,
   TUTORIAIS,
   DETALHE_MEMBRO,
   DETALHE_REQUISITO
@@ -39,7 +38,6 @@ const Requisitos = React.lazy(() => import('pages/requisitos'))
 const DetalheRequisito = React.lazy(() => import('pages/detalhe-requisito'))
 const Priorizacao = React.lazy(() => import('pages/priorizacao'))
 const Graficos = React.lazy(() => import('pages/graficos'))
-const Configuracoes = React.lazy(() => import('pages/configuracoes'))
 const Tutoriais = React.lazy(() => import('pages/tutoriais'))
 
 const Main = () => {
@@ -66,7 +64,6 @@ const Main = () => {
               <Route path={DETALHE_REQUISITO} component={DetalheRequisito} />
               <Route path={PRIORIZACAO} component={Priorizacao} />
               <Route path={GRAFICOS} component={Graficos} />
-              <Route path={CONFIGURACOES} component={Configuracoes} />
               <Route path={TUTORIAIS} component={Tutoriais} />
             </Switch>
           </Suspense>

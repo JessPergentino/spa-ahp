@@ -2,10 +2,10 @@ import React, { useContext, useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 import LockIcon from '@material-ui/icons/Lock'
-import { TextField, Button, Grid } from '@material-ui/core'
-import Checkbox from './checkbox'
+import { TextField, Button, Grid, Typography, Link } from '@material-ui/core'
 
 import { AuthContext } from 'contexts/auth'
+import { Paper } from 'ui'
 
 const Login = () => {
   const [userInfo, setUserInfo] = useState({
@@ -30,50 +30,58 @@ const Login = () => {
     }
   }
 
+  const preventDefault = event => event.preventDefault()
+
   return (
     <Form onSubmit={handleLogin} noValidate autoComplete='off'>
       <Container>
-        <Grid container justify='center' spacing={2}>
-          <Grid item container justify='center'>
-            <LogoLogin />
-          </Grid>
+        <Paper>
+          <Grid container direction='column' justify='center' alignItems='center' spacing={2}>
+            <Grid item>
+              <LogoLogin />
+            </Grid>
 
-          <Grid item container justify='center'>
-            <h1>Login</h1>
-          </Grid>
+            <Grid item>
+              <h1>Login</h1>
+            </Grid>
 
-          {userInfo.error && <p>{userInfo.error}</p>}
+            {userInfo.error && <p>{userInfo.error}</p>}
 
-          <Grid item container justify='center'>
-            <EmailText onChange={(e) => {
-              const val = e.target.value
-              setUserInfo(prevState => {
-                return { ...prevState, email: val }
-              })
-            }}
-            />
-          </Grid>
+            <Grid item>
+              <EmailText onChange={(e) => {
+                const val = e.target.value
+                setUserInfo(prevState => {
+                  return { ...prevState, email: val }
+                })
+              }}
+              />
+            </Grid>
 
-          <Grid item container justify='center'>
-            <PasswordText onChange={(e) => {
-              const val = e.target.value
-              setUserInfo(prevState => {
-                return { ...prevState, senha: val }
-              })
-            }}
-            />
-          </Grid>
+            <Grid item>
+              <PasswordText onChange={(e) => {
+                const val = e.target.value
+                setUserInfo(prevState => {
+                  return { ...prevState, senha: val }
+                })
+              }}
+              />
+            </Grid>
 
-          <Grid item container justify='center'>
-            <Checkbox />
-          </Grid>
+            <Grid item>
+              <Typography>
+                <Link href='#' onClick={preventDefault}>
+                  Ainda não tem conta? Cadastre-se!
+                </Link>
+              </Typography>
+            </Grid>
 
-          <Grid item container justify='center'>
-            <Button type='submit' variant='contained' color='primary'>
-              Entrar
-            </Button>
+            <Grid item>
+              <Button type='submit' variant='contained' color='primary'>
+                Entrar
+              </Button>
+            </Grid>
           </Grid>
-        </Grid>
+        </Paper>
       </Container>
     </Form>
   )
@@ -81,10 +89,10 @@ const Login = () => {
 
 const Container = styled.div`
 padding: 70px;
+width: 100%;
 `
 
 const Form = styled.form`
-width: 100%;
 `
 
 const LogoLogin = styled(LockIcon).attrs({

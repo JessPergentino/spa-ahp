@@ -13,7 +13,6 @@ import {
 
 import ListAltIcon from '@material-ui/icons/ListAlt'
 import EventNoteIcon from '@material-ui/icons/EventNote'
-import SettingsIcon from '@material-ui/icons/Settings'
 import PieChartIcon from '@material-ui/icons/PieChart'
 import SwapVertIcon from '@material-ui/icons/SwapVert'
 import HomeIcon from '@material-ui/icons/Home'
@@ -82,13 +81,6 @@ const DrawerMain = () => {
             <PieChartIcon />
           </ListItemIcon>
           <ListItemText primary='Gráficos' />
-        </ListItem>
-
-        <ListItem component={Link} to='/configs' button>
-          <ListItemIcon>
-            <SettingsIcon />
-          </ListItemIcon>
-          <ListItemText primary='Configurações' />
         </ListItem>
       </List>
     </Drawer>

@@ -13,14 +13,16 @@ import api from 'services/api'
 
 import { AuthContext } from 'contexts/auth'
 import { ProjetoContext } from 'contexts/projetos'
+import { CriterioContext } from 'contexts/criterios'
 
 import { DETALHE_PROJETO } from 'routes'
 
 import { Modal, TabelaDefault } from 'ui'
 
 const TabelaProjetos = () => {
-  const { projetos, listarProjetos, setProjetoAtual, buscarProjeto, buscarOwner, owner } = useContext(ProjetoContext)
+  const { projetos, listarProjetos, setProjetoAtual, /* buscarProjeto, */ buscarOwner, owner } = useContext(ProjetoContext)
   const { userLogin } = useContext(AuthContext)
+  const { listarTodosCriteriosPorCategoria } = useContext(CriterioContext)
 
   const [dataSelecionada, setDataSelecionada] = useState(null)
   const [abrirModalAdd, setAbrirModalAdd] = useState(false)
@@ -68,7 +70,8 @@ const TabelaProjetos = () => {
         </IconButton>),
       tooltip: 'info',
       onClick: (evt, data) => {
-        buscarProjeto(data.id)
+        setProjetoAtual(data)
+        listarTodosCriteriosPorCategoria()
       }
     },
     {

@@ -3,6 +3,7 @@ import React, { useContext } from 'react'
 import styled from 'styled-components'
 
 import { UsuarioContext } from 'contexts/usuarios'
+import { singularPlural } from 'services/utils'
 
 import {
   Typography,
@@ -40,7 +41,7 @@ const DetalheRequisito = () => {
         Estimativa
       </Label>
       <Campo>
-        {requisitoAtual.estimativa}
+        {requisitoAtual.estimativa + ' ' + singularPlural(requisitoAtual.estimativa, 'dia', 'dias')}
       </Campo>
 
       <Label>

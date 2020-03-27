@@ -5,6 +5,7 @@ import AuthProvider from 'contexts/auth'
 import ProjetoProvider from 'contexts/projetos'
 import RequisitoProvider from 'contexts/requisitos'
 import UsuarioProvider from 'contexts/usuarios'
+import CriterioProvider from 'contexts/criterios'
 import App from './app'
 
 function Root () {
@@ -13,10 +14,12 @@ function Root () {
       <ProjetoProvider>
         <RequisitoProvider>
           <UsuarioProvider>
-            <CssBaseline />
-            <BrowserRouter>
-              <Route component={App} />
-            </BrowserRouter>
+            <CriterioProvider>
+              <CssBaseline />
+              <BrowserRouter>
+                <Route component={App} />
+              </BrowserRouter>
+            </CriterioProvider>
           </UsuarioProvider>
         </RequisitoProvider>
       </ProjetoProvider>

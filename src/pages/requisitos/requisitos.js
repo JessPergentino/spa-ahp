@@ -1,6 +1,15 @@
 import React, { useState, useContext } from 'react'
 import { Link } from 'react-router-dom'
-import { TextField, IconButton, Typography, Select, MenuItem, FormControl, InputLabel } from '@material-ui/core'
+import {
+  TextField,
+  IconButton,
+  Typography,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Tooltip
+} from '@material-ui/core'
 import InfoIcon from '@material-ui/icons/Info'
 import { MTableToolbar } from 'material-table'
 
@@ -223,19 +232,20 @@ const Requisitos = () => {
           rows='4'
           fullWidth
         />
-
-        <TextField
-          onChange={(e) => {
-            const val = e.target.value
-            setRequisitoInfo(prevState => {
-              return { ...prevState, estimativa: val }
-            })
-          }}
-          margin='normal'
-          id='estimativa'
-          label='Estimativa'
-          type='number'
-        />
+        <Tooltip title='A estimativa deve ser em dias'>
+          <TextField
+            onChange={(e) => {
+              const val = e.target.value
+              setRequisitoInfo(prevState => {
+                return { ...prevState, estimativa: val }
+              })
+            }}
+            margin='normal'
+            id='estimativa'
+            label='Estimativa'
+            type='number'
+          />
+        </Tooltip>
       </Modal>
 
       <Modal titulo='Editar Requisito' open={abrirModalEdt} handleClose={() => setAbrirModalEdt(false)} handleSave={handleSalvarRequisitoAlterado} operacao='Alterar'>
@@ -287,19 +297,21 @@ const Requisitos = () => {
           fullWidth
         />
 
-        <TextField
-          onChange={(e) => {
-            const val = e.target.value
-            setRequisitoInfo(prevState => {
-              return { ...prevState, estimativa: val }
-            })
-          }}
-          margin='normal'
-          id='estimativa'
-          value={requisitoInfo.estimativa}
-          label='Estimativa'
-          type='number'
-        />
+        <Tooltip title='A estimativa deve ser em dias'>
+          <TextField
+            onChange={(e) => {
+              const val = e.target.value
+              setRequisitoInfo(prevState => {
+                return { ...prevState, estimativa: val }
+              })
+            }}
+            margin='normal'
+            id='estimativa'
+            value={requisitoInfo.estimativa}
+            label='Estimativa'
+            type='number'
+          />
+        </Tooltip>
       </Modal>
 
       <Modal titulo='Deseja mesmo deletar este requisito?' open={abrirModalDel} handleClose={() => setAbrirModalDel(false)} handleSave={handleDeletarRequisito} operacao='Deletar'>
