@@ -6,15 +6,27 @@ import {
   Paper,
   Typography
 } from '@material-ui/core'
-
 import Grafico from 'pages/pagina-inicial/graficos'
 
 import { AuthContext } from 'contexts/auth'
 import { ProjetoContext } from 'contexts/projetos'
+import { RequisitoContext } from 'contexts/requisitos'
 
 const PaginaInical = () => {
   const { userLogin } = useContext(AuthContext)
-  const { projetoAtual } = useContext(ProjetoContext)
+  const { projetos, projetoAtual, listarProjetos, buscarProjeto } = useContext(ProjetoContext)
+  const { listarRequisitos } = useContext(RequisitoContext)
+  const condicao = userLogin.user.projetos.length > 0 && projetos.length === 0
+
+  if (condicao) {
+    if (userLogin.user.projetos.length > 0 && projetos.length === 0) {
+      if (userLogin.user.projetos.length > 0) {
+        buscarProjeto(userLogin.user.projetos[0].id)
+        listarRequisitos(userLogin.user.projetos[0].id)
+      }
+      listarProjetos(userLogin.user.id)
+    }
+  }
 
   return (
     <>

@@ -3,8 +3,8 @@ import React, { lazy, Suspense, useContext, useEffect } from 'react'
 import t from 'prop-types'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import { LinearProgress } from '@material-ui/core'
-import { LOGIN, HOME } from 'routes'
-import { get, del } from 'idb-keyval'
+import { LOGIN, HOME, CADASTRAR } from 'routes'
+import { get } from 'idb-keyval'
 
 import { AuthContext } from 'contexts/auth'
 import { ProjetoContext } from 'contexts/projetos'
@@ -28,7 +28,6 @@ function App () {
             user: usuario,
             primeiroNome: usuario.nome.split(' ')[0]
           })
-
           if (usuario.projetos.length > 0) {
             buscarProjeto(usuario.projetos[0].id)
             listarRequisitos(usuario.projetos[0].id)
@@ -36,14 +35,16 @@ function App () {
           listarProjetos(usuario.id)
         }
       })
-    window.logout = () => del('usuario')
   }, [setUserLogin, listarProjetos, listarRequisitos, buscarProjeto])
 
   if (isUserLoggedIn && location.pathname === LOGIN) {
     return <Redirect to={HOME} />
   }
 
-  if (!isUserLoggedIn && location.pathname !== LOGIN) {
+  if (!isUserLoggedIn && (location.pathname !== LOGIN)) {
+    if (location.pathname === CADASTRAR) {
+      return <Redirect to={CADASTRAR} />
+    }
     return <Redirect to={LOGIN} />
   }
 

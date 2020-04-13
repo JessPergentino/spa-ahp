@@ -6,7 +6,7 @@ export const RequisitoContext = createContext()
 
 function Requisito ({ children }) {
   const [requisitos, setRequisitos] = useState([])
-  const [requisitoAtual, setRequisitoAtual] = useState([])
+  const [requisitoAtual, setRequisitoAtual] = useState(null)
 
   const listarRequisitos = useCallback((id) => {
     api.get(`/requisitos_projeto/${id}`)
@@ -15,13 +15,18 @@ function Requisito ({ children }) {
       })
   }, [])
 
+  const buscarRequisito = useCallback((id) => {
+    console.log('implementar Buscar Requisito')
+  }, [])
+
   return (
     <RequisitoContext.Provider value={{
       requisitos,
       setRequisitos,
       listarRequisitos,
       requisitoAtual,
-      setRequisitoAtual
+      setRequisitoAtual,
+      buscarRequisito
     }}
     >
       {children}

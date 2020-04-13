@@ -24,9 +24,9 @@ import api from 'services/api'
 import { DETALHE_REQUISITO } from 'routes'
 
 const Requisitos = () => {
-  const { requisitos, listarRequisitos, setRequisitoAtual } = useContext(RequisitoContext)
+  const { requisitos, listarRequisitos, buscarRequisito } = useContext(RequisitoContext)
   const { userLogin } = useContext(AuthContext)
-  const { projetoAtual, projetos, setProjetoAtual } = useContext(ProjetoContext)
+  const { projetoAtual, projetos, buscarProjeto } = useContext(ProjetoContext)
   const { buscarUsuario } = useContext(UsuarioContext)
 
   const [abrirModalAdd, setAbrirModalAdd] = useState(false)
@@ -72,7 +72,7 @@ const Requisitos = () => {
         </IconButton>),
       tooltip: 'info',
       onClick: (evt, data) => {
-        setRequisitoAtual(data)
+        buscarRequisito(data.id)
         buscarUsuario(data.usuarioId)
       }
     },
@@ -144,7 +144,7 @@ const Requisitos = () => {
 
   const handleChangeProjeto = (e) => {
     setProjetoSelect(e.target.value)
-    setProjetoAtual(e.target.value)
+    buscarProjeto(e.target.value.id)
     listarRequisitos(e.target.value.id)
   }
 

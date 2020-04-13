@@ -20,7 +20,7 @@ import { DETALHE_PROJETO } from 'routes'
 import { Modal, TabelaDefault } from 'ui'
 
 const TabelaProjetos = () => {
-  const { projetos, listarProjetos, setProjetoAtual, /* buscarProjeto, */ buscarOwner, owner } = useContext(ProjetoContext)
+  const { projetos, listarProjetos, buscarProjeto, buscarOwner, owner } = useContext(ProjetoContext)
   const { userLogin } = useContext(AuthContext)
   const { listarTodosCriteriosPorCategoria } = useContext(CriterioContext)
 
@@ -70,8 +70,10 @@ const TabelaProjetos = () => {
         </IconButton>),
       tooltip: 'info',
       onClick: (evt, data) => {
-        setProjetoAtual(data)
+        console.log('Não setou')
+        buscarProjeto(data.id)
         listarTodosCriteriosPorCategoria()
+        console.log('será q setou?')
       }
     },
     {
@@ -133,7 +135,7 @@ const TabelaProjetos = () => {
     api.post('/projetos', novoProjeto)
       .then((response) => {
         if (projetos.length === 0) {
-          setProjetoAtual(response.data)
+          buscarProjeto(response.data.id)
         }
         listarProjetos(userLogin.user.id)
       })
@@ -205,7 +207,6 @@ const TabelaProjetos = () => {
             format='dd/MM/yyyy'
           />
         </MuiPickersUtilsProvider>
-
       </Modal>
 
       <Modal titulo='Editar Projeto' open={abrirModalEdt} handleClose={handleFecharModalEdt} handleSave={handleSalvarProjetoAlterado} operacao='Alterar'>

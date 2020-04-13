@@ -11,6 +11,15 @@ function Criterio ({ children }) {
   const [criteriosPenalidade, setCriteriosPenalidade] = useState([])
   const [criteriosEmpresarial, setCriteriosEmpresarial] = useState([])
   const [criteriosTecnico, setCriteriosTecnico] = useState([])
+  const [ponderacaoCriterio, setPonderacaoCriterio] = useState([])
+  const [criterio, setCriterio] = useState([])
+
+  const listarPonderacaoCriterio = useCallback((usuarioId, projetoId) => {
+    api.get(`/priorizacoes_criterio/${usuarioId}&&${projetoId}`)
+      .then((response) => {
+        setPonderacaoCriterio(response.data.vetor)
+      })
+  }, [])
 
   const listarCriteriosPorCategoria = useCallback((categoria) => {
     switch (categoria) {
@@ -88,8 +97,17 @@ function Criterio ({ children }) {
       })
   }, [])
 
+  const buscarCriterio = useCallback((criterioId) => {
+    api.get(`/criterios/${criterioId}`)
+      .then((response) => {
+        setCriterio(response.data.nome)
+      })
+  }, [])
+
   return (
     <CriterioContext.Provider value={{
+      criterio,
+      setCriterio,
       criteriosBeneficio,
       setCriteriosBeneficio,
       criteriosCusto,
@@ -103,7 +121,11 @@ function Criterio ({ children }) {
       criteriosTecnico,
       setCriteriosTecnico,
       listarCriteriosPorCategoria,
-      listarTodosCriteriosPorCategoria
+      listarTodosCriteriosPorCategoria,
+      ponderacaoCriterio,
+      setPonderacaoCriterio,
+      listarPonderacaoCriterio,
+      buscarCriterio
     }}
     >
       {children}

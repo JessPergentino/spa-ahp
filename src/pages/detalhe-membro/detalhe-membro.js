@@ -41,8 +41,6 @@ const DetalheMembro = () => {
     return owner
   }
 
-  console.log(window.location.state)
-
   return (
     <>
       <Typography variant='h4' gutterBottom>

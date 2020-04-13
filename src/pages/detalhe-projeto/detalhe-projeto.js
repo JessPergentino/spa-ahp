@@ -16,14 +16,13 @@ import {
   ListItemIcon,
   Card,
   Button,
-  Snackbar
+  TextField
 } from '@material-ui/core'
-import MuiAlert from '@material-ui/lab/Alert'
 import InfoIcon from '@material-ui/icons/Info'
 
 import TabPanel from 'pages/detalhe-projeto/tab-panel'
 import CriterioGrid from 'pages/detalhe-projeto/criterio-grid'
-import { TabelaDefault } from 'ui'
+import { TabelaDefault, Modal, SnackBar } from 'ui'
 
 import { AuthContext } from 'contexts/auth'
 import { CriterioContext } from 'contexts/criterios'
@@ -43,9 +42,21 @@ const DetalheProjeto = () => {
     criteriosTecnico
   } = useContext(CriterioContext)
 
+  const [abrirModalAdd, setAbrirModalAdd] = useState(false)
   const [value, setValue] = useState(0)
-  const [checked, setChecked] = React.useState(projetoAtual.criterios.map((item) => item.id))
-  const [openSnackbar, setOpenSnackbar] = React.useState(false)
+  const [checked, setChecked] = useState(projetoAtual.criterios.map((item) => item.id))
+  const [openSnackbar, setOpenSnackbar] = useState(false)
+  const [emailMembro, setEmailMembro] = useState({
+    email: '',
+    erro: false,
+    helper: ''
+  })
+
+  console.log('page - projetoAtual', projetoAtual)
+  console.log('page - checked', checked)
+
+  const error = checked.filter(v => v).length > 15
+  const admin = userLogin.user.permissao !== 'ADMIN'
 
   const handleToggle = value => () => {
     const currentIndex = checked.indexOf(value)
@@ -87,6 +98,43 @@ const DetalheProjeto = () => {
     setOpenSnackbar(false)
   }
 
+  const validarEmail = () => {
+    const usuario = emailMembro.email.substring(0, emailMembro.email.indexOf('@'))
+    const dominio = emailMembro.email.substring(emailMembro.email.indexOf('@') + 1, emailMembro.email.length)
+
+    if ((usuario.length >= 1) &&
+      (dominio.length >= 3) &&
+      (usuario.search('@') === -1) &&
+      (dominio.search('@') === -1) &&
+      (usuario.search(' ') === -1) &&
+      (dominio.search(' ') === -1) &&
+      (dominio.search('.') !== -1) &&
+      (dominio.indexOf('.') >= 1) &&
+      (dominio.lastIndexOf('.') < dominio.length - 1)) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  const handleAdicionarMembro = () => {
+    const email = {
+      email: emailMembro.email,
+      membro: userLogin.user.nome
+    }
+    if (validarEmail()) {
+      api.post(`/projetos_membro/${projetoAtual.id}`, email)
+        .then((response) => {
+          buscarProjeto(projetoAtual.id)
+        })
+      setAbrirModalAdd(false)
+    } else {
+      setEmailMembro(prevState => {
+        return { ...prevState, error: true, helper: 'Digite um email valido' }
+      })
+    }
+  }
+
   const colunas = [
     {
       title: 'Nome',
@@ -103,7 +151,7 @@ const DetalheProjeto = () => {
     }
   ]
 
-  const dados = projetoAtual.usuarios
+  const dados = projetoAtual.membros
 
   const actions = [
     {
@@ -115,11 +163,14 @@ const DetalheProjeto = () => {
       onClick: (evt, data) => {
         window.location.state = data
       }
+    },
+    {
+      icon: 'add',
+      tooltip: 'Add Membro',
+      isFreeAction: true,
+      onClick: () => setAbrirModalAdd(true)
     }
   ]
-
-  const error = checked.filter(v => v).length > 15
-  const admin = userLogin.user.permissao !== 'ADMIN'
 
   return (
     <>
@@ -150,7 +201,7 @@ const DetalheProjeto = () => {
           </Label>
           <Campo>
             {
-              projetoAtual.usuarios.filter((item) => item.id === projetoAtual.ownerId)[0].nome
+              projetoAtual.membros.filter((item) => item.id === projetoAtual.ownerId)[0].nome
             }
           </Campo>
           <Label>
@@ -378,11 +429,39 @@ const DetalheProjeto = () => {
         </Paper>
       </TabPanel>
 
-      <Snackbar open={openSnackbar} autoHideDuration={4000} onClose={handleCloseSnackbar}>
-        <Alert onClose={handleCloseSnackbar} severity='success'>
-          Critérios de Priorização Salvos com Sucesso!
-        </Alert>
-      </Snackbar>
+      <SnackBar
+        openSnackbar={openSnackbar}
+        duracao={4000}
+        handleClose={handleCloseSnackbar}
+        tipo='success'
+        mensagem='Critérios de Priorização Salvos com Sucesso!'
+      />
+
+      <Modal
+        titulo={`Adicionar Membro ao Projeto ${projetoAtual.nome}`}
+        open={abrirModalAdd}
+        handleClose={() => setAbrirModalAdd(false)}
+        handleSave={handleAdicionarMembro}
+        operacao='Adicionar'
+        style={{ width: '300px' }}
+      >
+        <TextField
+          onChange={(e) => {
+            const val = e.target.value
+            setEmailMembro(prevState => {
+              return { ...prevState, email: val }
+            })
+          }}
+          autoFocus
+          margin='normal'
+          id='emailMembro'
+          label='Email do Novo Membro'
+          type='text'
+          fullWidth
+          error={emailMembro.error}
+          helperText={emailMembro.helper}
+        />
+      </Modal>
     </>
   )
 }
@@ -409,9 +488,5 @@ const Label = styled(Typography).attrs({
   variant: 'h6'
 })`
 `
-
-function Alert (props) {
-  return <MuiAlert elevation={6} variant='filled' {...props} />
-}
 
 export default DetalheProjeto

@@ -1,4 +1,5 @@
 export const HOME = '/'
+export const CADASTRAR = '/cadastrar'
 export const AUTENTICAR = '/autenticar'
 export const LOGOUT = '/logout'
 export const PROJETOS = '/projetos'

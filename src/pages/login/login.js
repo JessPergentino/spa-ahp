@@ -1,11 +1,12 @@
 import React, { useContext, useState } from 'react'
-import { withRouter } from 'react-router-dom'
+import { withRouter, Link } from 'react-router-dom'
 import styled from 'styled-components'
 import LockIcon from '@material-ui/icons/Lock'
-import { TextField, Button, Grid, Typography, Link } from '@material-ui/core'
+import { TextField, Button, Grid, Typography } from '@material-ui/core'
 
 import { AuthContext } from 'contexts/auth'
 import { Paper } from 'ui'
+import { CADASTRAR } from 'routes'
 
 const Login = () => {
   const [userInfo, setUserInfo] = useState({
@@ -29,8 +30,6 @@ const Login = () => {
       login(email, senha)
     }
   }
-
-  const preventDefault = event => event.preventDefault()
 
   return (
     <Form onSubmit={handleLogin} noValidate autoComplete='off'>
@@ -69,9 +68,9 @@ const Login = () => {
 
             <Grid item>
               <Typography>
-                <Link href='#' onClick={preventDefault}>
+                <Typography component={Link} to={{ pathname: CADASTRAR }}>
                   Ainda não tem conta? Cadastre-se!
-                </Link>
+                </Typography>
               </Typography>
             </Grid>
 
