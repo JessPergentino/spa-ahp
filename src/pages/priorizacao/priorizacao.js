@@ -47,12 +47,6 @@ const Priorizacao = () => {
     setMatriz(Array.from({ length: e.target.value.criterios.length }, () => Array.from({ length: e.target.value.criterios.length }, () => 1)))
   }
 
-  /*   const handleCriterio = (linha) => {
-    console.log(linha)
-    buscarCriterio(linha)
-    return criterio
-  } */
-
   const handleValorPorcetagem = (linha) => `${linha * 100}%`
 
   const handleAbriModalEdt = (evt, data) => {
