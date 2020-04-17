@@ -1,10 +1,9 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 
 import {
   AppBar,
   Tabs,
   Tab,
-  Typography,
   Select,
   MenuItem,
   Grid,
@@ -12,7 +11,8 @@ import {
   FormControl,
   Dialog,
   DialogContent,
-  DialogTitle
+  DialogTitle,
+  Typography
 } from '@material-ui/core'
 import AutorenewIcon from '@material-ui/icons/Autorenew'
 
@@ -25,7 +25,7 @@ import { AuthContext } from 'contexts/auth'
 import { CriterioContext } from 'contexts/criterios'
 
 const Priorizacao = () => {
-  const { projetos, buscarProjeto } = useContext(ProjetoContext)
+  const { projetos, /* buscarProjeto, */ listarProjetos } = useContext(ProjetoContext)
   const { userLogin } = useContext(AuthContext)
   const { /* criterio, buscarCriterio, */ ponderacaoCriterio, listarPonderacaoCriterio } = useContext(CriterioContext)
 
@@ -34,6 +34,10 @@ const Priorizacao = () => {
   const [matriz, setMatriz] = useState(null)
   const [abrirModalEdt, setAbrirModalEdt] = useState(false)
 
+  useEffect(() => {
+    listarProjetos()
+  }, [listarProjetos, projetos])
+
   const exibirTabelas = projetoSelect != null && ponderacaoCriterio.length > 0
 
   const handleChangeTab = (event, newValue) => {
@@ -41,8 +45,9 @@ const Priorizacao = () => {
   }
 
   const handleChangeProjeto = (e) => {
+    console.log(e.target.value)
     setProjetoSelect(e.target.value)
-    buscarProjeto(e.target.value.id)
+    listarProjetos()
     listarPonderacaoCriterio(userLogin.user.id, e.target.value.id)
     setMatriz(Array.from({ length: e.target.value.criterios.length }, () => Array.from({ length: e.target.value.criterios.length }, () => 1)))
   }
@@ -157,7 +162,11 @@ const Priorizacao = () => {
       </TabPanel>
 
       <TabPanel value={value} index={1}>
-        <Typography>Ponderação dos Requisitos</Typography>
+        <Paper>
+          <Typography>
+            Priorização dos Requisitos
+          </Typography>
+        </Paper>
       </TabPanel>
 
       <Dialog open={abrirModalEdt} onClose={handleFecharModalEdt} aria-labelledby='form-dialog-title'>

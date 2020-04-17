@@ -59,7 +59,7 @@ const DetalheMembro = () => {
 
                   <Grid item>
                     <Typography>
-                      {window.location.state.nome}
+                      {window.location.state.usuario.nome}
                     </Typography>
                   </Grid>
                 </Grid>
@@ -75,7 +75,7 @@ const DetalheMembro = () => {
 
                       <Grid item sm>
                         <Typography>
-                          {window.location.state.email}
+                          {window.location.state.usuario.email}
                         </Typography>
                       </Grid>
                     </Grid>
@@ -89,7 +89,7 @@ const DetalheMembro = () => {
 
                       <Grid item>
                         <Typography>
-                          {window.location.state.organizacao}
+                          {window.location.state.usuario.organizacao}
                         </Typography>
                       </Grid>
                     </Grid>
@@ -103,7 +103,7 @@ const DetalheMembro = () => {
 
                       <Grid item>
                         <Typography>
-                          {window.location.state.permissao === 'ADMIN' ? 'Administrador' : 'Membro'}
+                          {window.location.state.usuario.permissao === 'ADMIN' ? 'Administrador' : 'Membro'}
                         </Typography>
                       </Grid>
                     </Grid>

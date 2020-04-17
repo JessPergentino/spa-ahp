@@ -70,10 +70,10 @@ const TabelaProjetos = () => {
         </IconButton>),
       tooltip: 'info',
       onClick: (evt, data) => {
-        console.log('Não setou')
-        buscarProjeto(data.id)
+        window.location.state = {
+          projetoId: data.id
+        }
         listarTodosCriteriosPorCategoria()
-        console.log('será q setou?')
       }
     },
     {

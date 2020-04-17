@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
 import styled from 'styled-components'
@@ -52,8 +52,9 @@ const DetalheProjeto = () => {
     helper: ''
   })
 
-  console.log('page - projetoAtual', projetoAtual)
-  console.log('page - checked', checked)
+  useEffect(() => {
+    buscarProjeto(window.location.state.projetoId)
+  }, [buscarProjeto, projetoAtual, checked])
 
   const error = checked.filter(v => v).length > 15
   const admin = userLogin.user.permissao !== 'ADMIN'
@@ -161,7 +162,9 @@ const DetalheProjeto = () => {
         </IconButton>),
       tooltip: 'info',
       onClick: (evt, data) => {
-        window.location.state = data
+        window.location.state = {
+          usuario: data
+        }
       }
     },
     {
