@@ -18,7 +18,7 @@ import AutorenewIcon from '@material-ui/icons/Autorenew'
 
 import TabPanel from 'pages/detalhe-projeto/tab-panel'
 import TabelaPonderacao from 'pages/priorizacao/tabela-ponderacao'
-import { Paper, TabelaDefault } from 'ui'
+import { Page, TabelaDefault } from 'ui'
 
 import { ProjetoContext } from 'contexts/projetos'
 import { AuthContext } from 'contexts/auth'
@@ -88,7 +88,7 @@ const Priorizacao = () => {
       </AppBar>
 
       <TabPanel value={value} index={0}>
-        <Paper>
+        <Page>
           <Grid
             container
             spacing={2}
@@ -147,7 +147,7 @@ const Priorizacao = () => {
                 )}
             </Grid>
           </Grid>
-        </Paper>
+        </Page>
       </TabPanel>
 
       <TabPanel value={value} index={1}>

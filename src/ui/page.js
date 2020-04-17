@@ -1,12 +1,12 @@
 import styled from 'styled-components'
 
 import {
-  Paper as MaterialPaper
+  Card
 } from '@material-ui/core'
 
-const Paper = styled(MaterialPaper)`
+const Page = styled(Card)`
 padding: 30px;
 min-width: 400px;
 `
 
-export default Paper
+export default Page
