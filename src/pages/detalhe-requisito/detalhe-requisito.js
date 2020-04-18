@@ -1,79 +1,53 @@
-import { RequisitoContext } from 'contexts/requisitos'
-import React, { useContext } from 'react'
-import styled from 'styled-components'
+import React, { useState, useEffect } from 'react'
 
-import { UsuarioContext } from 'contexts/usuarios'
 import { singularPlural } from 'services/utils'
-
-import {
-  Typography,
-  Paper as MaterialPaper
-} from '@material-ui/core'
+import { Page } from 'ui'
+import CampoPage from 'ui/campo-page'
+import { listaUsuarios } from 'services/data-fake'
 
 const DetalheRequisito = () => {
-  const { usuario } = useContext(UsuarioContext)
-  const { requisitoAtual } = useContext(RequisitoContext)
+  const [requisitoAtual, setRequisitoAtual] = useState(window.location.state.requisito)
+  const [usuario, setUsuario] = useState({})
+  const user = listaUsuarios.filter((user) => user.id === window.location.state.requisito.UsuarioId)
+
+  useEffect(() => {
+    setRequisitoAtual(window.location.state.requisito)
+    setUsuario(user[0])
+  }, [user])
 
   return (
-    <Paper>
-      <Label>
-        Código de Referência
-      </Label>
-      <Campo>
-        {requisitoAtual.codReferencia}
-      </Campo>
+    <Page>
+      <CampoPage
+        titulo='Código de Referência'
+        info={requisitoAtual.codReferencia}
+      />
 
-      <Label>
-        Título
-      </Label>
-      <Campo>
-        {requisitoAtual.titulo}
-      </Campo>
+      <CampoPage
+        titulo='Título'
+        info={requisitoAtual.titulo}
+      />
 
-      <Label>
-        Descrição
-      </Label>
-      <Campo>
-        {requisitoAtual.descricao}
-      </Campo>
+      <CampoPage
+        titulo='Descrição'
+        info={requisitoAtual.descricao}
+      />
 
-      <Label>
-        Estimativa
-      </Label>
-      <Campo>
-        {requisitoAtual.estimativa + ' ' + singularPlural(requisitoAtual.estimativa, 'dia', 'dias')}
-      </Campo>
+      <CampoPage
+        titulo='Estimativa'
+        info={requisitoAtual.estimativa + ' ' + singularPlural(requisitoAtual.estimativa, 'dia', 'dias')}
+      />
 
-      <Label>
-        Prioridade
-      </Label>
-      <Campo>
-        {requisitoAtual.prioridade ? requisitoAtual.prioridade : 'Este requisito ainda não foi priorizado'}
-      </Campo>
+      <CampoPage
+        titulo='Prioridade'
+        info={requisitoAtual.prioridade ? requisitoAtual.prioridade : 'Este requisito ainda não foi priorizado'}
+      />
 
-      <Label>
-        Criado Por
-      </Label>
-      <Campo>
-        {`${usuario.nome} - ${requisitoAtual.createdAt}`}
-      </Campo>
-    </Paper>
+      <CampoPage
+        titulo='Criado Por'
+        info={`${usuario.nome} - ${requisitoAtual.createdAt.toLocaleDateString()}`}
+      />
+    </Page>
   )
 }
-
-const Paper = styled(MaterialPaper)`
-padding: 30px;
-`
-
-const Campo = styled(Typography).attrs({
-  variant: 'body1'
-})`
-margin: 20px;
-`
-
-const Label = styled(Typography).attrs({
-  variant: 'h6'
-})`
-`
 
 export default DetalheRequisito

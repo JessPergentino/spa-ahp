@@ -1,10 +1,10 @@
 import styled from 'styled-components'
 
 import {
-  Card
+  Paper
 } from '@material-ui/core'
 
-const Page = styled(Card)`
+const Page = styled(Paper)`
 padding: 30px;
 min-width: 400px;
 `

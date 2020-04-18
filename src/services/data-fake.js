@@ -30,6 +30,32 @@ export const listaProjetos = [
         nome: 'Critério 2'
       }
     ],
+    requisitos: [
+      {
+        id: 1,
+        titulo: 'Requisito 1',
+        descricao: 'Descrição do requisito 1',
+        codReferencia: 'RF001',
+        estimativa: 5,
+        prioridade: null,
+        createdAt: new Date(2020, 4, 18),
+        updatedAt: '',
+        ProjetoId: 1,
+        UsuarioId: 1
+      },
+      {
+        id: 2,
+        titulo: 'Requisito 2',
+        descricao: 'Descrição do requisito 2',
+        codReferencia: 'RF002',
+        estimativa: 7,
+        prioridade: null,
+        createdAt: new Date(2020, 4, 18),
+        updatedAt: '',
+        ProjetoId: 1,
+        UsuarioId: 1
+      }
+    ],
     dataEntrega: new Date(2020, 4, 30),
     createdAt: new Date(2020, 4, 17)
   },
@@ -55,6 +81,20 @@ export const listaProjetos = [
       {
         id: 11,
         nome: 'Critério 2'
+      }
+    ],
+    requisitos: [
+      {
+        id: 3,
+        titulo: 'Requisito 1',
+        descricao: 'Descrição do requisito 1',
+        codReferencia: 'RF001',
+        estimativa: 5,
+        prioridade: null,
+        createdAt: new Date(2020, 4, 18),
+        updatedAt: '',
+        ProjetoId: 2,
+        UsuarioId: 1
       }
     ],
     dataEntrega: new Date(2020, 4, 30),
