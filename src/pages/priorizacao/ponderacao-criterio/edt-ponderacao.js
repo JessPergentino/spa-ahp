@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import t from 'prop-types'
 import {
   Table,
@@ -18,10 +18,15 @@ import { SnackBar } from 'ui'
 import { AuthContext } from 'contexts/auth'
 import api from 'services/api'
 
-const TabelaPonderacao = ({ projeto, matriz, setMatriz, refazer }) => {
+const TabelaEdtPonderacao = ({ projeto, refazer, matrizAtual, handleChangeMatriz }) => {
   const { userLogin } = useContext(AuthContext)
 
+  const [matriz, setMatriz] = useState()
   const [openSnackbar, setOpenSnackbar] = useState(false)
+
+  useEffect(() => {
+    setMatriz(matrizAtual)
+  }, [matrizAtual])
 
   const handleClickSnackbar = () => {
     setOpenSnackbar(true)
@@ -133,11 +138,11 @@ const TabelaPonderacao = ({ projeto, matriz, setMatriz, refazer }) => {
   )
 }
 
-TabelaPonderacao.propTypes = {
-  projeto: t.object.isRequired,
-  matriz: t.any.isRequired,
-  setMatriz: t.func.isRequired,
-  refazer: t.bool.isRequired
+TabelaEdtPonderacao.propTypes = {
+  projeto: t.object,
+  refazer: t.bool,
+  matrizAtual: t.any,
+  handleChangeMatriz: t.func
 }
 
-export default TabelaPonderacao
+export default TabelaEdtPonderacao

@@ -125,3 +125,18 @@ export const listaUsuarios = [
     permissao: 'MEMBRO'
   }
 ]
+
+export const vetorPrioritario = [
+  {
+    criterioId: 1,
+    valor: '0.73'
+  },
+  {
+    criterioId: 2,
+    valor: '0.16'
+  },
+  {
+    criterioId: 3,
+    valor: '0.11'
+  }
+]
