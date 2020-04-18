@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import t from 'prop-types'
 
 import {
@@ -9,8 +9,14 @@ import { Modal } from 'ui'
 
 import { AuthContext } from 'contexts/auth'
 
-const ModalAddMembro = ({ projetoAtual, abrir, handleFechar }) => {
+const ModalAddMembro = ({ abrir, handleFechar }) => {
   const { userLogin } = useContext(AuthContext)
+  const [projeto, setProjeto] = useState({})
+
+  useEffect(() => {
+    setProjeto(window.location.state.projetoAtual)
+  }, [])
+
   const [emailMembro, setEmailMembro] = useState({
     email: '',
     erro: false,
@@ -53,7 +59,7 @@ const ModalAddMembro = ({ projetoAtual, abrir, handleFechar }) => {
 
   return (
     <Modal
-      titulo={`Adicionar Membro ao Projeto ${projetoAtual.nome}`}
+      titulo={`Adicionar Membro ao Projeto ${projeto.nome}`}
       open={abrir}
       handleClose={handleFechar}
       handleSave={handleAdicionarMembro}
@@ -81,7 +87,6 @@ const ModalAddMembro = ({ projetoAtual, abrir, handleFechar }) => {
 }
 
 ModalAddMembro.propTypes = {
-  projetoAtual: t.object,
   abrir: t.bool,
   handleFechar: t.func
 }

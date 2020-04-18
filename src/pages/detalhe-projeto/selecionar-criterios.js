@@ -17,7 +17,6 @@ import { Page } from 'ui'
 
 const SelecionarCriterios = (
   {
-    projetoAtual,
     criteriosBeneficio,
     criteriosCusto,
     criteriosRisco,
@@ -27,11 +26,18 @@ const SelecionarCriterios = (
     handleClickSnackbar
   }
 ) => {
-  const [checked, setChecked] = useState(projetoAtual.criterios.map((item) => item.id))
+  const projetoAtual = window.location.state.projetoAtual
+  const [projeto, setProjeto] = useState(projetoAtual)
 
   useEffect(() => {
-    setChecked(projetoAtual.criterios.map((item) => item.id))
+    setProjeto({ ...projetoAtual })
   }, [projetoAtual])
+
+  const [checked, setChecked] = useState([])
+
+  useEffect(() => {
+    setChecked(projeto.criterios.map((item) => item.id))
+  }, [projeto])
 
   const error = checked.filter(v => v).length > 15
 
@@ -264,7 +270,6 @@ const SelecionarCriterios = (
 }
 
 SelecionarCriterios.propTypes = {
-  projetoAtual: t.object,
   criteriosBeneficio: t.array,
   criteriosCusto: t.array,
   criteriosRisco: t.array,

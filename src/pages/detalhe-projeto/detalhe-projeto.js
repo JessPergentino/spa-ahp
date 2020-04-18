@@ -11,7 +11,6 @@ import { SnackBar } from 'ui'
 
 import { AuthContext } from 'contexts/auth'
 import { CriterioContext } from 'contexts/criterios'
-import { ProjetoContext } from 'contexts/projetos'
 
 import InfoProjeto from 'pages/detalhe-projeto/info-projeto'
 import TabelaMembro from 'pages/detalhe-projeto/tabela-membros'
@@ -19,7 +18,6 @@ import SelecionarCriterios from 'pages/detalhe-projeto/selecionar-criterios'
 import ModalAddMembro from 'pages/detalhe-projeto/add-membro-projeto'
 
 const DetalheProjeto = () => {
-  const { projetoAtual } = useContext(ProjetoContext)
   const { userLogin } = useContext(AuthContext)
   const {
     criteriosBeneficio,
@@ -61,19 +59,17 @@ const DetalheProjeto = () => {
       </AppBar>
 
       <TabPanel value={value} index={0}>
-        <InfoProjeto projetoAtual={projetoAtual} />
+        <InfoProjeto />
       </TabPanel>
 
       <TabPanel value={value} index={1}>
         <TabelaMembro
-          projetoAtual={projetoAtual}
           handleAbrirModal={() => setAbrirModalAdd(true)}
         />
       </TabPanel>
 
       <TabPanel value={value} index={2}>
         <SelecionarCriterios
-          projetoAtual={projetoAtual}
           criteriosBeneficio={criteriosBeneficio}
           criteriosCusto={criteriosCusto}
           criteriosEmpresarial={criteriosEmpresarial}
@@ -95,7 +91,6 @@ const DetalheProjeto = () => {
       <ModalAddMembro
         abrir={abrirModalAdd}
         handleFechar={() => setAbrirModalAdd(false)}
-        projetoAtual={projetoAtual}
       />
     </>
   )

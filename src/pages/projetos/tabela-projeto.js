@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import t from 'prop-types'
 import { Link } from 'react-router-dom'
 import { IconButton } from '@material-ui/core'
@@ -8,7 +8,10 @@ import { TabelaDefault } from 'ui'
 
 import { DETALHE_PROJETO } from 'routes'
 
+import { CriterioContext } from 'contexts/criterios'
+
 const TabelaProjeto = ({ projetos, handleAbrirModalAdd, handleAbriModalDel, handleAbriModalEdt, handleOwner }) => {
+  const { listarTodosCriteriosPorCategoria } = useContext(CriterioContext)
   const dados = projetos
 
   const colunas = [
@@ -41,7 +44,10 @@ const TabelaProjeto = ({ projetos, handleAbrirModalAdd, handleAbriModalDel, hand
         </IconButton>),
       tooltip: 'info',
       onClick: (evt, data) => {
-        console.log('Implementar lógica da mudança de página?')
+        window.location.state = {
+          projetoAtual: data
+        }
+        listarTodosCriteriosPorCategoria()
       }
     },
     {

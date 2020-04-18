@@ -1,41 +1,43 @@
-import React from 'react'
-import t from 'prop-types'
+import React, { useState, useEffect } from 'react'
 import { Page } from 'ui'
 import CampoPage from 'ui/campo-page'
 
-const InfoProjeto = ({ projetoAtual }) => {
+const InfoProjeto = () => {
+  const projetoAtual = window.location.state.projetoAtual
+  const [projeto, setProjeto] = useState(projetoAtual)
+
+  useEffect(() => {
+    setProjeto(projetoAtual)
+  }, [projetoAtual])
+
   return (
     <Page>
       <CampoPage
         titulo='Nome do Projeto'
-        info={projetoAtual.nome}
+        info={projeto.nome}
       />
 
       <CampoPage
         titulo='Descrição'
-        info={projetoAtual.descricao}
+        info={projeto.descricao}
       />
 
       <CampoPage
         titulo='Owner'
-        info={projetoAtual.membros.filter((item) => item.id === projetoAtual.ownerId)[0].nome}
+        info={projeto.membros.filter((item) => item.id === projeto.ownerId)[0].nome}
       />
 
       <CampoPage
         titulo='Data de Criação'
-        info={projetoAtual.createdAt}
+        info={projeto.createdAt.toLocaleDateString()}
       />
 
       <CampoPage
         titulo='Data de Entrega'
-        info={projetoAtual.dataEntrega}
+        info={projeto.dataEntrega.toLocaleDateString()}
       />
     </Page>
   )
-}
-
-InfoProjeto.propTypes = {
-  projetoAtual: t.object
 }
 
 export default InfoProjeto

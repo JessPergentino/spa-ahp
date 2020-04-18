@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import t from 'prop-types'
 
@@ -11,7 +11,13 @@ import { TabelaDefault } from 'ui'
 
 import { DETALHE_MEMBRO } from 'routes'
 
-const TabelaMembro = ({ projetoAtual, handleAbrirModal }) => {
+const TabelaMembro = ({ handleAbrirModal }) => {
+  const [projeto, setProjeto] = useState({})
+
+  useEffect(() => {
+    setProjeto(window.location.state.projetoAtual)
+  }, [])
+
   const colunas = [
     {
       title: 'Nome',
@@ -28,7 +34,7 @@ const TabelaMembro = ({ projetoAtual, handleAbrirModal }) => {
     }
   ]
 
-  const dados = projetoAtual.membros
+  const dados = projeto.membros
 
   const actions = [
     {
@@ -38,7 +44,9 @@ const TabelaMembro = ({ projetoAtual, handleAbrirModal }) => {
         </IconButton>),
       tooltip: 'info',
       onClick: (evt, data) => {
-        window.location.state = data
+        window.location.state = {
+          usuario: data
+        }
       }
     },
     {
@@ -48,13 +56,13 @@ const TabelaMembro = ({ projetoAtual, handleAbrirModal }) => {
       onClick: () => handleAbrirModal()
     }
   ]
+
   return (
     <TabelaDefault titulo='Membros do Projeto' columns={colunas} data={dados} actions={actions} />
   )
 }
 
 TabelaMembro.propTypes = {
-  projetoAtual: t.object,
   handleAbrirModal: t.func
 }
 
