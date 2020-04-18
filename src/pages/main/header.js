@@ -16,7 +16,7 @@ import { AuthContext } from 'contexts/auth'
 
 import { DETALHE_MEMBRO, TUTORIAIS } from 'routes'
 
-const drawerWidth = 240
+const drawerWidth = 200
 
 const useStyles = makeStyles(theme => ({
   appBar: {

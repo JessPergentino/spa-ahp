@@ -19,7 +19,7 @@ import HomeIcon from '@material-ui/icons/Home'
 
 import { HOME, PROJETOS, REQUISITOS, PRIORIZACAO, GRAFICOS } from 'routes'
 
-const drawerWidth = 240
+const drawerWidth = 200
 
 const useStyles = makeStyles(theme => ({
   appBar: {
