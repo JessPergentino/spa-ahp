@@ -6,6 +6,7 @@ import ModalAddRequisito from 'pages/requisitos/add-requisito'
 import ModalEdtRequisito from 'pages/requisitos/edt-requisito'
 import ModalDelRequisito from 'pages/requisitos/del-requisito'
 import TabelaRequisitos from 'pages/requisitos/tabela-requisitos'
+import { Alerta } from 'ui'
 
 const Requisitos = () => {
   const { userLogin } = useContext(AuthContext)
@@ -14,6 +15,7 @@ const Requisitos = () => {
   const [abrirModalEdt, setAbrirModalEdt] = useState(false)
   const [abrirModalDel, setAbrirModalDel] = useState(false)
   const [projeto, setProjeto] = useState('')
+  const [alertaAddRequisito, setAlertaAddRequisito] = useState(false)
 
   const [requisitoInfo, setRequisitoInfo] = useState({
     id: null,
@@ -27,6 +29,14 @@ const Requisitos = () => {
     ProjetoId: null,
     UsuarioId: null
   })
+
+  const handleAbriModalAdd = () => {
+    if (projeto !== '') {
+      setAbrirModalAdd(true)
+    } else {
+      setAlertaAddRequisito(true)
+    }
+  }
 
   const handleAbriModalEdt = (evt, data) => {
     setAbrirModalEdt(true)
@@ -42,11 +52,21 @@ const Requisitos = () => {
     setProjeto(e.target.value)
   }
 
+  const mensagemAddRequisito = 'Antes de Adicionar um Requisito, selecione um Projeto'
+
   return (
     <>
+      {alertaAddRequisito && (
+        <Alerta
+          severidade='warning'
+          mensagem={mensagemAddRequisito}
+          onClose={() => setAlertaAddRequisito(false)}
+        />
+      )}
+
       <TabelaRequisitos
         projeto={projeto}
-        handleAbrirAdd={() => setAbrirModalAdd(true)}
+        handleAbrirAdd={handleAbriModalAdd}
         handleAbriModalEdt={handleAbriModalEdt}
         handleAbriModalDel={handleAbriModalDel}
         handleChangeProjeto={handleChangeProjeto}

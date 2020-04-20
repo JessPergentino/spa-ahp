@@ -6,7 +6,7 @@ import {
   Tab
 } from '@material-ui/core'
 
-import TabPanel from 'pages/detalhe-projeto/tab-panel'
+import TabPanel from 'ui/tab-panel'
 
 import PonderacaoCriterios from 'pages/priorizacao/ponderacao-criterio/ponderacao-criterio'
 import PonderacaoRequisito from 'pages/priorizacao/ponderacao-requisito/ponderacao-requisito'

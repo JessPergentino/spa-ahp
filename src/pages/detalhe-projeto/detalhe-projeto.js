@@ -6,7 +6,7 @@ import {
   Tab
 } from '@material-ui/core'
 
-import TabPanel from 'pages/detalhe-projeto/tab-panel'
+import TabPanel from 'ui/tab-panel'
 import { SnackBar } from 'ui'
 
 import { AuthContext } from 'contexts/auth'

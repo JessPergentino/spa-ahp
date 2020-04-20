@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core'
 
 import CriterioGrid from 'pages/detalhe-projeto/criterio-grid'
-import { Page } from 'ui'
+import { Page, Alerta } from 'ui'
 
 const SelecionarCriterios = (
   {
@@ -68,7 +68,13 @@ const SelecionarCriterios = (
         Selecione os Critérios de Priorização
       </Typography>
 
-      {error && (<Typography color='secondary'>Você só pode selecionar até no máximo 15 critérios.</Typography>)}
+      {error &&
+        (
+          <Alerta
+            severidade='error'
+            mensagem='Você só pode selecionar até no máximo 15 critérios.'
+          />
+        )}
 
       <CriterioGrid>
         <Grid item xs>
