@@ -41,9 +41,12 @@ const Header = () => {
   }
 
   const onclickPerfil = (e) => {
-    window.location.state = userLogin.user
+    window.location.state = {
+      usuario: userLogin.user
+    }
     setAnchorLogin(null)
   }
+
   return (
     <AppBar
       position='fixed'

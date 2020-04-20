@@ -70,7 +70,7 @@ const TabelaProjeto = ({ projetos, handleAbrirModalAdd, handleAbriModalDel, hand
   ]
 
   return (
-    <TabelaDefault titulo='Projetos' columns={colunas} data={dados} actions={actions} />
+    <TabelaDefault titulo='Lista de Projetos' columns={colunas} data={dados} actions={actions} />
   )
 }
 

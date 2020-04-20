@@ -1,7 +1,6 @@
 import React from 'react'
 import {
-  Grid,
-  Typography
+  Grid
 } from '@material-ui/core'
 
 import TabelaProjetosMembro from 'pages/detalhe-membro/tabela-projeto-membro'
@@ -15,10 +14,6 @@ const DetalheMembro = () => {
   }
   return (
     <>
-      <Typography variant='h4' style={{ margin: '20px' }}>
-        Perfil do Usuário
-      </Typography>
-
       <Grid container direction='column' alignItems='stretch' spacing={4}>
         <Grid item xs={12}>
           <InfoUsuario />

@@ -116,7 +116,7 @@ const TabelaRequisitos = (
     )
   }
   return (
-    <TabelaDefault titulo='Requisitos' columns={colunas} data={dados} actions={actions} components={toolbar} />
+    <TabelaDefault titulo='Lista de Requisitos' columns={colunas} data={dados} actions={actions} components={toolbar} />
   )
 }
 
