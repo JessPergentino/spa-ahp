@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState } from 'react'
 import t from 'prop-types'
 import {
   Table,
@@ -18,15 +18,11 @@ import { SnackBar } from 'ui'
 import { AuthContext } from 'contexts/auth'
 import api from 'services/api'
 
-const TabelaEdtPonderacao = ({ projeto, refazer, matrizAtual, handleChangeMatriz }) => {
+const TabelaEdtPonderacao = ({ projeto }) => {
   const { userLogin } = useContext(AuthContext)
 
-  const [matriz, setMatriz] = useState()
+  const [matriz, setMatriz] = useState(Array.from({ length: projeto.criterios.length }, () => Array.from({ length: projeto.criterios.length }, () => 1)))
   const [openSnackbar, setOpenSnackbar] = useState(false)
-
-  useEffect(() => {
-    setMatriz(matrizAtual)
-  }, [matrizAtual])
 
   const handleClickSnackbar = () => {
     setOpenSnackbar(true)
@@ -58,17 +54,10 @@ const TabelaEdtPonderacao = ({ projeto, refazer, matrizAtual, handleChangeMatriz
       criterios: projeto.criterios
     }
 
-    if (refazer) {
-      api.put('/priorizacoes_criterio', matrizComparacao)
-        .then((response) => {
-          handleClickSnackbar()
-        })
-    } else {
-      api.post('/priorizacoes_criterio', matrizComparacao)
-        .then((response) => {
-          handleClickSnackbar()
-        })
-    }
+    api.put('/priorizacoes_criterio', matrizComparacao)
+      .then((response) => {
+        handleClickSnackbar()
+      })
   }
 
   return (
@@ -139,10 +128,7 @@ const TabelaEdtPonderacao = ({ projeto, refazer, matrizAtual, handleChangeMatriz
 }
 
 TabelaEdtPonderacao.propTypes = {
-  projeto: t.object,
-  refazer: t.bool,
-  matrizAtual: t.any,
-  handleChangeMatriz: t.func
+  projeto: t.any
 }
 
 export default TabelaEdtPonderacao

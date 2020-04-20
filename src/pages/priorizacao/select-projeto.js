@@ -40,7 +40,7 @@ const SelectProjeto = ({ projetos, projetoSelecionado, handleChangeProjeto }) =>
 
 SelectProjeto.propTypes = {
   projetos: t.array,
-  projetoSelecionado: t.object,
+  projetoSelecionado: t.any,
   handleChangeProjeto: t.func
 }
 

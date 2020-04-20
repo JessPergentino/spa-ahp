@@ -8,16 +8,13 @@ import {
 } from '@material-ui/core'
 import TabelaEdtPonderacao from 'pages/priorizacao/ponderacao-criterio/edt-ponderacao'
 
-const ModalRefazerPonderacaoCriterios = ({ abrir, handleFechar, projetoSelecionado, matriz, handleChangeMatriz }) => {
+const ModalRefazerPonderacaoCriterios = ({ abrir, handleFechar, projetoSelecionado }) => {
   return (
     <Dialog open={abrir} onClose={handleFechar} aria-labelledby='form-dialog-title'>
       <DialogTitle id='form-dialog-title'>Refazer Ponderação dos Critérios</DialogTitle>
       <DialogContent>
         <TabelaEdtPonderacao
           projeto={projetoSelecionado}
-          matriz={matriz}
-          handleChangeMatriz={handleChangeMatriz}
-          refazer
         />
       </DialogContent>
     </Dialog>
@@ -27,9 +24,7 @@ const ModalRefazerPonderacaoCriterios = ({ abrir, handleFechar, projetoSeleciona
 ModalRefazerPonderacaoCriterios.propTypes = {
   abrir: t.bool,
   handleFechar: t.func,
-  projetoSelecionado: t.object,
-  matriz: t.any,
-  handleChangeMatriz: t.func
+  projetoSelecionado: t.any
 }
 
 export default ModalRefazerPonderacaoCriterios

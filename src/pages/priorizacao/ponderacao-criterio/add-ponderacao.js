@@ -18,10 +18,10 @@ import { SnackBar } from 'ui'
 import { AuthContext } from 'contexts/auth'
 import api from 'services/api'
 
-const TabelaAddPonderacao = ({ projeto, refazer }) => {
+const TabelaAddPonderacao = ({ projeto }) => {
   const { userLogin } = useContext(AuthContext)
 
-  const [matriz, setMatriz] = useState()
+  const [matriz, setMatriz] = useState(Array.from({ length: projeto.criterios.length }, () => Array.from({ length: projeto.criterios.length }, () => 1)))
   const [openSnackbar, setOpenSnackbar] = useState(false)
 
   const handleClickSnackbar = () => {
@@ -54,17 +54,10 @@ const TabelaAddPonderacao = ({ projeto, refazer }) => {
       criterios: projeto.criterios
     }
 
-    if (refazer) {
-      api.put('/priorizacoes_criterio', matrizComparacao)
-        .then((response) => {
-          handleClickSnackbar()
-        })
-    } else {
-      api.post('/priorizacoes_criterio', matrizComparacao)
-        .then((response) => {
-          handleClickSnackbar()
-        })
-    }
+    api.post('/priorizacoes_criterio', matrizComparacao)
+      .then((response) => {
+        handleClickSnackbar()
+      })
   }
 
   return (
@@ -135,8 +128,7 @@ const TabelaAddPonderacao = ({ projeto, refazer }) => {
 }
 
 TabelaAddPonderacao.propTypes = {
-  projeto: t.object,
-  refazer: t.bool
+  projeto: t.object
 }
 
 export default TabelaAddPonderacao

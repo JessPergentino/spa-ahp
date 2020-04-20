@@ -76,11 +76,11 @@ export const listaProjetos = [
     criterios: [
       {
         id: 10,
-        nome: 'Critério 1'
+        nome: 'Critério 10'
       },
       {
         id: 11,
-        nome: 'Critério 2'
+        nome: 'Critério 11'
       }
     ],
     requisitos: [
@@ -89,6 +89,18 @@ export const listaProjetos = [
         titulo: 'Requisito 1',
         descricao: 'Descrição do requisito 1',
         codReferencia: 'RF001',
+        estimativa: 5,
+        prioridade: null,
+        createdAt: new Date(2020, 4, 18),
+        updatedAt: '',
+        ProjetoId: 2,
+        UsuarioId: 1
+      },
+      {
+        id: 4,
+        titulo: 'Requisito 2',
+        descricao: 'Descrição do requisito 2',
+        codReferencia: 'RF002',
         estimativa: 5,
         prioridade: null,
         createdAt: new Date(2020, 4, 18),
@@ -127,7 +139,7 @@ export const listaUsuarios = [
 ]
 
 export const vetorPrioritario = [
-  {
+  /* {
     criterioId: 1,
     valor: '0.73'
   },
@@ -138,5 +150,5 @@ export const vetorPrioritario = [
   {
     criterioId: 3,
     valor: '0.11'
-  }
+  } */
 ]

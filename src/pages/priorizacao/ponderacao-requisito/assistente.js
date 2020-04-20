@@ -1,10 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
+import t from 'prop-types'
 import { makeStyles } from '@material-ui/core/styles'
-import Stepper from '@material-ui/core/Stepper'
-import Step from '@material-ui/core/Step'
-import StepLabel from '@material-ui/core/StepLabel'
-import Button from '@material-ui/core/Button'
-import Typography from '@material-ui/core/Typography'
+import {
+  Stepper,
+  Step,
+  StepLabel,
+  Button,
+  Typography
+} from '@material-ui/core/'
+import TabelaAddPonderacaoRequisito from 'pages/priorizacao/ponderacao-requisito/add-ponderacao'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,26 +23,25 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function getSteps () {
-  return ['Select master blaster campaign settings', 'Create an ad group', 'Create an ad', 'Outou passo', 'Outou passo', 'Outou passo', 'Outou passo', 'Outou passo', 'Outou passo', 'Outou passo', 'Outou passo', 'Outou passo', 'Outou passo', 'Outou passo', 'Outou passo']
-}
-
-function getStepContent (stepIndex) {
-  switch (stepIndex) {
-    case 0:
-      return 'Page 1'
-    case 1:
-      return 'Page 2'
-    case 2:
-      return 'This is the bit I really care about!'
-    default:
-      return 'Unknown stepIndex'
-  }
-}
-
-export default function Assistente () {
+const Assistente = ({ projetoSelecionado }) => {
   const classes = useStyles()
-  const [activeStep, setActiveStep] = React.useState(0)
+  const [activeStep, setActiveStep] = useState(0)
+
+  const getSteps = () => {
+    const criterios = projetoSelecionado.criterios.map((item) => item.nome)
+    return criterios
+  }
+
+  const getStepContent = (stepIndex) => {
+    console.log('projeto', projetoSelecionado)
+    return (
+      <TabelaAddPonderacaoRequisito
+        projetoSelecionado={projetoSelecionado}
+        criterio={steps[stepIndex]}
+      />
+    )
+  }
+
   const steps = getSteps()
 
   const handleNext = () => {
@@ -47,10 +50,6 @@ export default function Assistente () {
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1)
-  }
-
-  const handleReset = () => {
-    setActiveStep(0)
   }
 
   return (
@@ -65,23 +64,22 @@ export default function Assistente () {
       <div>
         {activeStep === steps.length ? (
           <div>
-            <Typography className={classes.instructions}>All steps completed</Typography>
-            <Button onClick={handleReset}>Reset</Button>
+            <Typography className={classes.instructions}>Todas as Ponderações foram feitas!</Typography>
           </div>
         ) : (
           <div>
-            <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
+            {getStepContent(activeStep)}
             <div>
               <Button
                 disabled={activeStep === 0}
                 onClick={handleBack}
                 className={classes.backButton}
               >
-                Back
+                Voltar
               </Button>
 
-              <Button variant='contained' color='primary' onClick={handleNext}>
-                {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+              <Button style={{ margin: '20px' }} variant='contained' color='primary' onClick={handleNext}>
+                {activeStep === steps.length - 1 ? 'Finalizar' : 'Próximo'}
               </Button>
             </div>
           </div>
@@ -90,3 +88,9 @@ export default function Assistente () {
     </div>
   )
 }
+
+Assistente.propTypes = {
+  projetoSelecionado: t.object
+}
+
+export default Assistente

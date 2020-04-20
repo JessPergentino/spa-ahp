@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import {
-  Grid
+  Grid, Typography
 } from '@material-ui/core'
 
 import { Page } from 'ui'
 import TabelaAddPonderacao from 'pages/priorizacao/ponderacao-criterio/add-ponderacao'
-import SelectProjeto from 'pages/priorizacao/ponderacao-criterio/select-projeto'
+import SelectProjeto from 'pages/priorizacao/select-projeto'
 import TabelaVetorPrioritario from 'pages/priorizacao/ponderacao-criterio/tabela-vetor-prioritario'
 import ModalRefazerPonderacaoCriterios from 'pages/priorizacao/ponderacao-criterio/modal-refazer-ponderacao'
 
@@ -13,14 +13,15 @@ import { listaProjetos, vetorPrioritario } from 'services/data-fake'
 
 const PonderacaoCriterios = () => {
   const [projetos, setProjetos] = useState([])
-  const [projetoSelect, setProjetoSelect] = useState({})
+  const [projetoSelect, setProjetoSelect] = useState('')
   const [abrirModalEdt, setAbrirModalEdt] = useState(false)
 
   useEffect(() => {
     setProjetos(listaProjetos)
   }, [])
 
-  const exibirTabelas = projetoSelect != null && vetorPrioritario.length > 0
+  const exibirVetor = projetoSelect !== '' && vetorPrioritario.length > 0
+  const exibirTabela = projetoSelect !== '' && vetorPrioritario.length === 0
 
   const handleChangeProjeto = (e) => {
     setProjetoSelect(e.target.value)
@@ -44,6 +45,10 @@ const PonderacaoCriterios = () => {
           alignItems='stretch'
         >
           <Grid item>
+            <Typography variant='h4' align='center'> Ponderação dos Critérios </Typography>
+          </Grid>
+
+          <Grid item>
             <SelectProjeto
               projetos={projetos}
               projetoSelecionado={projetoSelect}
@@ -52,18 +57,17 @@ const PonderacaoCriterios = () => {
           </Grid>
 
           <Grid item>
-            {exibirTabelas &&
+            {exibirVetor &&
               (
                 <TabelaVetorPrioritario
                   handleAbriModal={handleAbriModalEdt}
                 />
               )}
 
-            {projetoSelect && vetorPrioritario.length === 0 &&
+            {exibirTabela &&
               (
                 <TabelaAddPonderacao
                   projeto={projetoSelect}
-                  refazer={false}
                 />
               )}
           </Grid>
@@ -73,6 +77,7 @@ const PonderacaoCriterios = () => {
       <ModalRefazerPonderacaoCriterios
         abrir={abrirModalEdt}
         handleFechar={handleFecharModalEdt}
+        projetoSelecionado={projetoSelect}
       />
     </>
   )
