@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
 import styled from 'styled-components'
 import {
@@ -31,7 +31,7 @@ import { DETALHE_MEMBRO } from 'routes'
 import api from 'services/api'
 
 const DetalheProjeto = () => {
-  const { projetoAtual, buscarProjeto } = useContext(ProjetoContext)
+  const { projetoAtual, buscarProjeto, setCriteriosProjetoAtual } = useContext(ProjetoContext)
   const { userLogin } = useContext(AuthContext)
   const {
     criteriosBeneficio,
@@ -39,12 +39,13 @@ const DetalheProjeto = () => {
     criteriosRisco,
     criteriosPenalidade,
     criteriosEmpresarial,
-    criteriosTecnico
+    criteriosTecnico,
+    listarTodosCriteriosPorCategoria
   } = useContext(CriterioContext)
 
   const [abrirModalAdd, setAbrirModalAdd] = useState(false)
   const [value, setValue] = useState(0)
-  const [checked, setChecked] = useState(projetoAtual.criterios.map((item) => item.id))
+  const checked = projetoAtual.criterios.map((item) => item.id)
   const [openSnackbar, setOpenSnackbar] = useState(false)
   const [emailMembro, setEmailMembro] = useState({
     email: '',
@@ -52,23 +53,31 @@ const DetalheProjeto = () => {
     helper: ''
   })
 
+  const { id } = useParams()
+
   useEffect(() => {
-    buscarProjeto(window.location.state.projetoId)
-  }, [buscarProjeto, projetoAtual, checked])
+    buscarProjeto(id)
+  }, [buscarProjeto, id])
+
+  useEffect(() => {
+    listarTodosCriteriosPorCategoria()
+  }, [listarTodosCriteriosPorCategoria])
 
   const error = checked.filter(v => v).length > 15
   const admin = userLogin.user.permissao !== 'ADMIN'
 
-  const handleToggle = value => () => {
-    const currentIndex = checked.indexOf(value)
-    const newChecked = [...checked]
+  const handleToggle = value => (event) => {
+    console.log(1, value)
+    const criterioSelecionado = criteriosBeneficio.find((criterio) => criterio.id === value)
 
-    if (currentIndex === -1) {
-      newChecked.push(value)
+    console.log(event.target.checked)
+    if (event.target.checked) {
+      console.log(2, criterioSelecionado)
+      setCriteriosProjetoAtual(projetoAtual.criterios.concat(criterioSelecionado))
     } else {
-      newChecked.splice(currentIndex, 1)
+      console.log(3)
+      setCriteriosProjetoAtual(projetoAtual.criterios.filter((c) => c.id !== value))
     }
-    setChecked(newChecked)
   }
 
   const handleChange = (event, newValue) => {
@@ -76,7 +85,7 @@ const DetalheProjeto = () => {
   }
 
   const handleClickLimpar = () => {
-    setChecked([])
+    // setChecked([])
   }
 
   const handleClickSalvar = () => {
@@ -246,14 +255,15 @@ const DetalheProjeto = () => {
                     const labelId = `checkbox-list-label-${criterio.id}`
                     return (
                       <Grid item key={criterio.id} xs>
-                        <ListItem key={criterio.id} role={undefined} dense button onClick={handleToggle(criterio.id)}>
+                        <ListItem key={criterio.id} role={undefined} dense button component='label'>
                           <ListItemIcon>
                             <Checkbox
                               edge='start'
-                              checked={checked.indexOf(criterio.id) !== -1}
+                              checked={projetoAtual.criterios.some((c) => c.id === criterio.id)}
                               tabIndex={-1}
                               disableRipple
                               inputProps={{ 'aria-labelledby': labelId }}
+                              onClick={handleToggle(criterio.id)}
                             />
                           </ListItemIcon>
                           <ListItemText id={labelId} primary={criterio.nome} />
@@ -280,7 +290,7 @@ const DetalheProjeto = () => {
                           <ListItemIcon>
                             <Checkbox
                               edge='start'
-                              checked={checked.indexOf(criterio.id) !== -1}
+                              checked={projetoAtual.criterios.some((c) => c.id === criterio.id)}
                               tabIndex={-1}
                               disableRipple
                               inputProps={{ 'aria-labelledby': labelId }}
@@ -310,7 +320,7 @@ const DetalheProjeto = () => {
                           <ListItemIcon>
                             <Checkbox
                               edge='start'
-                              checked={checked.indexOf(criterio.id) !== -1}
+                              checked={projetoAtual.criterios.some((c) => c.id === criterio.id)}
                               tabIndex={-1}
                               disableRipple
                               inputProps={{ 'aria-labelledby': labelId }}
@@ -340,7 +350,7 @@ const DetalheProjeto = () => {
                           <ListItemIcon>
                             <Checkbox
                               edge='start'
-                              checked={checked.indexOf(criterio.id) !== -1}
+                              checked={projetoAtual.criterios.some((c) => c.id === criterio.id)}
                               tabIndex={-1}
                               disableRipple
                               inputProps={{ 'aria-labelledby': labelId }}
@@ -370,7 +380,7 @@ const DetalheProjeto = () => {
                           <ListItemIcon>
                             <Checkbox
                               edge='start'
-                              checked={checked.indexOf(criterio.id) !== -1}
+                              checked={projetoAtual.criterios.some((c) => c.id === criterio.id)}
                               tabIndex={-1}
                               disableRipple
                               inputProps={{ 'aria-labelledby': labelId }}
@@ -400,7 +410,7 @@ const DetalheProjeto = () => {
                           <ListItemIcon>
                             <Checkbox
                               edge='start'
-                              checked={checked.indexOf(criterio.id) !== -1}
+                              checked={projetoAtual.criterios.some((c) => c.id === criterio.id)}
                               tabIndex={-1}
                               disableRipple
                               inputProps={{ 'aria-labelledby': labelId }}

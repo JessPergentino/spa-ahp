@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react'
-import { Link } from 'react-router-dom'
-import { TextField, IconButton, Typography } from '@material-ui/core'
+import { useHistory } from 'react-router-dom'
+import { TextField, Typography } from '@material-ui/core'
 import InfoIcon from '@material-ui/icons/Info'
 
 import {
@@ -11,18 +11,18 @@ import DateFnsUtils from '@date-io/date-fns'
 
 import api from 'services/api'
 
+import { DETALHE_PROJETO } from 'routes'
+
 import { AuthContext } from 'contexts/auth'
 import { ProjetoContext } from 'contexts/projetos'
-import { CriterioContext } from 'contexts/criterios'
-
-import { DETALHE_PROJETO } from 'routes'
 
 import { Modal, TabelaDefault } from 'ui'
 
 const TabelaProjetos = () => {
   const { projetos, listarProjetos, buscarProjeto, buscarOwner, owner } = useContext(ProjetoContext)
   const { userLogin } = useContext(AuthContext)
-  const { listarTodosCriteriosPorCategoria } = useContext(CriterioContext)
+
+  const history = useHistory()
 
   const [dataSelecionada, setDataSelecionada] = useState(null)
   const [abrirModalAdd, setAbrirModalAdd] = useState(false)
@@ -64,16 +64,10 @@ const TabelaProjetos = () => {
 
   const actions = [
     {
-      icon: () => (
-        <IconButton component={Link} to={{ pathname: DETALHE_PROJETO }} color='inherit'>
-          <InfoIcon />
-        </IconButton>),
+      icon: () => (<InfoIcon />),
       tooltip: 'info',
       onClick: (evt, data) => {
-        window.location.state = {
-          projetoId: data.id
-        }
-        listarTodosCriteriosPorCategoria()
+        history.push(DETALHE_PROJETO.replace(':id', data.id))
       }
     },
     {

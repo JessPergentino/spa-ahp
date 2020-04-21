@@ -9,6 +9,9 @@ function Projeto ({ children }) {
   const [projetoAtual, setProjetoAtual] = useState(null)
   const [owner, setOwner] = useState(null)
 
+  console.log('projetos', projetos)
+  console.log('projetoAtual', projetoAtual)
+
   const listarProjetos = useCallback((idUsuario) => {
     api.get(`/projetos_usuario/${idUsuario}`)
       .then((response) => {
@@ -30,6 +33,13 @@ function Projeto ({ children }) {
       })
   }, [])
 
+  const setCriteriosProjetoAtual = useCallback((criterios) => {
+    setProjetoAtual((projetoAtual) => ({
+      ...projetoAtual,
+      criterios
+    }))
+  }, [])
+
   return (
     <ProjetoContext.Provider value={{
       projetoAtual,
@@ -40,7 +50,8 @@ function Projeto ({ children }) {
       buscarProjeto,
       buscarOwner,
       owner,
-      setOwner
+      setOwner,
+      setCriteriosProjetoAtual
     }}
     >
       {children}

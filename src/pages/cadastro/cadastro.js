@@ -6,6 +6,7 @@ import { TextField, Button, Grid, Typography } from '@material-ui/core'
 import { Paper } from 'ui'
 
 const Cadastro = () => {
+  console.log('cadastrar')
   const [userInfo, setUserInfo] = useState({
     email: '',
     senha: '',
