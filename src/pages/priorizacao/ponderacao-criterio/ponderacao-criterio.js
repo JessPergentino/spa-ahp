@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useContext } from 'react'
 import {
   Grid, Typography
 } from '@material-ui/core'
@@ -9,16 +9,14 @@ import SelectProjeto from 'pages/priorizacao/select-projeto'
 import TabelaVetorPrioritario from 'pages/priorizacao/ponderacao-criterio/tabela-vetor-prioritario'
 import ModalRefazerPonderacaoCriterios from 'pages/priorizacao/ponderacao-criterio/modal-refazer-ponderacao'
 
-import { listaProjetos, vetorPrioritario } from 'services/data-fake'
+import { vetorPrioritario } from 'services/data-fake'
+import { ProjetoContext } from 'contexts/projetos'
 
 const PonderacaoCriterios = () => {
-  const [projetos, setProjetos] = useState([])
   const [projetoSelect, setProjetoSelect] = useState('')
   const [abrirModalEdt, setAbrirModalEdt] = useState(false)
 
-  useEffect(() => {
-    setProjetos(listaProjetos)
-  }, [])
+  const { projetos } = useContext(ProjetoContext)
 
   const exibirVetor = projetoSelect !== '' && vetorPrioritario.length > 0
   const exibirTabela = projetoSelect !== '' && vetorPrioritario.length === 0

@@ -10,23 +10,10 @@ import Grafico from 'pages/pagina-inicial/graficos'
 
 import { AuthContext } from 'contexts/auth'
 import { ProjetoContext } from 'contexts/projetos'
-import { RequisitoContext } from 'contexts/requisitos'
 
 const PaginaInical = () => {
   const { userLogin } = useContext(AuthContext)
-  const { projetos, projetoAtual, listarProjetos, buscarProjeto } = useContext(ProjetoContext)
-  const { listarRequisitos } = useContext(RequisitoContext)
-  const condicao = userLogin.user.projetos.length > 0 && projetos.length === 0
-
-  if (condicao) {
-    if (userLogin.user.projetos.length > 0 && projetos.length === 0) {
-      if (userLogin.user.projetos.length > 0) {
-        buscarProjeto(userLogin.user.projetos[0].id)
-        listarRequisitos(userLogin.user.projetos[0].id)
-      }
-      listarProjetos(userLogin.user.id)
-    }
-  }
+  const { projetos } = useContext(ProjetoContext)
 
   return (
     <>
@@ -35,33 +22,34 @@ const PaginaInical = () => {
           Bem vindo, {userLogin.primeiroNome}!
         </Title>
 
-        {projetoAtual && (<Title variant='h4'>Este é o dashboard do {projetoAtual.nome}</Title>)}
+        {projetos.length > 0 ? (
+          <>
+            <Title variant='h4'>Este é o dashboard do {projetos[0].nome}</Title>
 
-        {!projetoAtual && (<Title variant='h4'> Cadastre um novo projeto para começar </Title>)}
-      </Grid>
+            <GraficosGrid>
+              <Grid item xs>
+                <PaperGrafico>
+                  <Grafico />
 
-      {projetoAtual &&
-        (
-          <GraficosGrid>
-            <Grid item xs>
-              <PaperGrafico>
-                <Grafico />
+                  <Divider />
+                  <Typography>Titulo do Gráfico</Typography>
+                </PaperGrafico>
+              </Grid>
 
-                <Divider />
-                <Typography>Titulo do Gráfico</Typography>
-              </PaperGrafico>
-            </Grid>
+              <Grid item xs>
+                <PaperGrafico>
+                  <Grafico />
 
-            <Grid item xs>
-              <PaperGrafico>
-                <Grafico />
-
-                <Divider />
-                <Typography>Titulo do Gráfico</Typography>
-              </PaperGrafico>
-            </Grid>
-          </GraficosGrid>
+                  <Divider />
+                  <Typography>Titulo do Gráfico</Typography>
+                </PaperGrafico>
+              </Grid>
+            </GraficosGrid>
+          </>
+        ) : (
+          <Title variant='h4'> Cadastre um novo projeto para começar </Title>
         )}
+      </Grid>
     </>
   )
 }

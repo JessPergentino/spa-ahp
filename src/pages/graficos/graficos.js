@@ -1,19 +1,22 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 
 import {
   AppBar,
   Tabs,
   Tab,
-  Typography
+  Typography,
+  Grid
 } from '@material-ui/core'
 
 import { Page, TabPanel } from 'ui'
 import SelectProjeto from 'pages/priorizacao/select-projeto'
-import { listaProjetos } from 'services/data-fake'
+import { ProjetoContext } from 'contexts/projetos'
 
 const Graficos = () => {
   const [projeto, setProjeto] = useState('')
   const [value, setValue] = useState(0)
+
+  const { projetos } = useContext(ProjetoContext)
 
   const handleChange = (event, newValue) => {
     setValue(newValue)
@@ -25,36 +28,56 @@ const Graficos = () => {
 
   return (
     <Page>
-      <SelectProjeto
-        projetos={listaProjetos}
-        projetoSelecionado={projeto}
-        handleChangeProjeto={handleChangeProjeto}
-      />
+      <Grid
+        container
+        direction='column'
+        justify='center'
+        alignItems='stretch'
+        spacing={3}
+      >
+        <Grid item>
+          <Typography variant='h4'>Informações do Projeto</Typography>
+        </Grid>
 
-      <AppBar position='static'>
-        <Tabs value={value} onChange={handleChange} aria-label='simple tabs example'>
-          <Tab label='Detalhes' {...a11yProps(0)} />
-          <Tab label='Membros' {...a11yProps(1)} />
-          <Tab label='Critérios' {...a11yProps(2)} />
-        </Tabs>
-      </AppBar>
+        <Grid item>
+          <SelectProjeto
+            projetos={projetos}
+            projetoSelecionado={projeto}
+            handleChangeProjeto={handleChangeProjeto}
+          />
+        </Grid>
 
-      <TabPanel value={value} index={0}>
-        <Typography> Page </Typography>
-      </TabPanel>
+        <Grid item>
+          {projeto !== '' && (
+            <>
+              <AppBar position='static'>
+                <Tabs value={value} onChange={handleChange} aria-label='simple tabs example'>
+                  <Tab label='Priorização' {...a11yProps(0)} />
+                  <Tab label='Requisitos Criados Por' {...a11yProps(1)} />
+                  <Tab label='Estimativas' {...a11yProps(2)} />
+                </Tabs>
+              </AppBar>
 
-      <TabPanel value={value} index={1}>
-        <Typography> Page </Typography>
-      </TabPanel>
+              <TabPanel value={value} index={0}>
+                <Typography> Page </Typography>
+              </TabPanel>
 
-      <TabPanel value={value} index={2}>
-        <Typography> Page </Typography>
-      </TabPanel>
+              <TabPanel value={value} index={1}>
+                <Typography> Page </Typography>
+              </TabPanel>
+
+              <TabPanel value={value} index={2}>
+                <Typography> Page </Typography>
+              </TabPanel>
+            </>
+          )}
+        </Grid>
+      </Grid>
     </Page>
   )
 }
 
-function a11yProps (index) {
+const a11yProps = (index) => {
   return {
     id: `simple-tab-${index}`,
     'aria-controls': `simple-tabpanel-${index}`

@@ -1,5 +1,5 @@
 export const listaProjetos = [
-  {
+  /* {
     id: 1,
     nome: 'Projeto 1',
     descricao: 'Descrição projeto 1',
@@ -111,7 +111,7 @@ export const listaProjetos = [
     ],
     dataEntrega: new Date(2020, 4, 30),
     createdAt: new Date(2020, 4, 17)
-  }
+  } */
 ]
 
 export const listaUsuarios = [

@@ -1,18 +1,19 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext } from 'react'
 
 import { AuthContext } from 'contexts/auth'
+import { ProjetoContext } from 'contexts/projetos'
+
+import { listaUsuarios } from 'services/data-fake'
 
 import TabelaProjeto from 'pages/projetos/tabela-projeto'
 import ModalAddProjeto from 'pages/projetos/add-projeto'
 import ModalEdtProjeto from 'pages/projetos/edt-projeto'
 import ModalDelProjeto from 'pages/projetos/del-projeto'
 
-import { listaProjetos, listaUsuarios } from 'services/data-fake'
-
 const PageProjetos = () => {
   const { userLogin } = useContext(AuthContext)
+  const { projetos } = useContext(ProjetoContext)
 
-  const [projetos, setProjetos] = useState([])
   const [abrirModalAdd, setAbrirModalAdd] = useState(false)
   const [abrirModalEdt, setAbrirModalEdt] = useState(false)
   const [abrirModalDel, setAbrirModalDel] = useState(false)
@@ -25,10 +26,6 @@ const PageProjetos = () => {
     dataEntrega: '',
     createdAt: ''
   })
-
-  useEffect(() => {
-    setProjetos(listaProjetos)
-  }, [])
 
   const handleAbriModalEdt = (evt, data) => {
     setProjetoInfo({ ...data })

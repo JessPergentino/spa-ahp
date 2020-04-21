@@ -1,6 +1,5 @@
 /* eslint-disable no-restricted-globals */
 import React, { lazy, Suspense, useContext, useEffect } from 'react'
-import t from 'prop-types'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import { LinearProgress } from '@material-ui/core'
 import { LOGIN, HOME, CADASTRAR } from 'routes'
@@ -8,15 +7,13 @@ import { get } from 'idb-keyval'
 
 import { AuthContext } from 'contexts/auth'
 import { ProjetoContext } from 'contexts/projetos'
-import { RequisitoContext } from 'contexts/requisitos'
 
 const MainPage = lazy(() => import('pages/main'))
 const Login = lazy(() => import('pages/login'))
 
-function App () {
+const App = () => {
   const { userLogin, setUserLogin } = useContext(AuthContext)
-  const { listarProjetos, buscarProjeto } = useContext(ProjetoContext)
-  const { listarRequisitos } = useContext(RequisitoContext)
+  const { listarProjetos } = useContext(ProjetoContext)
   const { isUserLoggedIn } = userLogin
 
   useEffect(() => {
@@ -28,14 +25,10 @@ function App () {
             user: usuario,
             primeiroNome: usuario.nome.split(' ')[0]
           })
-          if (usuario.projetos.length > 0) {
-            buscarProjeto(usuario.projetos[0].id)
-            listarRequisitos(usuario.projetos[0].id)
-          }
           listarProjetos(usuario.id)
         }
       })
-  }, [setUserLogin, listarProjetos, listarRequisitos, buscarProjeto])
+  }, [setUserLogin, listarProjetos])
 
   if (isUserLoggedIn && location.pathname === LOGIN) {
     return <Redirect to={HOME} />
@@ -56,10 +49,6 @@ function App () {
       </Switch>
     </Suspense>
   )
-}
-
-App.propType = {
-  location: t.object.isRequired
 }
 
 export default App

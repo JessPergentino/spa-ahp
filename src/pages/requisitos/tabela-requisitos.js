@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext } from 'react'
 import t from 'prop-types'
 
 import { Link } from 'react-router-dom'
@@ -15,7 +15,7 @@ import { MTableToolbar } from 'material-table'
 import { TabelaDefault } from 'ui'
 
 import { DETALHE_REQUISITO } from 'routes'
-import { listaProjetos } from 'services/data-fake'
+import { ProjetoContext } from 'contexts/projetos'
 
 const TabelaRequisitos = (
   {
@@ -26,11 +26,7 @@ const TabelaRequisitos = (
     handleChangeProjeto
   }
 ) => {
-  const [projetos, setProjetos] = useState([])
-
-  useEffect(() => {
-    setProjetos(listaProjetos)
-  }, [])
+  const { projetos } = useContext(ProjetoContext)
 
   const colunas = [
     {
