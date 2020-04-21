@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 
 import { AuthContext } from 'contexts/auth'
 import { ProjetoContext } from 'contexts/projetos'
@@ -12,7 +12,12 @@ import ModalDelProjeto from 'pages/projetos/del-projeto'
 
 const PageProjetos = () => {
   const { userLogin } = useContext(AuthContext)
-  const { projetos } = useContext(ProjetoContext)
+  const { projetos, listarProjetos } = useContext(ProjetoContext)
+
+  useEffect(() => {
+    console.log('rederizou')
+    listarProjetos(userLogin.user.id)
+  }, [listarProjetos, userLogin.user.id])
 
   const [abrirModalAdd, setAbrirModalAdd] = useState(false)
   const [abrirModalEdt, setAbrirModalEdt] = useState(false)

@@ -1,13 +1,20 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import t from 'prop-types'
 
 import { TextField } from '@material-ui/core'
 
 import { Modal, CampoData } from 'ui'
 
+import api from 'services/api'
+import { ProjetoContext } from 'contexts/projetos'
+import { AuthContext } from 'contexts/auth'
+
 const ModalEdtProjeto = ({ abrir, handleFechar, projetoAtual }) => {
   const [projeto, setProjeto] = useState({})
   const [dataSelecionada, setDataSelecionada] = useState(null)
+
+  const { listarProjetos } = useContext(ProjetoContext)
+  const { userLogin } = useContext(AuthContext)
 
   useEffect(() => {
     setProjeto(projetoAtual)
@@ -22,7 +29,10 @@ const ModalEdtProjeto = ({ abrir, handleFechar, projetoAtual }) => {
   }
 
   const AlterarProjeto = () => {
-    console.log(dataSelecionada)
+    api.put(`/projetos/${projeto.id}`, projeto)
+      .then((response) => {
+        listarProjetos(userLogin.user.id)
+      })
     handleFechar()
   }
 

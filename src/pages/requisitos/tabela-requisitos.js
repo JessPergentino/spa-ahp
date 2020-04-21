@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import t from 'prop-types'
 
 import { Link } from 'react-router-dom'
@@ -16,6 +16,7 @@ import { TabelaDefault } from 'ui'
 
 import { DETALHE_REQUISITO } from 'routes'
 import { ProjetoContext } from 'contexts/projetos'
+import { AuthContext } from 'contexts/auth'
 
 const TabelaRequisitos = (
   {
@@ -26,7 +27,12 @@ const TabelaRequisitos = (
     handleChangeProjeto
   }
 ) => {
-  const { projetos } = useContext(ProjetoContext)
+  const { projetos, listarProjetos } = useContext(ProjetoContext)
+  const { userLogin } = useContext(AuthContext)
+
+  useEffect(() => {
+    listarProjetos(userLogin.user.id)
+  }, [listarProjetos, userLogin.user.id])
 
   const colunas = [
     {

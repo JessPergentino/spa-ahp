@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import {
   Typography, Grid
 } from '@material-ui/core'
@@ -7,11 +7,17 @@ import { Page } from 'ui'
 import Assistente from 'pages/priorizacao/ponderacao-requisito/assistente'
 import SelectProjeto from 'pages/priorizacao/select-projeto'
 import { ProjetoContext } from 'contexts/projetos'
+import { AuthContext } from 'contexts/auth'
 
 const PonderacaoRequisito = () => {
   const [projetoSelecionado, setProjetoSelecionado] = useState('')
 
-  const { projetos } = useContext(ProjetoContext)
+  const { projetos, listarProjetos } = useContext(ProjetoContext)
+  const { userLogin } = useContext(AuthContext)
+
+  useEffect(() => {
+    listarProjetos(userLogin.user.id)
+  }, [listarProjetos, userLogin.user.id])
 
   const handleChangeProjeto = (e) => {
     setProjetoSelecionado(e.target.value)

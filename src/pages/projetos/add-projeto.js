@@ -1,13 +1,20 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import t from 'prop-types'
 
 import { TextField } from '@material-ui/core'
 
 import { Modal, CampoData } from 'ui'
 
+import api from 'services/api'
+import { ProjetoContext } from 'contexts/projetos'
+import { AuthContext } from 'contexts/auth'
+
 const ModalAddProjeto = ({ abrir, handleFecharModal, ownerId }) => {
   const [projeto, setProjeto] = useState({})
   const [dataSelecionada, setDataSelecionada] = useState(null)
+
+  const { listarProjetos } = useContext(ProjetoContext)
+  const { userLogin } = useContext(AuthContext)
 
   const handleAlterarData = data => {
     setDataSelecionada(data)
@@ -17,8 +24,21 @@ const ModalAddProjeto = ({ abrir, handleFecharModal, ownerId }) => {
   }
 
   const cadastrarProjeto = () => {
-    console.log(projeto, ownerId)
+    const { nome, descricao, dataEntrega } = projeto
+
+    const novoProjeto = {
+      nome,
+      descricao,
+      dataEntrega,
+      ownerId: ownerId
+    }
+
+    api.post('/projetos', novoProjeto)
+      .then((response) => {
+        listarProjetos(userLogin.user.id)
+      })
     handleFecharModal()
+    setDataSelecionada(null)
   }
 
   return (

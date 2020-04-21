@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import {
   Grid, Typography
 } from '@material-ui/core'
@@ -11,12 +11,18 @@ import ModalRefazerPonderacaoCriterios from 'pages/priorizacao/ponderacao-criter
 
 import { vetorPrioritario } from 'services/data-fake'
 import { ProjetoContext } from 'contexts/projetos'
+import { AuthContext } from 'contexts/auth'
 
 const PonderacaoCriterios = () => {
   const [projetoSelect, setProjetoSelect] = useState('')
   const [abrirModalEdt, setAbrirModalEdt] = useState(false)
 
-  const { projetos } = useContext(ProjetoContext)
+  const { projetos, listarProjetos } = useContext(ProjetoContext)
+  const { userLogin } = useContext(AuthContext)
+
+  useEffect(() => {
+    listarProjetos(userLogin.user.id)
+  }, [listarProjetos, userLogin.user.id])
 
   const exibirVetor = projetoSelect !== '' && vetorPrioritario.length > 0
   const exibirTabela = projetoSelect !== '' && vetorPrioritario.length === 0

@@ -8,7 +8,7 @@ import ModalDelRequisito from 'pages/requisitos/del-requisito'
 import TabelaRequisitos from 'pages/requisitos/tabela-requisitos'
 import { Alerta } from 'ui'
 
-const Requisitos = () => {
+const PageRequisitos = () => {
   const { userLogin } = useContext(AuthContext)
 
   const [abrirModalAdd, setAbrirModalAdd] = useState(false)
@@ -94,4 +94,4 @@ const Requisitos = () => {
   )
 }
 
-export default Requisitos
+export default PageRequisitos

@@ -1,13 +1,23 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import t from 'prop-types'
 
 import { Typography } from '@material-ui/core'
 
 import { Modal } from 'ui'
 
+import api from 'services/api'
+import { ProjetoContext } from 'contexts/projetos'
+import { AuthContext } from 'contexts/auth'
+
 const ModalDelProjeto = ({ abrir, handleFechar, projetoAtual }) => {
+  const { listarProjetos } = useContext(ProjetoContext)
+  const { userLogin } = useContext(AuthContext)
+
   const deletarProjeto = () => {
-    console.log(projetoAtual)
+    api.delete(`/projetos/${projetoAtual.id}`)
+      .then((response) => {
+        listarProjetos(userLogin.user.id)
+      })
     handleFechar()
   }
 

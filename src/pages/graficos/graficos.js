@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 
 import {
   AppBar,
@@ -11,12 +11,18 @@ import {
 import { Page, TabPanel } from 'ui'
 import SelectProjeto from 'pages/priorizacao/select-projeto'
 import { ProjetoContext } from 'contexts/projetos'
+import { AuthContext } from 'contexts/auth'
 
 const Graficos = () => {
   const [projeto, setProjeto] = useState('')
   const [value, setValue] = useState(0)
 
-  const { projetos } = useContext(ProjetoContext)
+  const { projetos, listarProjetos } = useContext(ProjetoContext)
+  const { userLogin } = useContext(AuthContext)
+
+  useEffect(() => {
+    listarProjetos(userLogin.user.id)
+  }, [listarProjetos, userLogin.user.id])
 
   const handleChange = (event, newValue) => {
     setValue(newValue)
