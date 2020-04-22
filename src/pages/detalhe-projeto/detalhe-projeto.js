@@ -19,12 +19,12 @@ import SelecionarCriterios from 'pages/detalhe-projeto/selecionar-criterios'
 const DetalheProjeto = () => {
   const { userLogin } = useContext(AuthContext)
   const { projetoAtual, buscarProjeto } = useContext(ProjetoContext)
-  const { id } = useParams()
+  const { idProjeto } = useParams()
 
   useEffect(() => {
     console.log('renderizou detalhe')
-    buscarProjeto(id)
-  }, [buscarProjeto, id])
+    buscarProjeto(idProjeto)
+  }, [buscarProjeto, idProjeto])
 
   const [value, setValue] = useState(0)
   const admin = userLogin.user.permissao !== 'ADMIN'

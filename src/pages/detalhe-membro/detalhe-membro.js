@@ -5,7 +5,7 @@ import {
 
 import TabelaProjetosMembro from 'pages/detalhe-membro/tabela-projeto-membro'
 import InfoUsuario from 'pages/detalhe-membro/info-usuario'
-import { listaProjetos, listaUsuarios } from 'services/data-fake'
+import { listaUsuarios } from 'services/data-fake'
 
 const DetalheMembro = () => {
   const handleOwner = (ownerId) => {
@@ -21,7 +21,6 @@ const DetalheMembro = () => {
 
         <Grid item xs={12}>
           <TabelaProjetosMembro
-            projetos={listaProjetos}
             handleOwner={handleOwner}
           />
         </Grid>

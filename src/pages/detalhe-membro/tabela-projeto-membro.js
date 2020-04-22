@@ -1,9 +1,18 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import t from 'prop-types'
 
 import { TabelaDefault } from 'ui'
+import { UsuarioContext } from 'contexts/usuarios'
+import { useParams } from 'react-router-dom'
 
-const TabelaProjetosMembro = ({ projetos, handleOwner }) => {
+const TabelaProjetosMembro = ({ handleOwner }) => {
+  const { usuario, buscarUsuario } = useContext(UsuarioContext)
+  const { idUsuario } = useParams()
+
+  useEffect(() => {
+    buscarUsuario(idUsuario)
+  }, [buscarUsuario, idUsuario])
+
   const colunas = [
     {
       title: 'Nome',
@@ -21,7 +30,7 @@ const TabelaProjetosMembro = ({ projetos, handleOwner }) => {
     }
   ]
 
-  const dados = projetos
+  const dados = usuario.projetos
 
   return (
     <TabelaDefault titulo='Projetos Participantes' columns={colunas} data={dados} search={false} />
@@ -29,7 +38,6 @@ const TabelaProjetosMembro = ({ projetos, handleOwner }) => {
 }
 
 TabelaProjetosMembro.propTypes = {
-  projetos: t.array,
   handleOwner: t.func
 }
 

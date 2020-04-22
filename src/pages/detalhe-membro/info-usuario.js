@@ -19,18 +19,20 @@ import ModalEdtPerfil from 'pages/detalhe-membro/edt-perfil'
 import ModalEdtSenha from 'pages/detalhe-membro/edt-senha'
 
 import { AuthContext } from 'contexts/auth'
+import { useParams } from 'react-router-dom'
+import { UsuarioContext } from 'contexts/usuarios'
 
 const InfoUsuario = () => {
   const { userLogin } = useContext(AuthContext)
-  const usuarioAtual = window.location.state.usuario
+  const { usuario, buscarUsuario } = useContext(UsuarioContext)
+  const { idUsuario } = useParams()
 
-  const [usuario, setUsuario] = useState({})
   const [abrirModalAlterarPerfil, setAbrirModalAlterarPerfil] = useState(false)
   const [abrirModalAlterarSenha, setAbrirModalAlterarSenha] = useState(false)
 
   useEffect(() => {
-    setUsuario(usuarioAtual)
-  }, [usuarioAtual])
+    buscarUsuario(idUsuario)
+  }, [buscarUsuario, idUsuario])
 
   const handleOpenModalAlterarPerfil = () => {
     setAbrirModalAlterarPerfil(true)
@@ -52,7 +54,6 @@ const InfoUsuario = () => {
 
   return (
     <>
-      {console.log('verificação', verificacaoUsuario)}
       <Paper>
         <Typography variant='h4' style={{ margin: '20px' }}>
           Perfil do Usuário

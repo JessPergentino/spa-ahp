@@ -40,7 +40,7 @@ const TabelaProjeto = ({ projetos, handleAbrirModalAdd, handleAbriModalDel, hand
       icon: () => (<InfoIcon />),
       tooltip: 'info',
       onClick: (evt, data) => {
-        history.push(DETALHE_PROJETO.replace(':id', data.id))
+        history.push(DETALHE_PROJETO.replace(':idProjeto', data.id))
       }
     },
     {

@@ -38,7 +38,7 @@ const TabelaMembro = ({ projetoAtual }) => {
       icon: () => (<InfoIcon />),
       tooltip: 'info',
       onClick: (evt, data) => {
-        history.push(DETALHE_MEMBRO.replace(':id', data.id))
+        history.push(DETALHE_MEMBRO.replace(':idUsuario', data.id))
       }
     },
     {

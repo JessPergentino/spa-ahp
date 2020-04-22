@@ -5,7 +5,7 @@ import api from 'services/api'
 export const UsuarioContext = createContext()
 
 function Usuario ({ children }) {
-  const [usuario, setUsuario] = useState('')
+  const [usuario, setUsuario] = useState({})
 
   const buscarUsuario = useCallback((id) => {
     api.get(`/usuarios/${id}`)

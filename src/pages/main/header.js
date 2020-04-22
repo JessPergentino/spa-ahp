@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import {
   AppBar,
@@ -31,6 +31,7 @@ const Header = () => {
   const [anchorLogin, setAnchorLogin] = useState(null)
 
   const { userLogin, logout } = useContext(AuthContext)
+  const history = useHistory()
 
   const handleOpenLogin = (e) => {
     setAnchorLogin(e.target)
@@ -41,9 +42,7 @@ const Header = () => {
   }
 
   const onclickPerfil = (e) => {
-    window.location.state = {
-      usuario: userLogin.user
-    }
+    history.push(DETALHE_MEMBRO.replace(':idUsuario', userLogin.user.id))
     setAnchorLogin(null)
   }
 
@@ -75,7 +74,7 @@ const Header = () => {
           onClose={handleCloseLogin}
           anchorEl={anchorLogin}
         >
-          <MenuItem component={Link} to={DETALHE_MEMBRO} onClick={onclickPerfil}>Perfil</MenuItem>
+          <MenuItem onClick={onclickPerfil}>Perfil</MenuItem>
           <MenuItem onClick={logout}>Sair</MenuItem>
         </Menu>
       </Toolbar>
