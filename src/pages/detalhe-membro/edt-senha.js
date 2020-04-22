@@ -1,78 +1,103 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import t from 'prop-types'
-import { Modal } from 'ui'
+import { Modal, SnackBar } from 'ui'
 import { TextField } from '@material-ui/core'
+import { UsuarioContext } from 'contexts/usuarios'
+
+import api from 'services/api'
 
 const ModalEdtSenha = ({ abrirModal, handleFechar, usuario }) => {
-  const [formSenha, setFormSenha] = useState({
-    senhaAtual: '',
+  const { buscarUsuario } = useContext(UsuarioContext)
+  const estadoInicial = {
     novaSenha: '',
-    confirmSenha: ''
-  })
+    confirmSenha: '',
+    erro: false,
+    helper: ''
+  }
+
+  const [formSenha, setFormSenha] = useState(estadoInicial)
+  const [openSnackbar, setOpenSnackbar] = useState(false)
+
+  const handleClickSnackbar = () => {
+    setOpenSnackbar(true)
+  }
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setOpenSnackbar(false)
+  }
 
   const alterarSenha = () => {
-    console.log('alterou')
-    handleFechar()
+    if (formSenha.novaSenha === formSenha.confirmSenha) {
+      api.put(`/usuarios_senha/${usuario.id}`, formSenha)
+        .then((response) => {
+          buscarUsuario(usuario.id)
+          handleClickSnackbar()
+        })
+      setFormSenha(estadoInicial)
+      handleFechar()
+    } else {
+      setFormSenha(prevState => {
+        return { ...prevState, error: true, helper: 'As senhas digitadas são incompativeis' }
+      })
+    }
   }
 
   return (
-    <Modal
-      titulo='Alterar Senha'
-      open={abrirModal}
-      handleClose={handleFechar}
-      handleSave={alterarSenha}
-      operacao='Alterar'
-    >
+    <>
+      <Modal
+        titulo='Alterar Senha'
+        open={abrirModal}
+        handleClose={handleFechar}
+        handleSave={alterarSenha}
+        operacao='Alterar'
+      >
+        <TextField
+          onChange={(e) => {
+            const val = e.target.value
+            setFormSenha(prevState => {
+              return { ...prevState, novaSenha: val }
+            })
+          }}
+          value={formSenha.novaSenha}
+          id='novaSenha'
+          label='Nova Senha'
+          type='password'
+          width='100%'
+          margin='normal'
+          fullWidth
+          error={formSenha.error}
+        />
 
-      <TextField
-        onChange={(e) => {
-          const val = e.target.value
-          setFormSenha(prevState => {
-            return { ...prevState, senhaAtual: val }
-          })
-        }}
-        value={formSenha.senhaAtual}
-        autoFocus
-        id='senhaAtual'
-        label='Senha Atual'
-        type='text'
-        width='100%'
-        margin='normal'
-        fullWidth
-      />
+        <TextField
+          onChange={(e) => {
+            const val = e.target.value
+            setFormSenha(prevState => {
+              return { ...prevState, confirmSenha: val }
+            })
+          }}
+          value={formSenha.confirmSenha}
+          id='confirmSenha'
+          label='Confirmar Senha'
+          type='password'
+          width='100%'
+          margin='normal'
+          fullWidth
+          error={formSenha.error}
+          helperText={formSenha.helper}
+        />
+      </Modal>
 
-      <TextField
-        onChange={(e) => {
-          const val = e.target.value
-          setFormSenha(prevState => {
-            return { ...prevState, novaSenha: val }
-          })
-        }}
-        value={formSenha.novaSenha}
-        id='novaSenha'
-        label='Nova Senha'
-        type='text'
-        width='100%'
-        margin='normal'
-        fullWidth
+      <SnackBar
+        openSnackbar={openSnackbar}
+        duracao={4000}
+        handleClose={handleCloseSnackbar}
+        tipo='success'
+        mensagem='Senha alterada com sucesso!'
       />
-
-      <TextField
-        onChange={(e) => {
-          const val = e.target.value
-          setFormSenha(prevState => {
-            return { ...prevState, confirmSenha: val }
-          })
-        }}
-        value={formSenha.confirmSenha}
-        id='confirmSenha'
-        label='Confirmar Senha'
-        type='text'
-        width='100%'
-        margin='normal'
-        fullWidth
-      />
-    </Modal>
+    </>
   )
 }
 
