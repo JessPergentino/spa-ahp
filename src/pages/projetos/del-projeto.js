@@ -1,9 +1,9 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import t from 'prop-types'
 
 import { Typography } from '@material-ui/core'
 
-import { Modal } from 'ui'
+import { Modal, SnackBar } from 'ui'
 
 import api from 'services/api'
 import { ProjetoContext } from 'contexts/projetos'
@@ -13,20 +13,40 @@ const ModalDelProjeto = ({ abrir, handleFechar, projetoAtual }) => {
   const { listarProjetos } = useContext(ProjetoContext)
   const { userLogin } = useContext(AuthContext)
 
+  const [openSnackbar, setOpenSnackbar] = useState(false)
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setOpenSnackbar(false)
+  }
+
   const deletarProjeto = () => {
     api.delete(`/projetos/${projetoAtual.id}`)
       .then((response) => {
         listarProjetos(userLogin.user.id)
+        setOpenSnackbar(true)
       })
     handleFechar()
   }
 
   return (
-    <Modal titulo='Deseja mesmo deletar este projeto?' open={abrir} handleClose={handleFechar} handleSave={deletarProjeto} operacao='Deletar'>
-      <Typography>
-        O projeto {projetoAtual.nome} e todas as suas dependencias serão deletadas!
-      </Typography>
-    </Modal>
+    <>
+      <Modal titulo='Deseja mesmo deletar este projeto?' open={abrir} handleClose={handleFechar} handleSave={deletarProjeto} operacao='Deletar'>
+        <Typography>
+          O projeto {projetoAtual.nome} e todas as suas dependencias serão deletadas!
+        </Typography>
+      </Modal>
+
+      <SnackBar
+        openSnackbar={openSnackbar}
+        duracao={4000}
+        handleClose={handleCloseSnackbar}
+        tipo='success'
+        mensagem='Projeto Deletado com Sucesso!'
+      />
+    </>
   )
 }
 

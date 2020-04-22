@@ -4,13 +4,8 @@ import api from 'services/api'
 
 export const CriterioContext = createContext()
 
-function Criterio ({ children }) {
-  const [criteriosBeneficio, setCriteriosBeneficio] = useState([])
-  const [criteriosCusto, setCriteriosCusto] = useState([])
-  const [criteriosRisco, setCriteriosRisco] = useState([])
-  const [criteriosPenalidade, setCriteriosPenalidade] = useState([])
-  const [criteriosEmpresarial, setCriteriosEmpresarial] = useState([])
-  const [criteriosTecnico, setCriteriosTecnico] = useState([])
+const Criterio = ({ children }) => {
+  const [criterios, setCriterios] = useState([])
   const [ponderacaoCriterio, setPonderacaoCriterio] = useState([])
   const [criterio, setCriterio] = useState([])
 
@@ -26,37 +21,37 @@ function Criterio ({ children }) {
       case 'BENEFICIO':
         api.get(`/criterios_categoria/${categoria}`)
           .then((response) => {
-            setCriteriosBeneficio(response.data)
+            setCriterios(response.data)
           })
         break
       case 'CUSTO':
         api.get(`/criterios_categoria/${categoria}`)
           .then((response) => {
-            setCriteriosCusto(response.data)
+            setCriterios(response.data)
           })
         break
       case 'RISCO':
         api.get(`/criterios_categoria/${categoria}`)
           .then((response) => {
-            setCriteriosRisco(response.data)
+            setCriterios(response.data)
           })
         break
       case 'PENALIDADE':
         api.get(`/criterios_categoria/${categoria}`)
           .then((response) => {
-            setCriteriosPenalidade(response.data)
+            setCriterios(response.data)
           })
         break
       case 'EMPRESARIAL':
         api.get(`/criterios_categoria/${categoria}`)
           .then((response) => {
-            setCriteriosEmpresarial(response.data)
+            setCriterios(response.data)
           })
         break
       case 'TECNICO':
         api.get(`/criterios_categoria/${categoria}`)
           .then((response) => {
-            setCriteriosTecnico(response.data)
+            setCriterios(response.data)
           })
         break
 
@@ -65,35 +60,10 @@ function Criterio ({ children }) {
     }
   }, [])
 
-  const listarTodosCriteriosPorCategoria = useCallback(() => {
-    api.get('/criterios_categoria/BENEFICIO')
+  const listarTodosCriterios = useCallback(() => {
+    api.get('/criterios')
       .then((response) => {
-        setCriteriosBeneficio(response.data)
-      })
-
-    api.get('/criterios_categoria/CUSTO')
-      .then((response) => {
-        setCriteriosCusto(response.data)
-      })
-
-    api.get('/criterios_categoria/RISCO')
-      .then((response) => {
-        setCriteriosRisco(response.data)
-      })
-
-    api.get('/criterios_categoria/PENALIDADE')
-      .then((response) => {
-        setCriteriosPenalidade(response.data)
-      })
-
-    api.get('/criterios_categoria/EMPRESARIAL')
-      .then((response) => {
-        setCriteriosEmpresarial(response.data)
-      })
-
-    api.get('/criterios_categoria/TECNICO')
-      .then((response) => {
-        setCriteriosTecnico(response.data)
+        setCriterios(response.data)
       })
   }, [])
 
@@ -108,20 +78,9 @@ function Criterio ({ children }) {
     <CriterioContext.Provider value={{
       criterio,
       setCriterio,
-      criteriosBeneficio,
-      setCriteriosBeneficio,
-      criteriosCusto,
-      setCriteriosCusto,
-      criteriosRisco,
-      setCriteriosRisco,
-      criteriosPenalidade,
-      setCriteriosPenalidade,
-      criteriosEmpresarial,
-      setCriteriosEmpresarial,
-      criteriosTecnico,
-      setCriteriosTecnico,
+      criterios,
       listarCriteriosPorCategoria,
-      listarTodosCriteriosPorCategoria,
+      listarTodosCriterios,
       ponderacaoCriterio,
       setPonderacaoCriterio,
       listarPonderacaoCriterio,

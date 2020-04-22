@@ -3,7 +3,7 @@ import t from 'prop-types'
 
 import { TextField } from '@material-ui/core'
 
-import { Modal, CampoData } from 'ui'
+import { Modal, CampoData, SnackBar } from 'ui'
 
 import api from 'services/api'
 import { ProjetoContext } from 'contexts/projetos'
@@ -12,6 +12,7 @@ import { AuthContext } from 'contexts/auth'
 const ModalEdtProjeto = ({ abrir, handleFechar, projetoAtual }) => {
   const [projeto, setProjeto] = useState({})
   const [dataSelecionada, setDataSelecionada] = useState(null)
+  const [openSnackbar, setOpenSnackbar] = useState(false)
 
   const { listarProjetos } = useContext(ProjetoContext)
   const { userLogin } = useContext(AuthContext)
@@ -20,6 +21,13 @@ const ModalEdtProjeto = ({ abrir, handleFechar, projetoAtual }) => {
     setProjeto(projetoAtual)
     setDataSelecionada(projetoAtual.dataEntrega)
   }, [projetoAtual])
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setOpenSnackbar(false)
+  }
 
   const handleAlterarData = data => {
     setDataSelecionada(data)
@@ -32,52 +40,63 @@ const ModalEdtProjeto = ({ abrir, handleFechar, projetoAtual }) => {
     api.put(`/projetos/${projeto.id}`, projeto)
       .then((response) => {
         listarProjetos(userLogin.user.id)
+        setOpenSnackbar(true)
       })
     handleFechar()
   }
 
   return (
-    <Modal titulo='Editar Projeto' open={abrir} handleClose={handleFechar} handleSave={AlterarProjeto} operacao='Alterar'>
-      <TextField
-        onChange={(e) => {
-          const val = e.target.value
-          setProjeto(prevState => {
-            return { ...prevState, nome: val }
-          })
-        }}
-        value={projeto.nome}
-        autoFocus
-        id='nome'
-        label='Nome'
-        type='text'
-        width='100%'
-        margin='normal'
-        fullWidth
-      />
+    <>
+      <Modal titulo='Editar Projeto' open={abrir} handleClose={handleFechar} handleSave={AlterarProjeto} operacao='Alterar'>
+        <TextField
+          onChange={(e) => {
+            const val = e.target.value
+            setProjeto(prevState => {
+              return { ...prevState, nome: val }
+            })
+          }}
+          value={projeto.nome}
+          autoFocus
+          id='nome'
+          label='Nome'
+          type='text'
+          width='100%'
+          margin='normal'
+          fullWidth
+        />
 
-      <TextField
-        onChange={(e) => {
-          const val = e.target.value
-          setProjeto(prevState => {
-            return { ...prevState, descricao: val }
-          })
-        }}
-        value={projeto.descricao}
-        id='descricao'
-        label='Descrição'
-        type='text'
-        multiline
-        rows='4'
-        width='100%'
-        margin='normal'
-        fullWidth
-      />
+        <TextField
+          onChange={(e) => {
+            const val = e.target.value
+            setProjeto(prevState => {
+              return { ...prevState, descricao: val }
+            })
+          }}
+          value={projeto.descricao}
+          id='descricao'
+          label='Descrição'
+          type='text'
+          multiline
+          rows='4'
+          width='100%'
+          margin='normal'
+          fullWidth
+        />
 
-      <CampoData
-        dataSelecionada={dataSelecionada}
-        handleAlterarData={handleAlterarData}
+        <CampoData
+          dataSelecionada={dataSelecionada}
+          handleAlterarData={handleAlterarData}
+        />
+      </Modal>
+
+      <SnackBar
+        openSnackbar={openSnackbar}
+        duracao={4000}
+        handleClose={handleCloseSnackbar}
+        tipo='success'
+        mensagem='Projeto Alterado com Sucesso!'
       />
-    </Modal>
+    </>
   )
 }
 

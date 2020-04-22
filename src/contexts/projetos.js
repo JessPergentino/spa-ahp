@@ -34,6 +34,13 @@ const Projeto = ({ children }) => {
     setProjetos(projetos.concat(projeto))
   }, [projetos])
 
+  const setCriteriosProjetoAtual = useCallback((criterios) => {
+    setProjetoAtual((projetoAtual) => ({
+      ...projetoAtual,
+      criterios
+    }))
+  }, [])
+
   return (
     <ProjetoContext.Provider value={{
       projetoAtual,
@@ -45,7 +52,8 @@ const Projeto = ({ children }) => {
       buscarOwner,
       owner,
       setOwner,
-      setAddProjeto
+      setAddProjeto,
+      setCriteriosProjetoAtual
     }}
     >
       {children}

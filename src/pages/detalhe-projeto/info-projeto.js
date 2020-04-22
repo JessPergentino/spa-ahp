@@ -1,42 +1,49 @@
-import React, { useState, useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
+
 import { Page } from 'ui'
 import CampoPage from 'ui/campo-page'
+import { ProjetoContext } from 'contexts/projetos'
+import { useParams } from 'react-router-dom'
 
 const InfoProjeto = () => {
-  const projetoAtual = window.location.state.projetoAtual
-  const [projeto, setProjeto] = useState(projetoAtual)
+  const { projetoAtual, buscarProjeto } = useContext(ProjetoContext)
+  const { id } = useParams()
 
   useEffect(() => {
-    setProjeto(projetoAtual)
-  }, [projetoAtual])
+    buscarProjeto(id)
+  }, [buscarProjeto, id])
 
   return (
-    <Page>
-      <CampoPage
-        titulo='Nome do Projeto'
-        info={projeto.nome}
-      />
+    <>
+      {projetoAtual != null && (
+        <Page>
+          <CampoPage
+            titulo='Nome do Projeto'
+            info={projetoAtual.nome}
+          />
 
-      <CampoPage
-        titulo='Descrição'
-        info={projeto.descricao}
-      />
+          <CampoPage
+            titulo='Descrição'
+            info={projetoAtual.descricao}
+          />
 
-      <CampoPage
-        titulo='Owner'
-        info={projeto.membros.filter((item) => item.id === projeto.ownerId)[0].nome}
-      />
+          <CampoPage
+            titulo='Owner'
+            info={projetoAtual.membros.filter((item) => item.id === projetoAtual.ownerId)[0].nome}
+          />
 
-      <CampoPage
-        titulo='Data de Criação'
-        info={projeto.createdAt.toLocaleDateString()}
-      />
+          <CampoPage
+            titulo='Data de Criação'
+            info={projetoAtual.createdAt}
+          />
 
-      <CampoPage
-        titulo='Data de Entrega'
-        info={projeto.dataEntrega.toLocaleDateString()}
-      />
-    </Page>
+          <CampoPage
+            titulo='Data de Entrega'
+            info={projetoAtual.dataEntrega}
+          />
+        </Page>
+      )}
+    </>
   )
 }
 

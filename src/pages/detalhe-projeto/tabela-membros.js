@@ -1,22 +1,19 @@
-import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState } from 'react'
+import { useHistory } from 'react-router-dom'
 import t from 'prop-types'
 
-import {
-  IconButton
-} from '@material-ui/core'
 import InfoIcon from '@material-ui/icons/Info'
+
+import ModalAddMembro from 'pages/detalhe-projeto/add-membro-projeto'
 
 import { TabelaDefault } from 'ui'
 
 import { DETALHE_MEMBRO } from 'routes'
 
-const TabelaMembro = ({ handleAbrirModal }) => {
-  const [projeto, setProjeto] = useState({})
+const TabelaMembro = ({ projetoAtual }) => {
+  const history = useHistory()
 
-  useEffect(() => {
-    setProjeto(window.location.state.projetoAtual)
-  }, [])
+  const [abrirModalAdd, setAbrirModalAdd] = useState(false)
 
   const colunas = [
     {
@@ -34,36 +31,41 @@ const TabelaMembro = ({ handleAbrirModal }) => {
     }
   ]
 
-  const dados = projeto.membros
+  const dados = projetoAtual !== null ? projetoAtual.membros : []
 
   const actions = [
     {
-      icon: () => (
-        <IconButton component={Link} to={{ pathname: DETALHE_MEMBRO }} color='inherit'>
-          <InfoIcon />
-        </IconButton>),
+      icon: () => (<InfoIcon />),
       tooltip: 'info',
       onClick: (evt, data) => {
-        window.location.state = {
-          usuario: data
-        }
+        history.push(DETALHE_MEMBRO.replace(':id', data.id))
       }
     },
     {
       icon: 'add',
       tooltip: 'Add Membro',
       isFreeAction: true,
-      onClick: () => handleAbrirModal()
+      onClick: () => setAbrirModalAdd(true)
     }
   ]
 
   return (
-    <TabelaDefault titulo='Membros do Projeto' columns={colunas} data={dados} actions={actions} />
+    <>
+      {projetoAtual !== null && (
+        <TabelaDefault titulo='Membros do Projeto' columns={colunas} data={dados} actions={actions} />
+      )}
+
+      <ModalAddMembro
+        abrir={abrirModalAdd}
+        handleFechar={() => setAbrirModalAdd(false)}
+        projetoAtual={projetoAtual}
+      />
+    </>
   )
 }
 
 TabelaMembro.propTypes = {
-  handleAbrirModal: t.func
+  projetoAtual: t.object
 }
 
 export default TabelaMembro

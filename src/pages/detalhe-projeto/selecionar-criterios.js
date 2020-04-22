@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import t from 'prop-types'
 
 import {
@@ -13,276 +13,299 @@ import {
 } from '@material-ui/core'
 
 import CriterioGrid from 'pages/detalhe-projeto/criterio-grid'
-import { Page, Alerta } from 'ui'
+import { Page, Alerta, SnackBar } from 'ui'
+import { CriterioContext } from 'contexts/criterios'
+import { ProjetoContext } from 'contexts/projetos'
+
+import api from 'services/api'
 
 const SelecionarCriterios = (
   {
-    criteriosBeneficio,
-    criteriosCusto,
-    criteriosRisco,
-    criteriosPenalidade,
-    criteriosEmpresarial,
-    criteriosTecnico,
-    handleClickSnackbar
+    projetoAtual
   }
 ) => {
-  const projetoAtual = window.location.state.projetoAtual
-  const [projeto, setProjeto] = useState(projetoAtual)
+  const { criterios, listarTodosCriterios } = useContext(CriterioContext)
+  const { setCriteriosProjetoAtual } = useContext(ProjetoContext)
+
+  const [openSnackbar, setOpenSnackbar] = useState(false)
+  const [criteriosBeneficio, setCriteriosBeneficio] = useState([])
+  const [criteriosCusto, setCriteriosCusto] = useState([])
+  const [criteriosEmpresarial, setCriteriosEmpresarial] = useState([])
+  const [criteriosPenalidade, setCriteriosPenalidade] = useState([])
+  const [criteriosRisco, setCriteriosRisco] = useState([])
+  const [criteriosTecnico, setCriteriosTecnico] = useState([])
 
   useEffect(() => {
-    setProjeto({ ...projetoAtual })
-  }, [projetoAtual])
-
-  const [checked, setChecked] = useState([])
+    listarTodosCriterios()
+  }, [listarTodosCriterios])
 
   useEffect(() => {
-    setChecked(projeto.criterios.map((item) => item.id))
-  }, [projeto])
+    setCriteriosBeneficio(criterios.filter((criterio) => criterio.categoria === 'BENEFICIO'))
+    setCriteriosCusto(criterios.filter((criterio) => criterio.categoria === 'CUSTO'))
+    setCriteriosEmpresarial(criterios.filter((criterio) => criterio.categoria === 'EMPRESARIAL'))
+    setCriteriosPenalidade(criterios.filter((criterio) => criterio.categoria === 'PENALIDADE'))
+    setCriteriosRisco(criterios.filter((criterio) => criterio.categoria === 'RISCO'))
+    setCriteriosTecnico(criterios.filter((criterio) => criterio.categoria === 'TECNICO'))
+  }, [criterios])
 
-  const error = checked.filter(v => v).length > 15
+  const error = projetoAtual.criterios.filter(v => v).length > 15
 
-  const handleToggle = value => () => {
-    const currentIndex = checked.indexOf(value)
-    const newChecked = [...checked]
-
-    if (currentIndex === -1) {
-      newChecked.push(value)
-    } else {
-      newChecked.splice(currentIndex, 1)
-    }
-    setChecked(newChecked)
+  const handleClickSnackbar = () => {
+    setOpenSnackbar(true)
   }
 
-  const handleClickLimpar = () => {
-    setChecked([])
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setOpenSnackbar(false)
+  }
+
+  const handleToggle = value => (event) => {
+    const criterioSelecionado = criterios.find((criterio) => criterio.id === value)
+
+    if (event.target.checked) {
+      setCriteriosProjetoAtual(projetoAtual.criterios.concat(criterioSelecionado))
+    } else {
+      setCriteriosProjetoAtual(projetoAtual.criterios.filter((c) => c.id !== value))
+    }
   }
 
   const handleClickSalvar = () => {
-    console.log('salvou')
-    handleClickSnackbar()
+    const ids = projetoAtual.criterios.map((item) => item.id)
+    api.post(`/criterios_projeto/${projetoAtual.id}`, ids)
+      .then((response) => {
+        handleClickSnackbar()
+      })
   }
 
   return (
-    <Page>
-      <Typography variant='h6'>
-        Selecione os Critérios de Priorização
-      </Typography>
+    <>
+      {projetoAtual !== null && (
+        <Page>
+          <Typography variant='h6'>
+            Selecione os Critérios de Priorização
+          </Typography>
 
-      {error &&
-        (
-          <Alerta
-            severidade='error'
-            mensagem='Você só pode selecionar até no máximo 15 critérios.'
-          />
-        )}
+          {error &&
+            (
+              <Alerta
+                severidade='error'
+                mensagem='Você só pode selecionar até no máximo 15 critérios.'
+              />
+            )}
 
-      <CriterioGrid>
-        <Grid item xs>
-          <Page>
-            <Typography variant='h6'>
-              Critérios Relacionados Aos Benefícios
-            </Typography>
+          <CriterioGrid>
+            <Grid item xs>
+              <Page>
+                <Typography variant='h6'>
+                  Critérios Relacionados Aos Benefícios
+                </Typography>
 
-            <List>
-              {criteriosBeneficio.map((criterio) => {
-                const labelId = `checkbox-list-label-${criterio.id}`
-                return (
-                  <Grid item key={criterio.id} xs>
-                    <ListItem key={criterio.id} role={undefined} dense button onClick={handleToggle(criterio.id)}>
-                      <ListItemIcon>
-                        <Checkbox
-                          edge='start'
-                          checked={checked.indexOf(criterio.id) !== -1}
-                          tabIndex={-1}
-                          disableRipple
-                          inputProps={{ 'aria-labelledby': labelId }}
-                        />
-                      </ListItemIcon>
-                      <ListItemText id={labelId} primary={criterio.nome} />
-                    </ListItem>
-                  </Grid>
-                )
-              })}
-            </List>
-          </Page>
-        </Grid>
+                <List>
+                  {criteriosBeneficio.map((criterio) => {
+                    const labelId = `checkbox-list-label-${criterio.id}`
+                    return (
+                      <Grid item key={criterio.id} xs>
+                        <ListItem key={criterio.id} role={undefined} dense button component='label'>
+                          <ListItemIcon>
+                            <Checkbox
+                              edge='start'
+                              checked={projetoAtual.criterios.some((c) => c.id === criterio.id)}
+                              tabIndex={-1}
+                              disableRipple
+                              inputProps={{ 'aria-labelledby': labelId }}
+                              onClick={handleToggle(criterio.id)}
+                            />
+                          </ListItemIcon>
+                          <ListItemText id={labelId} primary={criterio.nome} />
+                        </ListItem>
+                      </Grid>
+                    )
+                  })}
+                </List>
+              </Page>
+            </Grid>
 
-        <Grid item xs>
-          <Page>
-            <Typography variant='h6'>
-              Critérios Relacionados Aos Custos
-            </Typography>
+            <Grid item xs>
+              <Page>
+                <Typography variant='h6'>
+                  Critérios Relacionados Aos Custos
+                </Typography>
 
-            <List>
-              {criteriosCusto.map((criterio) => {
-                const labelId = `checkbox-list-label-${criterio.id}`
-                return (
-                  <Grid item key={criterio.id} xs>
-                    <ListItem key={criterio.id} role={undefined} dense button onClick={handleToggle(criterio.id)}>
-                      <ListItemIcon>
-                        <Checkbox
-                          edge='start'
-                          checked={checked.indexOf(criterio.id) !== -1}
-                          tabIndex={-1}
-                          disableRipple
-                          inputProps={{ 'aria-labelledby': labelId }}
-                        />
-                      </ListItemIcon>
-                      <ListItemText id={labelId} primary={criterio.nome} />
-                    </ListItem>
-                  </Grid>
-                )
-              })}
-            </List>
-          </Page>
-        </Grid>
+                <List>
+                  {criteriosCusto.map((criterio) => {
+                    const labelId = `checkbox-list-label-${criterio.id}`
+                    return (
+                      <Grid item key={criterio.id} xs>
+                        <ListItem key={criterio.id} role={undefined} dense button component='label'>
+                          <ListItemIcon>
+                            <Checkbox
+                              edge='start'
+                              checked={projetoAtual.criterios.some((c) => c.id === criterio.id)}
+                              tabIndex={-1}
+                              disableRipple
+                              inputProps={{ 'aria-labelledby': labelId }}
+                              onClick={handleToggle(criterio.id)}
+                            />
+                          </ListItemIcon>
+                          <ListItemText id={labelId} primary={criterio.nome} />
+                        </ListItem>
+                      </Grid>
+                    )
+                  })}
+                </List>
+              </Page>
+            </Grid>
 
-        <Grid item xs>
-          <Page>
-            <Typography variant='h6'>
-              Critérios Relacionados aos Riscos
-            </Typography>
+            <Grid item xs>
+              <Page>
+                <Typography variant='h6'>
+                  Critérios Relacionados aos Riscos
+                </Typography>
 
-            <List>
-              {criteriosRisco.map((criterio) => {
-                const labelId = `checkbox-list-label-${criterio.id}`
-                return (
-                  <Grid item key={criterio.id} xs>
-                    <ListItem key={criterio.id} role={undefined} dense button onClick={handleToggle(criterio.id)}>
-                      <ListItemIcon>
-                        <Checkbox
-                          edge='start'
-                          checked={checked.indexOf(criterio.id) !== -1}
-                          tabIndex={-1}
-                          disableRipple
-                          inputProps={{ 'aria-labelledby': labelId }}
-                        />
-                      </ListItemIcon>
-                      <ListItemText id={labelId} primary={criterio.nome} />
-                    </ListItem>
-                  </Grid>
-                )
-              })}
-            </List>
-          </Page>
-        </Grid>
+                <List>
+                  {criteriosRisco.map((criterio) => {
+                    const labelId = `checkbox-list-label-${criterio.id}`
+                    return (
+                      <Grid item key={criterio.id} xs>
+                        <ListItem key={criterio.id} role={undefined} dense button component='label'>
+                          <ListItemIcon>
+                            <Checkbox
+                              edge='start'
+                              checked={projetoAtual.criterios.some((c) => c.id === criterio.id)}
+                              tabIndex={-1}
+                              disableRipple
+                              inputProps={{ 'aria-labelledby': labelId }}
+                              onClick={handleToggle(criterio.id)}
+                            />
+                          </ListItemIcon>
+                          <ListItemText id={labelId} primary={criterio.nome} />
+                        </ListItem>
+                      </Grid>
+                    )
+                  })}
+                </List>
+              </Page>
+            </Grid>
 
-        <Grid item xs>
-          <Page>
-            <Typography variant='h6'>
-              Critérios Relacionados a Penalidades e Prevenção de Penalidades
-            </Typography>
+            <Grid item xs>
+              <Page>
+                <Typography variant='h6'>
+                  Critérios Relacionados a Penalidades e Prevenção de Penalidades
+                </Typography>
 
-            <List>
-              {criteriosPenalidade.map((criterio) => {
-                const labelId = `checkbox-list-label-${criterio.id}`
-                return (
-                  <Grid item key={criterio.id} xs>
-                    <ListItem key={criterio.id} role={undefined} dense button onClick={handleToggle(criterio.id)}>
-                      <ListItemIcon>
-                        <Checkbox
-                          edge='start'
-                          checked={checked.indexOf(criterio.id) !== -1}
-                          tabIndex={-1}
-                          disableRipple
-                          inputProps={{ 'aria-labelledby': labelId }}
-                        />
-                      </ListItemIcon>
-                      <ListItemText id={labelId} primary={criterio.nome} />
-                    </ListItem>
-                  </Grid>
-                )
-              })}
-            </List>
-          </Page>
-        </Grid>
+                <List>
+                  {criteriosPenalidade.map((criterio) => {
+                    const labelId = `checkbox-list-label-${criterio.id}`
+                    return (
+                      <Grid item key={criterio.id} xs>
+                        <ListItem key={criterio.id} role={undefined} dense button component='label'>
+                          <ListItemIcon>
+                            <Checkbox
+                              edge='start'
+                              checked={projetoAtual.criterios.some((c) => c.id === criterio.id)}
+                              tabIndex={-1}
+                              disableRipple
+                              inputProps={{ 'aria-labelledby': labelId }}
+                              onClick={handleToggle(criterio.id)}
+                            />
+                          </ListItemIcon>
+                          <ListItemText id={labelId} primary={criterio.nome} />
+                        </ListItem>
+                      </Grid>
+                    )
+                  })}
+                </List>
+              </Page>
+            </Grid>
 
-        <Grid item xs>
-          <Page>
-            <Typography variant='h6'>
-              Critérios Relacionados Ao Contexto Empresarial
-            </Typography>
+            <Grid item xs>
+              <Page>
+                <Typography variant='h6'>
+                  Critérios Relacionados Ao Contexto Empresarial
+                </Typography>
 
-            <List>
-              {criteriosEmpresarial.map((criterio) => {
-                const labelId = `checkbox-list-label-${criterio.id}`
-                return (
-                  <Grid item key={criterio.id} xs>
-                    <ListItem key={criterio.id} role={undefined} dense button onClick={handleToggle(criterio.id)}>
-                      <ListItemIcon>
-                        <Checkbox
-                          edge='start'
-                          checked={checked.indexOf(criterio.id) !== -1}
-                          tabIndex={-1}
-                          disableRipple
-                          inputProps={{ 'aria-labelledby': labelId }}
-                        />
-                      </ListItemIcon>
-                      <ListItemText id={labelId} primary={criterio.nome} />
-                    </ListItem>
-                  </Grid>
-                )
-              })}
-            </List>
-          </Page>
-        </Grid>
+                <List>
+                  {criteriosEmpresarial.map((criterio) => {
+                    const labelId = `checkbox-list-label-${criterio.id}`
+                    return (
+                      <Grid item key={criterio.id} xs>
+                        <ListItem key={criterio.id} role={undefined} dense button component='label'>
+                          <ListItemIcon>
+                            <Checkbox
+                              edge='start'
+                              checked={projetoAtual.criterios.some((c) => c.id === criterio.id)}
+                              tabIndex={-1}
+                              disableRipple
+                              inputProps={{ 'aria-labelledby': labelId }}
+                              onClick={handleToggle(criterio.id)}
+                            />
+                          </ListItemIcon>
+                          <ListItemText id={labelId} primary={criterio.nome} />
+                        </ListItem>
+                      </Grid>
+                    )
+                  })}
+                </List>
+              </Page>
+            </Grid>
 
-        <Grid item xs>
-          <Page>
-            <Typography variant='h6'>
-              Critérios Relacionados Ao Contexto Técnico E Características Dos Requisitos
-            </Typography>
+            <Grid item xs>
+              <Page>
+                <Typography variant='h6'>
+                  Critérios Relacionados Ao Contexto Técnico E Características Dos Requisitos
+                </Typography>
 
-            <List>
-              {criteriosTecnico.map((criterio) => {
-                const labelId = `checkbox-list-label-${criterio.id}`
-                return (
-                  <Grid item key={criterio.id} xs>
-                    <ListItem key={criterio.id} role={undefined} dense button onClick={handleToggle(criterio.id)}>
-                      <ListItemIcon>
-                        <Checkbox
-                          edge='start'
-                          checked={checked.indexOf(criterio.id) !== -1}
-                          tabIndex={-1}
-                          disableRipple
-                          inputProps={{ 'aria-labelledby': labelId }}
-                        />
-                      </ListItemIcon>
-                      <ListItemText id={labelId} primary={criterio.nome} />
-                    </ListItem>
-                  </Grid>
-                )
-              })}
-            </List>
-          </Page>
-        </Grid>
-      </CriterioGrid>
+                <List>
+                  {criteriosTecnico.map((criterio) => {
+                    const labelId = `checkbox-list-label-${criterio.id}`
+                    return (
+                      <Grid item key={criterio.id} xs>
+                        <ListItem key={criterio.id} role={undefined} dense button component='label'>
+                          <ListItemIcon>
+                            <Checkbox
+                              edge='start'
+                              checked={projetoAtual.criterios.some((c) => c.id === criterio.id)}
+                              tabIndex={-1}
+                              disableRipple
+                              inputProps={{ 'aria-labelledby': labelId }}
+                              onClick={handleToggle(criterio.id)}
+                            />
+                          </ListItemIcon>
+                          <ListItemText id={labelId} primary={criterio.nome} />
+                        </ListItem>
+                      </Grid>
+                    )
+                  })}
+                </List>
+              </Page>
+            </Grid>
+          </CriterioGrid>
 
-      <Grid container spacing={2} justify='flex-end'>
-        <Grid item>
-          <Button variant='outlined' onClick={handleClickLimpar}>
-            Limpar
-          </Button>
-        </Grid>
+          <Grid container spacing={2} justify='flex-end'>
+            <Grid item>
+              <Button disabled={error} variant='outlined' onClick={handleClickSalvar} color='primary'>
+                Salvar
+              </Button>
+            </Grid>
+          </Grid>
+        </Page>
+      )}
 
-        <Grid item>
-          <Button disabled={error} variant='outlined' onClick={handleClickSalvar} color='primary'>
-            Salvar
-          </Button>
-        </Grid>
-      </Grid>
-    </Page>
+      <SnackBar
+        openSnackbar={openSnackbar}
+        duracao={4000}
+        handleClose={handleCloseSnackbar}
+        tipo='success'
+        mensagem='Critérios de Priorização Salvos com Sucesso!'
+      />
+    </>
   )
 }
 
 SelecionarCriterios.propTypes = {
-  criteriosBeneficio: t.array,
-  criteriosCusto: t.array,
-  criteriosRisco: t.array,
-  criteriosPenalidade: t.array,
-  criteriosEmpresarial: t.array,
-  criteriosTecnico: t.array,
-  handleClickSnackbar: t.func
+  projetoAtual: t.object
 }
 
 export default SelecionarCriterios

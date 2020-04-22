@@ -1,17 +1,16 @@
-import React, { useContext } from 'react'
+import React from 'react'
+import { useHistory } from 'react-router-dom'
 import t from 'prop-types'
-import { Link } from 'react-router-dom'
-import { IconButton } from '@material-ui/core'
+
 import InfoIcon from '@material-ui/icons/Info'
 
 import { TabelaDefault } from 'ui'
 
 import { DETALHE_PROJETO } from 'routes'
 
-import { CriterioContext } from 'contexts/criterios'
-
 const TabelaProjeto = ({ projetos, handleAbrirModalAdd, handleAbriModalDel, handleAbriModalEdt, handleOwner }) => {
-  const { listarTodosCriteriosPorCategoria } = useContext(CriterioContext)
+  const history = useHistory()
+
   const dados = projetos
 
   const colunas = [
@@ -38,16 +37,10 @@ const TabelaProjeto = ({ projetos, handleAbrirModalAdd, handleAbriModalDel, hand
 
   const actions = [
     {
-      icon: () => (
-        <IconButton component={Link} to={{ pathname: DETALHE_PROJETO }} color='inherit'>
-          <InfoIcon />
-        </IconButton>),
+      icon: () => (<InfoIcon />),
       tooltip: 'info',
       onClick: (evt, data) => {
-        window.location.state = {
-          projetoAtual: data
-        }
-        listarTodosCriteriosPorCategoria()
+        history.push(DETALHE_PROJETO.replace(':id', data.id))
       }
     },
     {

@@ -1,4 +1,5 @@
-import React, { useState, useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 
 import {
   AppBar,
@@ -6,46 +7,30 @@ import {
   Tab
 } from '@material-ui/core'
 
-import TabPanel from 'ui/tab-panel'
-import { SnackBar } from 'ui'
+import { TabPanel } from 'ui'
 
 import { AuthContext } from 'contexts/auth'
-import { CriterioContext } from 'contexts/criterios'
+import { ProjetoContext } from 'contexts/projetos'
 
 import InfoProjeto from 'pages/detalhe-projeto/info-projeto'
 import TabelaMembro from 'pages/detalhe-projeto/tabela-membros'
 import SelecionarCriterios from 'pages/detalhe-projeto/selecionar-criterios'
-import ModalAddMembro from 'pages/detalhe-projeto/add-membro-projeto'
 
 const DetalheProjeto = () => {
   const { userLogin } = useContext(AuthContext)
-  const {
-    criteriosBeneficio,
-    criteriosCusto,
-    criteriosRisco,
-    criteriosPenalidade,
-    criteriosEmpresarial,
-    criteriosTecnico
-  } = useContext(CriterioContext)
+  const { projetoAtual, buscarProjeto } = useContext(ProjetoContext)
+  const { id } = useParams()
 
-  const [abrirModalAdd, setAbrirModalAdd] = useState(false)
+  useEffect(() => {
+    console.log('renderizou detalhe')
+    buscarProjeto(id)
+  }, [buscarProjeto, id])
+
   const [value, setValue] = useState(0)
-  const [openSnackbar, setOpenSnackbar] = useState(false)
   const admin = userLogin.user.permissao !== 'ADMIN'
 
   const handleChange = (event, newValue) => {
     setValue(newValue)
-  }
-
-  const handleClickSnackbar = () => {
-    setOpenSnackbar(true)
-  }
-
-  const handleCloseSnackbar = (event, reason) => {
-    if (reason === 'clickaway') {
-      return
-    }
-    setOpenSnackbar(false)
   }
 
   return (
@@ -64,39 +49,20 @@ const DetalheProjeto = () => {
 
       <TabPanel value={value} index={1}>
         <TabelaMembro
-          handleAbrirModal={() => setAbrirModalAdd(true)}
+          projetoAtual={projetoAtual}
         />
       </TabPanel>
 
       <TabPanel value={value} index={2}>
         <SelecionarCriterios
-          criteriosBeneficio={criteriosBeneficio}
-          criteriosCusto={criteriosCusto}
-          criteriosEmpresarial={criteriosEmpresarial}
-          criteriosPenalidade={criteriosPenalidade}
-          criteriosRisco={criteriosRisco}
-          criteriosTecnico={criteriosTecnico}
-          handleClickSnackbar={handleClickSnackbar}
+          projetoAtual={projetoAtual}
         />
       </TabPanel>
-
-      <SnackBar
-        openSnackbar={openSnackbar}
-        duracao={4000}
-        handleClose={handleCloseSnackbar}
-        tipo='success'
-        mensagem='Critérios de Priorização Salvos com Sucesso!'
-      />
-
-      <ModalAddMembro
-        abrir={abrirModalAdd}
-        handleFechar={() => setAbrirModalAdd(false)}
-      />
     </>
   )
 }
 
-function a11yProps (index) {
+const a11yProps = (index) => {
   return {
     id: `simple-tab-${index}`,
     'aria-controls': `simple-tabpanel-${index}`
