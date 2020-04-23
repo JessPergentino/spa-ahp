@@ -11,7 +11,7 @@ import { AuthContext } from 'contexts/auth'
 import { Typography, Grid } from '@material-ui/core'
 
 const PageRequisitos = () => {
-  const { projetoAtual, projetos, listarProjetos } = useContext(ProjetoContext)
+  const { projetos, listarProjetos } = useContext(ProjetoContext)
   const { userLogin } = useContext(AuthContext)
 
   const [projeto, setProjeto] = useState('')
@@ -89,7 +89,7 @@ const PageRequisitos = () => {
                 />
 
                 <ModalAddRequisito
-                  projeto={projetoAtual}
+                  projeto={projeto}
                   abrir={abrirModalAdd}
                   handleFechar={() => setAbrirModalAdd(false)}
                 />
