@@ -42,7 +42,6 @@ const ModalEdtRequisito = ({ projeto, abrir, handleFechar, requisitoAtual }) => 
 
   return (
     <>
-      {console.log('renderizou - editar requisitos')}
       <Modal titulo='Editar Requisito' open={abrir} handleClose={handleFechar} handleSave={alterarRequisito} operacao='Alterar'>
         <TextField
           onChange={(e) => {

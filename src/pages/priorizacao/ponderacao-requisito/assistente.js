@@ -33,7 +33,6 @@ const Assistente = ({ projetoSelecionado }) => {
   }
 
   const getStepContent = (stepIndex) => {
-    console.log('projeto', projetoSelecionado)
     return (
       <TabelaAddPonderacaoRequisito
         projetoSelecionado={projetoSelecionado}

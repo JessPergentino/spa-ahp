@@ -71,8 +71,6 @@ const TabelaRequisitos = (
 
   return (
     <>
-      {console.log('tabela Requisitos')}
-      {console.log(projeto)}
       <TabelaDefault titulo='Lista de Requisitos' columns={colunas} data={dados} actions={actions} />
     </>
   )

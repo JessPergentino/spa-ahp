@@ -57,8 +57,6 @@ const PageRequisitos = () => {
 
   return (
     <>
-      {console.log('requisitos')}
-      {console.log('projeto - requisitos', projeto)}
       <Page>
         <Grid
           container

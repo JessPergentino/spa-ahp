@@ -70,7 +70,6 @@ const ModalAddMembro = ({ abrir, handleFechar, projetoAtual }) => {
 
   return (
     <>
-      {console.log('renderizou - addMembros')}
       <Modal
         titulo='Adicionar Novo Membro'
         open={abrir}

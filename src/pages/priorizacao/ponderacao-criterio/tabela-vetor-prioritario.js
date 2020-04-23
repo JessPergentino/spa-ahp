@@ -4,13 +4,13 @@ import t from 'prop-types'
 import AutorenewIcon from '@material-ui/icons/Autorenew'
 
 import { TabelaDefault } from 'ui'
-import { vetorPrioritario } from 'services/data-fake'
 
-const TabelaVetorPrioritario = ({ handleAbriModal }) => {
+const TabelaVetorPrioritario = ({ vetorPrioritario, handleAbriModal, handleCriterio }) => {
   const colunas = [
     {
-      title: 'Criterio',
-      field: 'criterioId'
+      title: 'Critérios',
+      field: 'criterioId',
+      render: (linha) => handleCriterio(linha)
     },
     {
       title: 'Valor',
@@ -19,7 +19,7 @@ const TabelaVetorPrioritario = ({ handleAbriModal }) => {
     }
   ]
 
-  const handleValorPorcetagem = (linha) => `${linha * 100}%`
+  const handleValorPorcetagem = (linha) => `${(linha * 100).toFixed(2)}%`
 
   const dados = vetorPrioritario.length > 0 ? vetorPrioritario : []
 
@@ -30,18 +30,22 @@ const TabelaVetorPrioritario = ({ handleAbriModal }) => {
     onClick: (evt, data) => handleAbriModal(evt, data)
   }]
   return (
-    <TabelaDefault
-      titulo='Vetor Prioritário dos Critérios'
-      columns={colunas}
-      data={dados}
-      search={false}
-      actions={acoes}
-    />
+    <>
+      <TabelaDefault
+        titulo='Vetor Prioritário dos Critérios'
+        columns={colunas}
+        data={dados}
+        search={false}
+        actions={acoes}
+      />
+    </>
   )
 }
 
 TabelaVetorPrioritario.propTypes = {
-  handleAbriModal: t.func
+  vetorPrioritario: t.array,
+  handleAbriModal: t.func,
+  handleCriterio: t.func
 }
 
 export default TabelaVetorPrioritario

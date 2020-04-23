@@ -15,7 +15,6 @@ const TabelaAddPonderacaoRequisito = ({ projetoSelecionado, criterio }) => {
   const [matriz, setMatriz] = useState(Array.from({ length: projetoSelecionado.requisitos.length }, () => Array.from({ length: projetoSelecionado.requisitos.length }, () => 1)))
 
   useEffect(() => {
-    console.log('ponderação', projetoSelecionado)
     setMatriz(Array.from({ length: projetoSelecionado.requisitos.length }, () => Array.from({ length: projetoSelecionado.requisitos.length }, () => 1)))
   }, [projetoSelecionado])
 
@@ -43,7 +42,6 @@ const TabelaAddPonderacaoRequisito = ({ projetoSelecionado, criterio }) => {
         <TableBody>
           {matriz.map((row, rowIndex) => (
             <TableRow key={rowIndex}>
-              {console.log(matriz.length)}
               <TableCell key={projetoSelecionado.requisitos[rowIndex].id}>{projetoSelecionado.requisitos[rowIndex].titulo}</TableCell>
               {row.map((column, columnIndex) => {
                 if (rowIndex === columnIndex) {

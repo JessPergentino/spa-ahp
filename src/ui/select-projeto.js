@@ -11,7 +11,6 @@ import {
 const SelectProjeto = ({ projetos, projetoSelecionado, handleChangeProjeto }) => {
   return (
     <>
-      {console.log('projetoSelecionado', projetoSelecionado)}
       <FormControl
         variant='outlined'
         style={{

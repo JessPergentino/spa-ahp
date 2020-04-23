@@ -15,7 +15,6 @@ const PageProjetos = () => {
   const { usuarios, listarUsuarios } = useContext(UsuarioContext)
 
   useEffect(() => {
-    console.log('rederizou')
     listarProjetos(userLogin.user.id)
   }, [listarProjetos, userLogin.user.id])
 

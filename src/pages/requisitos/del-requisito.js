@@ -37,7 +37,6 @@ const ModalDelRequisito = ({ projeto, requisitoAtual, abrir, handleFechar }) => 
 
   return (
     <>
-      {console.log('renderizou - deletar requisitos')}
       <Modal titulo='Deseja mesmo deletar este requisito?' open={abrir} handleClose={handleFechar} handleSave={deletarRequisito} operacao='Deletar'>
         <Typography>
           O requisito {requisitoAtual.titulo} e todas as suas dependencias serão deletadas!

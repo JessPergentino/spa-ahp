@@ -17,9 +17,11 @@ import { SnackBar } from 'ui'
 
 import { AuthContext } from 'contexts/auth'
 import api from 'services/api'
+import { CriterioContext } from 'contexts/criterios'
 
-const TabelaEdtPonderacao = ({ projeto }) => {
+const TabelaEdtPonderacao = ({ projeto, handleFechar }) => {
   const { userLogin } = useContext(AuthContext)
+  const { buscarPonderacaoCriterio } = useContext(CriterioContext)
 
   const [matriz, setMatriz] = useState(Array.from({ length: projeto.criterios.length }, () => Array.from({ length: projeto.criterios.length }, () => 1)))
   const [openSnackbar, setOpenSnackbar] = useState(false)
@@ -56,6 +58,8 @@ const TabelaEdtPonderacao = ({ projeto }) => {
 
     api.put('/priorizacoes_criterio', matrizComparacao)
       .then((response) => {
+        buscarPonderacaoCriterio(userLogin.user.id, projeto.id)
+        handleFechar()
         handleClickSnackbar()
       })
   }
@@ -128,7 +132,8 @@ const TabelaEdtPonderacao = ({ projeto }) => {
 }
 
 TabelaEdtPonderacao.propTypes = {
-  projeto: t.any
+  projeto: t.any,
+  handleFechar: t.func
 }
 
 export default TabelaEdtPonderacao

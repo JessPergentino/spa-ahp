@@ -52,8 +52,6 @@ const ModalAddRequisito = ({ projeto, abrir, handleFechar }) => {
 
   return (
     <>
-      {console.log('renderizou - add requisitos')}
-
       <Modal titulo='Novo Requisito' open={abrir} handleClose={handleFechar} handleSave={cadastrarRequisito} operacao='Salvar'>
         <TextField
           onChange={(e) => {

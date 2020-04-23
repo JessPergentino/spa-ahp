@@ -17,11 +17,12 @@ import { SnackBar } from 'ui'
 
 import { AuthContext } from 'contexts/auth'
 import api from 'services/api'
+import { CriterioContext } from 'contexts/criterios'
 
-const TabelaAddPonderacao = ({ projeto }) => {
+const TabelaAddPonderacao = ({ projeto, matriz, handleChangeMatriz }) => {
   const { userLogin } = useContext(AuthContext)
+  const { buscarPonderacaoCriterio } = useContext(CriterioContext)
 
-  const [matriz, setMatriz] = useState(Array.from({ length: projeto.criterios.length }, () => Array.from({ length: projeto.criterios.length }, () => 1)))
   const [openSnackbar, setOpenSnackbar] = useState(false)
 
   const handleClickSnackbar = () => {
@@ -43,7 +44,7 @@ const TabelaAddPonderacao = ({ projeto }) => {
     } else {
       copy[row][column] = +event.target.value
     }
-    setMatriz(copy)
+    handleChangeMatriz(copy)
   }
 
   const handleClickSalvar = () => {
@@ -56,12 +57,15 @@ const TabelaAddPonderacao = ({ projeto }) => {
 
     api.post('/priorizacoes_criterio', matrizComparacao)
       .then((response) => {
+        buscarPonderacaoCriterio(userLogin.user.id, projeto.id)
         handleClickSnackbar()
       })
+    handleClickSnackbar()
   }
 
   return (
     <>
+      {console.log('rederizou tabela')}
       <Grid container spacing={4}>
         <Grid item>
           <TableContainer component={Paper}>
@@ -128,7 +132,9 @@ const TabelaAddPonderacao = ({ projeto }) => {
 }
 
 TabelaAddPonderacao.propTypes = {
-  projeto: t.object
+  projeto: t.object,
+  matriz: t.any,
+  handleChangeMatriz: t.func
 }
 
 export default TabelaAddPonderacao

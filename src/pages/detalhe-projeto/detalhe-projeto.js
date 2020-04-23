@@ -22,7 +22,6 @@ const DetalheProjeto = () => {
   const { idProjeto } = useParams()
 
   useEffect(() => {
-    console.log('renderizou detalhe')
     buscarProjeto(idProjeto)
   }, [buscarProjeto, idProjeto])
 

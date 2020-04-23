@@ -6,13 +6,13 @@ export const CriterioContext = createContext()
 
 const Criterio = ({ children }) => {
   const [criterios, setCriterios] = useState([])
-  const [ponderacaoCriterio, setPonderacaoCriterio] = useState([])
+  const [vetorPrioritarioCriterio, setVetorPrioritarioCriterio] = useState([])
   const [criterio, setCriterio] = useState([])
 
-  const listarPonderacaoCriterio = useCallback((usuarioId, projetoId) => {
+  const buscarPonderacaoCriterio = useCallback((usuarioId, projetoId) => {
     api.get(`/priorizacoes_criterio/${usuarioId}&&${projetoId}`)
       .then((response) => {
-        setPonderacaoCriterio(response.data.vetor)
+        setVetorPrioritarioCriterio(response.data.vetor)
       })
   }, [])
 
@@ -81,9 +81,9 @@ const Criterio = ({ children }) => {
       criterios,
       listarCriteriosPorCategoria,
       listarTodosCriterios,
-      ponderacaoCriterio,
-      setPonderacaoCriterio,
-      listarPonderacaoCriterio,
+      vetorPrioritarioCriterio,
+      setVetorPrioritarioCriterio,
+      buscarPonderacaoCriterio,
       buscarCriterio
     }}
     >

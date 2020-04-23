@@ -2,22 +2,33 @@ import React from 'react'
 import t from 'prop-types'
 
 import {
+  Button,
   Dialog,
   DialogContent,
-  DialogTitle
+  DialogTitle,
+  DialogActions
 } from '@material-ui/core'
 import TabelaEdtPonderacao from 'pages/priorizacao/ponderacao-criterio/edt-ponderacao'
 
 const ModalRefazerPonderacaoCriterios = ({ abrir, handleFechar, projetoSelecionado }) => {
   return (
-    <Dialog open={abrir} onClose={handleFechar} aria-labelledby='form-dialog-title'>
-      <DialogTitle id='form-dialog-title'>Refazer Ponderação dos Critérios</DialogTitle>
-      <DialogContent>
-        <TabelaEdtPonderacao
-          projeto={projetoSelecionado}
-        />
-      </DialogContent>
-    </Dialog>
+    <>
+      <Dialog fullWidth maxWidth='md' open={abrir} onClose={handleFechar} aria-labelledby='form-dialog-title'>
+        <DialogTitle id='form-dialog-title'>Refazer Ponderação dos Critérios</DialogTitle>
+        <DialogContent>
+          <TabelaEdtPonderacao
+            projeto={projetoSelecionado}
+            handleFechar={handleFechar}
+          />
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleFechar} variant='outlined' color='primary'>
+            Fechar
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   )
 }
 
