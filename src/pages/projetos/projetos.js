@@ -2,8 +2,7 @@ import React, { useState, useContext, useEffect } from 'react'
 
 import { AuthContext } from 'contexts/auth'
 import { ProjetoContext } from 'contexts/projetos'
-
-import { listaUsuarios } from 'services/data-fake'
+import { UsuarioContext } from 'contexts/usuarios'
 
 import TabelaProjeto from 'pages/projetos/tabela-projeto'
 import ModalAddProjeto from 'pages/projetos/add-projeto'
@@ -13,11 +12,16 @@ import ModalDelProjeto from 'pages/projetos/del-projeto'
 const PageProjetos = () => {
   const { userLogin } = useContext(AuthContext)
   const { projetos, listarProjetos } = useContext(ProjetoContext)
+  const { usuarios, listarUsuarios } = useContext(UsuarioContext)
 
   useEffect(() => {
     console.log('rederizou')
     listarProjetos(userLogin.user.id)
   }, [listarProjetos, userLogin.user.id])
+
+  useEffect(() => {
+    listarUsuarios()
+  }, [listarUsuarios])
 
   const [abrirModalAdd, setAbrirModalAdd] = useState(false)
   const [abrirModalEdt, setAbrirModalEdt] = useState(false)
@@ -47,8 +51,11 @@ const PageProjetos = () => {
   }
 
   const handleOwner = (ownerId) => {
-    const usuario = listaUsuarios.filter((usuario) => usuario.id === ownerId)
-    return usuario[0].nome
+    if (usuarios.length > 0) {
+      const usuario = usuarios.filter((usuario) => usuario.id === ownerId)
+      return usuario[0].nome
+    }
+    return ''
   }
 
   return (

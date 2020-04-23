@@ -6,7 +6,7 @@ export const ProjetoContext = createContext()
 
 const Projeto = ({ children }) => {
   const [projetos, setProjetos] = useState([])
-  const [projetoAtual, setProjetoAtual] = useState('')
+  const [projetoAtual, setProjetoAtual] = useState(null)
   const [owner, setOwner] = useState(null)
 
   const listarProjetos = useCallback((idUsuario) => {
