@@ -3,9 +3,8 @@ import {
   Grid, Typography
 } from '@material-ui/core'
 
-import { Page } from 'ui'
+import { Page, SelectProjeto } from 'ui'
 import TabelaAddPonderacao from 'pages/priorizacao/ponderacao-criterio/add-ponderacao'
-import SelectProjeto from 'pages/priorizacao/select-projeto'
 import TabelaVetorPrioritario from 'pages/priorizacao/ponderacao-criterio/tabela-vetor-prioritario'
 import ModalRefazerPonderacaoCriterios from 'pages/priorizacao/ponderacao-criterio/modal-refazer-ponderacao'
 

@@ -1,21 +1,32 @@
-import React, { useState, useContext } from 'react'
-
-import { AuthContext } from 'contexts/auth'
+import React, { useState, useContext, useEffect } from 'react'
 
 import ModalAddRequisito from 'pages/requisitos/add-requisito'
 import ModalEdtRequisito from 'pages/requisitos/edt-requisito'
 import ModalDelRequisito from 'pages/requisitos/del-requisito'
 import TabelaRequisitos from 'pages/requisitos/tabela-requisitos'
-import { Alerta } from 'ui'
+import { SelectProjeto, Page } from 'ui'
+
+import { ProjetoContext } from 'contexts/projetos'
+import { AuthContext } from 'contexts/auth'
+import { Typography, Grid } from '@material-ui/core'
 
 const PageRequisitos = () => {
+  const { projetoAtual, projetos, listarProjetos, buscarProjeto } = useContext(ProjetoContext)
   const { userLogin } = useContext(AuthContext)
+
+  const [projeto, setProjeto] = useState('')
+
+  useEffect(() => {
+    listarProjetos(userLogin.user.id)
+  }, [listarProjetos, userLogin.user.id])
+
+  useEffect(() => {
+    setProjeto(projetoAtual)
+  }, [projetoAtual])
 
   const [abrirModalAdd, setAbrirModalAdd] = useState(false)
   const [abrirModalEdt, setAbrirModalEdt] = useState(false)
   const [abrirModalDel, setAbrirModalDel] = useState(false)
-  const [projeto, setProjeto] = useState('')
-  const [alertaAddRequisito, setAlertaAddRequisito] = useState(false)
 
   const [requisitoInfo, setRequisitoInfo] = useState({
     id: null,
@@ -31,11 +42,7 @@ const PageRequisitos = () => {
   })
 
   const handleAbriModalAdd = () => {
-    if (projeto !== '') {
-      setAbrirModalAdd(true)
-    } else {
-      setAlertaAddRequisito(true)
-    }
+    setAbrirModalAdd(true)
   }
 
   const handleAbriModalEdt = (evt, data) => {
@@ -48,48 +55,69 @@ const PageRequisitos = () => {
     setRequisitoInfo({ ...data })
   }
 
-  const handleChangeProjeto = (e) => {
-    setProjeto(e.target.value)
+  const handleChangeProjeto = (evt, data) => {
+    buscarProjeto(evt.target.value.id)
   }
-
-  const mensagemAddRequisito = 'Antes de Adicionar um Requisito, selecione um Projeto'
 
   return (
     <>
-      {alertaAddRequisito && (
-        <Alerta
-          severidade='warning'
-          mensagem={mensagemAddRequisito}
-          onClose={() => setAlertaAddRequisito(false)}
-        />
-      )}
+      {console.log('requisitos')}
+      {console.log('projeto - requisitos', projeto)}
+      <Page>
+        <Grid
+          container
+          direction='column'
+          justify='center'
+          alignItems='stretch'
+          spacing={3}
+        >
 
-      <TabelaRequisitos
-        projeto={projeto}
-        handleAbrirAdd={handleAbriModalAdd}
-        handleAbriModalEdt={handleAbriModalEdt}
-        handleAbriModalDel={handleAbriModalDel}
-        handleChangeProjeto={handleChangeProjeto}
-      />
+          <Grid item>
+            <Typography>Selecione um projeto para visualizar os Requisitos</Typography>
+          </Grid>
 
-      <ModalAddRequisito
-        projetoAtualId={projeto.id}
-        usuarioId={userLogin.user.id}
-        abrir={abrirModalAdd}
-        handleFechar={() => setAbrirModalAdd(false)}
-      />
+          <Grid item>
+            <SelectProjeto
+              projetos={projetos}
+              projetoSelecionado={projeto}
+              handleChangeProjeto={handleChangeProjeto}
+            />
+          </Grid>
 
-      <ModalEdtRequisito
-        abrir={abrirModalEdt}
-        handleFechar={() => setAbrirModalEdt(false)}
-        requisitoAtual={requisitoInfo}
-      />
+          <Grid item>
+            {projeto && (
+              <>
+                <TabelaRequisitos
+                  projeto={projeto}
+                  handleAbrirAdd={handleAbriModalAdd}
+                  handleAbriModalEdt={handleAbriModalEdt}
+                  handleAbriModalDel={handleAbriModalDel}
+                />
 
-      <ModalDelRequisito
-        requisitoAtual={requisitoInfo}
-        abrir={abrirModalDel}
-        handleFechar={() => setAbrirModalDel(false)}
-      />
+                <ModalAddRequisito
+                  projeto={projetoAtual}
+                  abrir={abrirModalAdd}
+                  handleFechar={() => setAbrirModalAdd(false)}
+                />
+
+                <ModalEdtRequisito
+                  projeto={projeto}
+                  abrir={abrirModalEdt}
+                  handleFechar={() => setAbrirModalEdt(false)}
+                  requisitoAtual={requisitoInfo}
+                />
+
+                <ModalDelRequisito
+                  projeto={projeto}
+                  requisitoAtual={requisitoInfo}
+                  abrir={abrirModalDel}
+                  handleFechar={() => setAbrirModalDel(false)}
+                />
+              </>
+            )}
+          </Grid>
+        </Grid>
+      </Page>
     </>
   )
 }

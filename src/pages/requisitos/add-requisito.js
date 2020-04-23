@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import t from 'prop-types'
 
 import {
@@ -6,10 +6,18 @@ import {
   Tooltip
 } from '@material-ui/core'
 
-import { Modal } from 'ui'
+import { Modal, SnackBar } from 'ui'
 
-const ModalAddRequisito = ({ projetoAtualId, usuarioId, abrir, handleFechar }) => {
+import { AuthContext } from 'contexts/auth'
+
+import api from 'services/api'
+import { ProjetoContext } from 'contexts/projetos'
+
+const ModalAddRequisito = ({ projeto, abrir, handleFechar }) => {
+  const { userLogin } = useContext(AuthContext)
+  const { buscarProjeto } = useContext(ProjetoContext)
   const [requisito, setRequisito] = useState({})
+  const [openSnackbar, setOpenSnackbar] = useState(false)
 
   const cadastrarRequisito = () => {
     const { titulo, descricao, estimativa, codReferencia } = requisito
@@ -19,81 +27,107 @@ const ModalAddRequisito = ({ projetoAtualId, usuarioId, abrir, handleFechar }) =
       descricao,
       codReferencia,
       estimativa,
-      ProjetoId: projetoAtualId,
-      UsuarioId: usuarioId
+      ProjetoId: projeto.id,
+      UsuarioId: userLogin.user.id
     }
 
-    console.log(novoRequisito)
+    api.post('/requisitos', novoRequisito)
+      .then((response) => {
+        buscarProjeto(projeto.id)
+        handleOpenSnackbar()
+      })
     handleFechar()
   }
 
+  const handleOpenSnackbar = () => {
+    setOpenSnackbar(true)
+  }
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setOpenSnackbar(false)
+  }
+
   return (
-    <Modal titulo='Novo Requisito' open={abrir} handleClose={handleFechar} handleSave={cadastrarRequisito} operacao='Salvar'>
-      <TextField
-        onChange={(e) => {
-          const val = e.target.value
-          setRequisito(prevState => {
-            return { ...prevState, codReferencia: val }
-          })
-        }}
-        autoFocus
-        margin='normal'
-        id='codReferencia'
-        label='Código de Referência'
-        type='text'
-        fullWidth
-      />
+    <>
+      {console.log('renderizou - add requisitos')}
 
-      <TextField
-        onChange={(e) => {
-          const val = e.target.value
-          setRequisito(prevState => {
-            return { ...prevState, titulo: val }
-          })
-        }}
-        margin='normal'
-        id='titulo'
-        label='Título'
-        type='text'
-        fullWidth
-      />
-
-      <TextField
-        onChange={(e) => {
-          const val = e.target.value
-          setRequisito(prevState => {
-            return { ...prevState, descricao: val }
-          })
-        }}
-        margin='normal'
-        id='descricao'
-        label='Descrição'
-        type='text'
-        multiline
-        rows='4'
-        fullWidth
-      />
-      <Tooltip title='A estimativa deve ser em dias'>
+      <Modal titulo='Novo Requisito' open={abrir} handleClose={handleFechar} handleSave={cadastrarRequisito} operacao='Salvar'>
         <TextField
           onChange={(e) => {
             const val = e.target.value
             setRequisito(prevState => {
-              return { ...prevState, estimativa: val }
+              return { ...prevState, codReferencia: val }
+            })
+          }}
+          autoFocus
+          margin='normal'
+          id='codReferencia'
+          label='Código de Referência'
+          type='text'
+          fullWidth
+        />
+
+        <TextField
+          onChange={(e) => {
+            const val = e.target.value
+            setRequisito(prevState => {
+              return { ...prevState, titulo: val }
             })
           }}
           margin='normal'
-          id='estimativa'
-          label='Estimativa'
-          type='number'
+          id='titulo'
+          label='Título'
+          type='text'
+          fullWidth
         />
-      </Tooltip>
-    </Modal>
+
+        <TextField
+          onChange={(e) => {
+            const val = e.target.value
+            setRequisito(prevState => {
+              return { ...prevState, descricao: val }
+            })
+          }}
+          margin='normal'
+          id='descricao'
+          label='Descrição'
+          type='text'
+          multiline
+          rows='4'
+          fullWidth
+        />
+        <Tooltip title='A estimativa deve ser em dias'>
+          <TextField
+            onChange={(e) => {
+              const val = e.target.value
+              setRequisito(prevState => {
+                return { ...prevState, estimativa: val }
+              })
+            }}
+            margin='normal'
+            id='estimativa'
+            label='Estimativa'
+            type='number'
+          />
+        </Tooltip>
+      </Modal>
+
+      <SnackBar
+        openSnackbar={openSnackbar}
+        duracao={4000}
+        handleClose={handleCloseSnackbar}
+        tipo='success'
+        mensagem='Requisito adicionado com Sucesso!'
+      />
+    </>
   )
 }
 
 ModalAddRequisito.propTypes = {
-  projetoAtualId: t.number,
-  usuarioId: t.number,
+  projeto: t.object,
   abrir: t.bool,
   handleFechar: t.func
 }

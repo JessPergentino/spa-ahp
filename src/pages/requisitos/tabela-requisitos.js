@@ -1,38 +1,22 @@
-import React, { useContext, useEffect } from 'react'
+import React from 'react'
 import t from 'prop-types'
 
-import { Link } from 'react-router-dom'
-import {
-  IconButton,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel
-} from '@material-ui/core'
+import { useHistory } from 'react-router-dom'
 import InfoIcon from '@material-ui/icons/Info'
-import { MTableToolbar } from 'material-table'
 
 import { TabelaDefault } from 'ui'
 
 import { DETALHE_REQUISITO } from 'routes'
-import { ProjetoContext } from 'contexts/projetos'
-import { AuthContext } from 'contexts/auth'
 
 const TabelaRequisitos = (
   {
     projeto,
     handleAbrirAdd,
     handleAbriModalEdt,
-    handleAbriModalDel,
-    handleChangeProjeto
+    handleAbriModalDel
   }
 ) => {
-  const { projetos, listarProjetos } = useContext(ProjetoContext)
-  const { userLogin } = useContext(AuthContext)
-
-  useEffect(() => {
-    listarProjetos(userLogin.user.id)
-  }, [listarProjetos, userLogin.user.id])
+  const history = useHistory()
 
   const colunas = [
     {
@@ -53,15 +37,10 @@ const TabelaRequisitos = (
 
   const actions = [
     {
-      icon: () => (
-        <IconButton component={Link} to={{ pathname: DETALHE_REQUISITO }} color='inherit'>
-          <InfoIcon />
-        </IconButton>),
+      icon: () => (<InfoIcon />),
       tooltip: 'info',
       onClick: (evt, data) => {
-        window.location.state = {
-          requisito: data
-        }
+        history.push(DETALHE_REQUISITO.replace(':idRequisito', data.id))
       }
     },
     {
@@ -83,51 +62,20 @@ const TabelaRequisitos = (
     }
   ]
 
-  const toolbar = {
-    Toolbar: props => (
-      <div>
-        <MTableToolbar {...props} />
-        <div style={{ padding: '0px 10px' }}>
-          <FormControl
-            variant='outlined'
-            style={{
-              margin: '8px',
-              minWidth: 200
-            }}
-          >
-            <InputLabel id='label-select-projeto'>Selecione o Projeto</InputLabel>
-            <Select
-              labelId='label-select-projeto'
-              id='select-projeto'
-              value={projeto}
-              onChange={handleChangeProjeto}
-              label='Selecione o Projeto'
-            >
-              {projetos ? projetos.map((projeto) => (
-                <MenuItem
-                  key={projeto.id}
-                  value={projeto}
-                >
-                  {projeto.nome}
-                </MenuItem>
-              )) : []}
-            </Select>
-          </FormControl>
-        </div>
-      </div>
-    )
-  }
   return (
-    <TabelaDefault titulo='Lista de Requisitos' columns={colunas} data={dados} actions={actions} components={toolbar} />
+    <>
+      {console.log('tabela Requisitos')}
+      {console.log(projeto)}
+      <TabelaDefault titulo='Lista de Requisitos' columns={colunas} data={dados} actions={actions} />
+    </>
   )
 }
 
 TabelaRequisitos.propTypes = {
-  projeto: t.any,
+  projeto: t.object,
   handleAbrirAdd: t.func,
   handleAbriModalEdt: t.func,
-  handleAbriModalDel: t.func,
-  handleChangeProjeto: t.func
+  handleAbriModalDel: t.func
 }
 
 export default TabelaRequisitos

@@ -1,52 +1,58 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useContext } from 'react'
 
 import { singularPlural } from 'services/utils'
 import { Page } from 'ui'
 import CampoPage from 'ui/campo-page'
-import { listaUsuarios } from 'services/data-fake'
+import { RequisitoContext } from 'contexts/requisitos'
+import { useParams } from 'react-router-dom'
+import { Typography } from '@material-ui/core'
 
 const DetalheRequisito = () => {
-  const [requisitoAtual, setRequisitoAtual] = useState(window.location.state.requisito)
-  const [usuario, setUsuario] = useState({})
-  const user = listaUsuarios.filter((user) => user.id === window.location.state.requisito.UsuarioId)
+  const { requisitoAtual, buscarRequisito } = useContext(RequisitoContext)
+  const { idRequisito } = useParams()
 
   useEffect(() => {
-    setRequisitoAtual(window.location.state.requisito)
-    setUsuario(user[0])
-  }, [user])
+    buscarRequisito(idRequisito)
+  }, [buscarRequisito, idRequisito])
 
   return (
-    <Page>
-      <CampoPage
-        titulo='Código de Referência'
-        info={requisitoAtual.codReferencia}
-      />
+    <>
+      {requisitoAtual !== null && (
+        <Page>
+          <Typography variant='h4' style={{ margin: '20px' }}> Informações do Requisito </Typography>
 
-      <CampoPage
-        titulo='Título'
-        info={requisitoAtual.titulo}
-      />
+          <CampoPage
+            titulo='Código de Referência'
+            info={requisitoAtual.codReferencia}
+          />
 
-      <CampoPage
-        titulo='Descrição'
-        info={requisitoAtual.descricao}
-      />
+          <CampoPage
+            titulo='Título'
+            info={requisitoAtual.titulo}
+          />
 
-      <CampoPage
-        titulo='Estimativa'
-        info={requisitoAtual.estimativa + ' ' + singularPlural(requisitoAtual.estimativa, 'dia', 'dias')}
-      />
+          <CampoPage
+            titulo='Descrição'
+            info={requisitoAtual.descricao}
+          />
 
-      <CampoPage
-        titulo='Prioridade'
-        info={requisitoAtual.prioridade ? requisitoAtual.prioridade : 'Este requisito ainda não foi priorizado'}
-      />
+          <CampoPage
+            titulo='Estimativa'
+            info={requisitoAtual.estimativa + ' ' + singularPlural(requisitoAtual.estimativa, 'dia', 'dias')}
+          />
 
-      <CampoPage
-        titulo='Criado Por'
-        info={`${usuario.nome} - ${requisitoAtual.createdAt.toLocaleDateString()}`}
-      />
-    </Page>
+          <CampoPage
+            titulo='Prioridade'
+            info={requisitoAtual.prioridade ? requisitoAtual.prioridade : 'Este requisito ainda não foi priorizado'}
+          />
+
+          <CampoPage
+            titulo='Criado Por'
+            info={`${requisitoAtual.usuarioId} - ${requisitoAtual.createdAt}`}
+          />
+        </Page>
+      )}
+    </>
   )
 }
 

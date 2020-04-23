@@ -3,9 +3,8 @@ import {
   Typography, Grid
 } from '@material-ui/core'
 
-import { Page } from 'ui'
+import { Page, SelectProjeto } from 'ui'
 import Assistente from 'pages/priorizacao/ponderacao-requisito/assistente'
-import SelectProjeto from 'pages/priorizacao/select-projeto'
 import { ProjetoContext } from 'contexts/projetos'
 import { AuthContext } from 'contexts/auth'
 

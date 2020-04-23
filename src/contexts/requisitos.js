@@ -4,7 +4,7 @@ import api from 'services/api'
 
 export const RequisitoContext = createContext()
 
-function Requisito ({ children }) {
+const Requisito = ({ children }) => {
   const [requisitos, setRequisitos] = useState([])
   const [requisitoAtual, setRequisitoAtual] = useState(null)
 
@@ -16,7 +16,10 @@ function Requisito ({ children }) {
   }, [])
 
   const buscarRequisito = useCallback((id) => {
-    console.log('implementar Buscar Requisito')
+    api.get(`/requisitos/${id}`)
+      .then((response) => {
+        setRequisitoAtual(response.data)
+      })
   }, [])
 
   return (

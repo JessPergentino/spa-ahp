@@ -8,8 +8,7 @@ import {
   Grid
 } from '@material-ui/core'
 
-import { Page, TabPanel } from 'ui'
-import SelectProjeto from 'pages/priorizacao/select-projeto'
+import { Page, TabPanel, SelectProjeto } from 'ui'
 import { ProjetoContext } from 'contexts/projetos'
 import { AuthContext } from 'contexts/auth'
 
