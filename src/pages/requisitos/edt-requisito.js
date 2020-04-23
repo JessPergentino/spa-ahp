@@ -9,10 +9,10 @@ import {
 import { Modal, SnackBar } from 'ui'
 
 import api from 'services/api'
-import { ProjetoContext } from 'contexts/projetos'
+import { RequisitoContext } from 'contexts/requisitos'
 
 const ModalEdtRequisito = ({ projeto, abrir, handleFechar, requisitoAtual }) => {
-  const { buscarProjeto } = useContext(ProjetoContext)
+  const { listarRequisitos } = useContext(RequisitoContext)
   const [requisito, setRequisito] = useState(requisitoAtual)
   const [openSnackbar, setOpenSnackbar] = useState(false)
 
@@ -23,7 +23,7 @@ const ModalEdtRequisito = ({ projeto, abrir, handleFechar, requisitoAtual }) => 
   const alterarRequisito = () => {
     api.put(`/requisitos/${requisito.id}`, requisito)
       .then((response) => {
-        buscarProjeto(projeto.id)
+        listarRequisitos(projeto.id)
         handleOpenSnackbar()
       })
     handleFechar()

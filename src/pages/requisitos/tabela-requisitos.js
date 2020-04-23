@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import t from 'prop-types'
 
 import { useHistory } from 'react-router-dom'
@@ -7,6 +7,7 @@ import InfoIcon from '@material-ui/icons/Info'
 import { TabelaDefault } from 'ui'
 
 import { DETALHE_REQUISITO } from 'routes'
+import { RequisitoContext } from 'contexts/requisitos'
 
 const TabelaRequisitos = (
   {
@@ -16,6 +17,12 @@ const TabelaRequisitos = (
     handleAbriModalDel
   }
 ) => {
+  const { requisitos, listarRequisitos } = useContext(RequisitoContext)
+
+  useEffect(() => {
+    listarRequisitos(projeto.id)
+  }, [listarRequisitos, projeto])
+
   const history = useHistory()
 
   const colunas = [
@@ -33,7 +40,7 @@ const TabelaRequisitos = (
     }
   ]
 
-  const dados = projeto.requisitos
+  const dados = requisitos
 
   const actions = [
     {

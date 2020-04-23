@@ -8,17 +8,17 @@ import {
 import { Modal, SnackBar } from 'ui'
 
 import api from 'services/api'
-import { ProjetoContext } from 'contexts/projetos'
+import { RequisitoContext } from 'contexts/requisitos'
 
 const ModalDelRequisito = ({ projeto, requisitoAtual, abrir, handleFechar }) => {
-  const { buscarProjeto } = useContext(ProjetoContext)
+  const { listarRequisitos } = useContext(RequisitoContext)
 
   const [openSnackbar, setOpenSnackbar] = useState(false)
 
   const deletarRequisito = () => {
     api.delete(`/requisitos/${requisitoAtual.id}`)
       .then((response) => {
-        buscarProjeto(projeto.id)
+        listarRequisitos(projeto.id)
         handleOpenSnackbar()
       })
     handleFechar()

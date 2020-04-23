@@ -11,7 +11,7 @@ import { AuthContext } from 'contexts/auth'
 import { Typography, Grid } from '@material-ui/core'
 
 const PageRequisitos = () => {
-  const { projetoAtual, projetos, listarProjetos, buscarProjeto } = useContext(ProjetoContext)
+  const { projetoAtual, projetos, listarProjetos } = useContext(ProjetoContext)
   const { userLogin } = useContext(AuthContext)
 
   const [projeto, setProjeto] = useState('')
@@ -19,10 +19,6 @@ const PageRequisitos = () => {
   useEffect(() => {
     listarProjetos(userLogin.user.id)
   }, [listarProjetos, userLogin.user.id])
-
-  useEffect(() => {
-    setProjeto(projetoAtual)
-  }, [projetoAtual])
 
   const [abrirModalAdd, setAbrirModalAdd] = useState(false)
   const [abrirModalEdt, setAbrirModalEdt] = useState(false)
@@ -56,7 +52,7 @@ const PageRequisitos = () => {
   }
 
   const handleChangeProjeto = (evt, data) => {
-    buscarProjeto(evt.target.value.id)
+    setProjeto(evt.target.value)
   }
 
   return (
