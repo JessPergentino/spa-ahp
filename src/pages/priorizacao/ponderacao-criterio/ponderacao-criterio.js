@@ -5,8 +5,8 @@ import {
 
 import { Page, SelectProjeto } from 'ui'
 import TabelaAddPonderacao from 'pages/priorizacao/ponderacao-criterio/add-ponderacao'
-import TabelaVetorPrioritario from 'pages/priorizacao/ponderacao-criterio/tabela-vetor-prioritario'
-import ModalRefazerPonderacaoCriterios from 'pages/priorizacao/ponderacao-criterio/modal-refazer-ponderacao'
+import TabelaVetorPrioritarioCriterio from 'pages/priorizacao/ponderacao-criterio/tabela-vetor-prioritario-criterio'
+import ModalRefazerPonderacaoCriterios from 'pages/priorizacao/ponderacao-criterio/modal-refazer-ponderacao-criterio'
 
 import { ProjetoContext } from 'contexts/projetos'
 import { AuthContext } from 'contexts/auth'
@@ -82,7 +82,7 @@ const PonderacaoCriterios = () => {
           <Grid item>
             {exibirVetor &&
               (
-                <TabelaVetorPrioritario
+                <TabelaVetorPrioritarioCriterio
                   vetorPrioritario={vetorPrioritarioCriterio}
                   handleAbriModal={handleAbriModalEdt}
                   handleCriterio={handleCriterio}

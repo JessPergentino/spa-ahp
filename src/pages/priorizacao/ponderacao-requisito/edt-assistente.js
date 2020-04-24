@@ -8,7 +8,7 @@ import {
   Button,
   Typography
 } from '@material-ui/core/'
-import TabelaAddPonderacaoRequisito from 'pages/priorizacao/ponderacao-requisito/add-ponderacao'
+import TabelaEdtPonderacaoRequisito from 'pages/priorizacao/ponderacao-requisito/edt-ponderacao'
 
 import { SnackBar } from 'ui'
 
@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const Assistente = ({ projetoSelecionado, matriz, handleChangeMatriz }) => {
+const EdtAssistente = ({ projetoSelecionado }) => {
   const classes = useStyles()
 
   const { userLogin } = useContext(AuthContext)
@@ -37,6 +37,7 @@ const Assistente = ({ projetoSelecionado, matriz, handleChangeMatriz }) => {
 
   const [activeStep, setActiveStep] = useState(0)
   const [openSnackbar, setOpenSnackbar] = useState(false)
+  const [matriz, setMatriz] = useState(Array.from({ length: projetoSelecionado.requisitos.length }, () => Array.from({ length: projetoSelecionado.requisitos.length }, () => 1)))
 
   const handleOpenSnackbar = () => {
     setOpenSnackbar(true)
@@ -49,6 +50,10 @@ const Assistente = ({ projetoSelecionado, matriz, handleChangeMatriz }) => {
     setOpenSnackbar(false)
   }
 
+  const handleChangeMatriz = (copy) => {
+    setMatriz(copy)
+  }
+
   const getSteps = () => {
     const criterios = projetoSelecionado.criterios.map((item) => item.nome)
     return criterios
@@ -56,7 +61,7 @@ const Assistente = ({ projetoSelecionado, matriz, handleChangeMatriz }) => {
 
   const getStepContent = (stepIndex) => {
     return (
-      <TabelaAddPonderacaoRequisito
+      <TabelaEdtPonderacaoRequisito
         matriz={matriz}
         handleChangeMatriz={handleChangeMatriz}
         projetoSelecionado={projetoSelecionado}
@@ -79,13 +84,13 @@ const Assistente = ({ projetoSelecionado, matriz, handleChangeMatriz }) => {
     }
 
     if (activeStep === steps.length - 1) {
-      api.post('/priorizacoes_requisito', ponderacao)
+      api.put('/priorizacoes_requisito', ponderacao)
         .then((response) => {
           buscarPonderacaoRequisito(userLogin.user.id, projetoSelecionado.id)
           handleOpenSnackbar()
         })
     } else {
-      api.post('/priorizacoes_requisito', ponderacao)
+      api.put('/priorizacoes_requisito', ponderacao)
         .then((response) => {
           handleOpenSnackbar()
         })
@@ -145,10 +150,8 @@ const Assistente = ({ projetoSelecionado, matriz, handleChangeMatriz }) => {
   )
 }
 
-Assistente.propTypes = {
-  projetoSelecionado: t.object,
-  matriz: t.any,
-  handleChangeMatriz: t.func
+EdtAssistente.propTypes = {
+  projetoSelecionado: t.any
 }
 
-export default Assistente
+export default EdtAssistente

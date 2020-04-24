@@ -1,14 +1,19 @@
 import React, { useState, useContext, useEffect } from 'react'
 import {
-  Typography, Grid
+  Typography,
+  Grid,
+  IconButton,
+  Tooltip
 } from '@material-ui/core'
+import AutorenewIcon from '@material-ui/icons/Autorenew'
 
 import { Page, SelectProjeto } from 'ui'
-import Assistente from 'pages/priorizacao/ponderacao-requisito/assistente'
+import AddAssistente from 'pages/priorizacao/ponderacao-requisito/add-assistente'
 import { ProjetoContext } from 'contexts/projetos'
 import { AuthContext } from 'contexts/auth'
 import { CriterioContext } from 'contexts/criterios'
 import VizualizacaoVetorPrioritario from 'pages/priorizacao/ponderacao-requisito/vizualizacao-vetor-prioritario'
+import ModalRefazerPonderacaoRequisitos from 'pages/priorizacao/ponderacao-requisito/modal-refazer-ponderacao-requisitos'
 
 const PonderacaoRequisito = () => {
   const { projetos, listarProjetos } = useContext(ProjetoContext)
@@ -16,6 +21,7 @@ const PonderacaoRequisito = () => {
   const { vetorPrioritarioRequisito, buscarPonderacaoRequisito } = useContext(CriterioContext)
 
   const [projetoSelecionado, setProjetoSelecionado] = useState('')
+  const [abrirModalEdt, setAbrirModalEdt] = useState(false)
   const [matriz, setMatriz] = useState([[]])
 
   const exibirVetor = projetoSelecionado !== '' && vetorPrioritarioRequisito.length > 0
@@ -38,6 +44,14 @@ const PonderacaoRequisito = () => {
     setMatriz(copy)
   }
 
+  const handleAbriModalEdt = (evt, data) => {
+    setAbrirModalEdt(true)
+  }
+
+  const handleFecharModalEdt = () => {
+    setAbrirModalEdt(false)
+  }
+
   return (
     <>
       <Page>
@@ -53,16 +67,34 @@ const PonderacaoRequisito = () => {
           </Grid>
 
           <Grid item>
-            <SelectProjeto
-              projetos={projetos}
-              projetoSelecionado={projetoSelecionado}
-              handleChangeProjeto={handleChangeProjeto}
-            />
+            <Grid
+              container
+              direction='row'
+              justify='space-between'
+              alignItems='center'
+            >
+              <Grid item>
+                <SelectProjeto
+                  projetos={projetos}
+                  projetoSelecionado={projetoSelecionado}
+                  handleChangeProjeto={handleChangeProjeto}
+                />
+              </Grid>
+              <Grid item>
+                {projetoSelecionado !== '' && (
+                  <Tooltip title='Refazer Ponderação dos Requisitos'>
+                    <IconButton onClick={handleAbriModalEdt}>
+                      <AutorenewIcon />
+                    </IconButton>
+                  </Tooltip>
+                )}
+              </Grid>
+            </Grid>
           </Grid>
 
           <Grid item>
             {exibirTabela && (
-              <Assistente
+              <AddAssistente
                 matriz={matriz}
                 handleChangeMatriz={handleChangeMatriz}
                 projetoSelecionado={projetoSelecionado}
@@ -78,6 +110,12 @@ const PonderacaoRequisito = () => {
           </Grid>
         </Grid>
       </Page>
+
+      <ModalRefazerPonderacaoRequisitos
+        abrir={abrirModalEdt}
+        handleFechar={handleFecharModalEdt}
+        projetoSelecionado={projetoSelecionado}
+      />
     </>
   )
 }

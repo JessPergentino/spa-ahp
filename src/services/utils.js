@@ -4,3 +4,5 @@ export const singularPlural = (numero, singular, plural) => {
   }
   return singular
 }
+
+export const handleValorPorcetagem = (linha) => `${(linha * 100).toFixed(2)}%`
