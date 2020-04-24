@@ -59,7 +59,6 @@ const PonderacaoCriterios = () => {
   }
   return (
     <>
-      {console.log(matriz)}
       <Page>
         <Grid
           container

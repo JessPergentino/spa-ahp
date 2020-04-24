@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import t from 'prop-types'
 import {
   Table,
@@ -11,13 +11,7 @@ import {
   Paper
 } from '@material-ui/core'
 
-const TabelaAddPonderacaoRequisito = ({ projetoSelecionado, criterio }) => {
-  const [matriz, setMatriz] = useState(Array.from({ length: projetoSelecionado.requisitos.length }, () => Array.from({ length: projetoSelecionado.requisitos.length }, () => 1)))
-
-  useEffect(() => {
-    setMatriz(Array.from({ length: projetoSelecionado.requisitos.length }, () => Array.from({ length: projetoSelecionado.requisitos.length }, () => 1)))
-  }, [projetoSelecionado])
-
+const TabelaAddPonderacaoRequisito = ({ projetoSelecionado, criterio, matriz, handleChangeMatriz }) => {
   const handleChange = (row, column, event) => {
     const copy = [...matriz]
     if (event.target.value.includes('/')) {
@@ -25,57 +19,61 @@ const TabelaAddPonderacaoRequisito = ({ projetoSelecionado, criterio }) => {
     } else {
       copy[row][column] = +event.target.value
     }
-    setMatriz(copy)
+    handleChangeMatriz(copy)
   }
 
   return (
-    <TableContainer component={Paper}>
-      <Table aria-label='simple table'>
-        <TableHead>
-          <TableRow>
-            <TableCell>{criterio}</TableCell>
-            {projetoSelecionado.requisitos.map((requisito) => (
-              <TableCell key={requisito.id}>{requisito.titulo}</TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {matriz.map((row, rowIndex) => (
-            <TableRow key={rowIndex}>
-              <TableCell key={projetoSelecionado.requisitos[rowIndex].id}>{projetoSelecionado.requisitos[rowIndex].titulo}</TableCell>
-              {row.map((column, columnIndex) => {
-                if (rowIndex === columnIndex) {
-                  return (
-                    <TableCell key={columnIndex}>
-                      <TextField
-                        variant='outlined'
-                        disabled
-                        value={1}
-                      />
-                    </TableCell>
-                  )
-                } else {
-                  return (
-                    <TableCell key={columnIndex}>
-                      <TextField
-                        variant='outlined'
-                        onChange={e => handleChange(rowIndex, columnIndex, e)}
-                      />
-                    </TableCell>
-                  )
-                }
-              })}
+    <>
+      <TableContainer component={Paper}>
+        <Table aria-label='simple table'>
+          <TableHead>
+            <TableRow>
+              <TableCell>{criterio}</TableCell>
+              {projetoSelecionado.requisitos.map((requisito) => (
+                <TableCell key={requisito.id}>{requisito.titulo}</TableCell>
+              ))}
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {matriz.map((row, rowIndex) => (
+              <TableRow key={rowIndex}>
+                <TableCell key={projetoSelecionado.requisitos[rowIndex].id}>{projetoSelecionado.requisitos[rowIndex].titulo}</TableCell>
+                {row.map((column, columnIndex) => {
+                  if (rowIndex === columnIndex) {
+                    return (
+                      <TableCell key={columnIndex}>
+                        <TextField
+                          variant='outlined'
+                          disabled
+                          value={1}
+                        />
+                      </TableCell>
+                    )
+                  } else {
+                    return (
+                      <TableCell key={columnIndex}>
+                        <TextField
+                          variant='outlined'
+                          onChange={e => handleChange(rowIndex, columnIndex, e)}
+                        />
+                      </TableCell>
+                    )
+                  }
+                })}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
   )
 }
 
 TabelaAddPonderacaoRequisito.propTypes = {
   projetoSelecionado: t.object,
-  criterio: t.string
+  criterio: t.string,
+  matriz: t.any,
+  handleChangeMatriz: t.func
 }
 
 export default TabelaAddPonderacaoRequisito

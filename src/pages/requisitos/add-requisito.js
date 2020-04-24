@@ -20,7 +20,6 @@ const ModalAddRequisito = ({ projeto, abrir, handleFechar }) => {
   const [openSnackbar, setOpenSnackbar] = useState(false)
 
   const cadastrarRequisito = () => {
-    console.log(projeto)
     const { titulo, descricao, estimativa, codReferencia } = requisito
 
     const novoRequisito = {
@@ -53,7 +52,6 @@ const ModalAddRequisito = ({ projeto, abrir, handleFechar }) => {
 
   return (
     <>
-      {console.log('add Requisito - projeto', projeto)}
       <Modal titulo='Novo Requisito' open={abrir} handleClose={handleFechar} handleSave={cadastrarRequisito} operacao='Salvar'>
         <TextField
           onChange={(e) => {

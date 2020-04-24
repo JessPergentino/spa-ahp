@@ -65,7 +65,6 @@ const TabelaAddPonderacao = ({ projeto, matriz, handleChangeMatriz }) => {
 
   return (
     <>
-      {console.log('rederizou tabela')}
       <Grid container spacing={4}>
         <Grid item>
           <TableContainer component={Paper}>

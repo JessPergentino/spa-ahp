@@ -7,6 +7,7 @@ export const CriterioContext = createContext()
 const Criterio = ({ children }) => {
   const [criterios, setCriterios] = useState([])
   const [vetorPrioritarioCriterio, setVetorPrioritarioCriterio] = useState([])
+  const [vetorPrioritarioRequisito, setVetorPrioritarioRequisito] = useState([])
   const [criterio, setCriterio] = useState([])
 
   const buscarPonderacaoCriterio = useCallback((usuarioId, projetoId) => {
@@ -16,48 +17,11 @@ const Criterio = ({ children }) => {
       })
   }, [])
 
-  const listarCriteriosPorCategoria = useCallback((categoria) => {
-    switch (categoria) {
-      case 'BENEFICIO':
-        api.get(`/criterios_categoria/${categoria}`)
-          .then((response) => {
-            setCriterios(response.data)
-          })
-        break
-      case 'CUSTO':
-        api.get(`/criterios_categoria/${categoria}`)
-          .then((response) => {
-            setCriterios(response.data)
-          })
-        break
-      case 'RISCO':
-        api.get(`/criterios_categoria/${categoria}`)
-          .then((response) => {
-            setCriterios(response.data)
-          })
-        break
-      case 'PENALIDADE':
-        api.get(`/criterios_categoria/${categoria}`)
-          .then((response) => {
-            setCriterios(response.data)
-          })
-        break
-      case 'EMPRESARIAL':
-        api.get(`/criterios_categoria/${categoria}`)
-          .then((response) => {
-            setCriterios(response.data)
-          })
-        break
-      case 'TECNICO':
-        api.get(`/criterios_categoria/${categoria}`)
-          .then((response) => {
-            setCriterios(response.data)
-          })
-        break
-
-      default:
-        break
-    }
+  const buscarPonderacaoRequisito = useCallback((usuarioId, projetoId) => {
+    api.get(`/priorizacoes_requisito/${usuarioId}&&${projetoId}`)
+      .then((response) => {
+        setVetorPrioritarioRequisito(response.data.vetor)
+      })
   }, [])
 
   const listarTodosCriterios = useCallback(() => {
@@ -79,12 +43,13 @@ const Criterio = ({ children }) => {
       criterio,
       setCriterio,
       criterios,
-      listarCriteriosPorCategoria,
       listarTodosCriterios,
       vetorPrioritarioCriterio,
       setVetorPrioritarioCriterio,
       buscarPonderacaoCriterio,
-      buscarCriterio
+      buscarCriterio,
+      vetorPrioritarioRequisito,
+      buscarPonderacaoRequisito
     }}
     >
       {children}
