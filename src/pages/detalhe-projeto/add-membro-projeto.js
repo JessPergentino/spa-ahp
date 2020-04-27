@@ -7,8 +7,10 @@ import {
 
 import { Modal, SnackBar } from 'ui'
 
-import api from 'services/api'
 import { AuthContext } from 'contexts/auth'
+
+import { validarEmail } from 'services/utils'
+import api from 'services/api'
 
 const ModalAddMembro = ({ abrir, handleFechar, projetoAtual }) => {
   const { userLogin } = useContext(AuthContext)
@@ -25,7 +27,7 @@ const ModalAddMembro = ({ abrir, handleFechar, projetoAtual }) => {
       email: emailMembro.email,
       membro: userLogin.user.nome
     }
-    if (validarEmail()) {
+    if (validarEmail(email.email)) {
       api.post(`/projetos_membro/${projetoAtual.id}`, email)
         .then((response) => {
           handleClickSnackbar()
@@ -47,25 +49,6 @@ const ModalAddMembro = ({ abrir, handleFechar, projetoAtual }) => {
       return
     }
     setOpenSnackbar(false)
-  }
-
-  const validarEmail = () => {
-    const usuario = emailMembro.email.substring(0, emailMembro.email.indexOf('@'))
-    const dominio = emailMembro.email.substring(emailMembro.email.indexOf('@') + 1, emailMembro.email.length)
-
-    if ((usuario.length >= 1) &&
-      (dominio.length >= 3) &&
-      (usuario.search('@') === -1) &&
-      (dominio.search('@') === -1) &&
-      (usuario.search(' ') === -1) &&
-      (dominio.search(' ') === -1) &&
-      (dominio.search('.') !== -1) &&
-      (dominio.indexOf('.') >= 1) &&
-      (dominio.lastIndexOf('.') < dominio.length - 1)) {
-      return true
-    } else {
-      return false
-    }
   }
 
   return (

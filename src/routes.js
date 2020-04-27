@@ -1,5 +1,6 @@
 export const HOME = '/'
 export const CADASTRAR = '/cadastrar'
+export const CADASTRAR_MEMBRO = '/cadastrar/:id'
 export const AUTENTICAR = '/autenticar'
 export const LOGOUT = '/logout'
 export const PROJETOS = '/projetos'

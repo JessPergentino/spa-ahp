@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { Switch, Route } from 'react-router-dom'
+import { Switch } from 'react-router-dom'
 import { withStyles, LinearProgress } from '@material-ui/core'
 
 import Header from './header'
@@ -17,6 +17,7 @@ import {
   DETALHE_MEMBRO,
   DETALHE_REQUISITO
 } from 'routes'
+import { PrivateRoute } from 'route-component'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -56,15 +57,15 @@ const Main = () => {
           <div className={classes.toolbar} />
           <Suspense fallback={<LinearProgress />}>
             <Switch>
-              <Route path={HOME} exact component={PaginaInicial} />
-              <Route path={PROJETOS} component={Projetos} />
-              <Route path={DETALHE_PROJETO} component={DetalheProjeto} />
-              <Route path={DETALHE_MEMBRO} component={DetalheMembro} />
-              <Route path={REQUISITOS} component={Requisitos} />
-              <Route path={DETALHE_REQUISITO} component={DetalheRequisito} />
-              <Route path={PRIORIZACAO} component={Priorizacao} />
-              <Route path={GRAFICOS} component={Graficos} />
-              <Route path={TUTORIAIS} component={Tutoriais} />
+              <PrivateRoute path={HOME} exact component={PaginaInicial} />
+              <PrivateRoute path={PROJETOS} component={Projetos} />
+              <PrivateRoute path={DETALHE_PROJETO} component={DetalheProjeto} />
+              <PrivateRoute path={DETALHE_MEMBRO} component={DetalheMembro} />
+              <PrivateRoute path={REQUISITOS} component={Requisitos} />
+              <PrivateRoute path={DETALHE_REQUISITO} component={DetalheRequisito} />
+              <PrivateRoute path={PRIORIZACAO} component={Priorizacao} />
+              <PrivateRoute path={GRAFICOS} component={Graficos} />
+              <PrivateRoute path={TUTORIAIS} component={Tutoriais} />
             </Switch>
           </Suspense>
         </main>

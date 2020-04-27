@@ -1,20 +1,21 @@
 /* eslint-disable no-restricted-globals */
 import React, { lazy, Suspense, useContext, useEffect } from 'react'
-import { Route, Switch, Redirect } from 'react-router-dom'
+import { Switch } from 'react-router-dom'
 import { LinearProgress } from '@material-ui/core'
-import { LOGIN, HOME, CADASTRAR } from 'routes'
+import { LOGIN, CADASTRAR_MEMBRO, CADASTRAR } from 'routes'
 import { get } from 'idb-keyval'
 
 import { AuthContext } from 'contexts/auth'
 import { ProjetoContext } from 'contexts/projetos'
+import { PublicRoute, PrivateRoute } from 'route-component'
 
 const MainPage = lazy(() => import('pages/main'))
 const Login = lazy(() => import('pages/login'))
+const Cadastrar = lazy(() => import('pages/cadastro'))
 
 const App = () => {
-  const { userLogin, setUserLogin } = useContext(AuthContext)
+  const { setUserLogin } = useContext(AuthContext)
   const { listarProjetos } = useContext(ProjetoContext)
-  const { isUserLoggedIn } = userLogin
 
   useEffect(() => {
     get('usuario')
@@ -30,22 +31,12 @@ const App = () => {
       })
   }, [setUserLogin, listarProjetos])
 
-  if (isUserLoggedIn && location.pathname === LOGIN) {
-    return <Redirect to={HOME} />
-  }
-
-  if (!isUserLoggedIn && (location.pathname !== LOGIN)) {
-    if (location.pathname === CADASTRAR) {
-      return <Redirect to={CADASTRAR} />
-    }
-    return <Redirect to={LOGIN} />
-  }
-
   return (
     <Suspense fallback={<LinearProgress />}>
       <Switch>
-        <Route path={LOGIN} component={Login} />
-        <Route component={MainPage} />
+        <PublicRoute path={LOGIN} restricted component={Login} />
+        <PublicRoute path={[CADASTRAR_MEMBRO, CADASTRAR]} restricted component={Cadastrar} />
+        <PrivateRoute component={MainPage} />
       </Switch>
     </Suspense>
   )
