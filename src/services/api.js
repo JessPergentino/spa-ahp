@@ -2,7 +2,7 @@ import axios from 'axios'
 import { get } from 'idb-keyval'
 
 const api = axios.create({
-  baseURL: 'http://localhost:3001/'
+  baseURL: 'http://e6abec32.sa.ngrok.io'
 })
 
 api.interceptors.request.use(async config => {

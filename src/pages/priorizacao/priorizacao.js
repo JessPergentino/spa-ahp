@@ -3,8 +3,7 @@ import React, { useState } from 'react'
 import {
   AppBar,
   Tabs,
-  Tab,
-  Typography
+  Tab
 } from '@material-ui/core'
 
 import TabPanel from 'ui/tab-panel'
@@ -12,6 +11,7 @@ import TabPanel from 'ui/tab-panel'
 import PonderacaoCriterios from 'pages/priorizacao/ponderacao-criterio/ponderacao-criterio'
 import PonderacaoRequisito from 'pages/priorizacao/ponderacao-requisito/ponderacao-requisito'
 import PriorizacaoIndividual from 'pages/priorizacao/priorizacao-individual/priorizacao-individual'
+import PriorizacaoGlobal from 'pages/priorizacao/priorizacao-global/priorizacao-global'
 
 const Priorizacao = () => {
   const [value, setValue] = useState(0)
@@ -44,7 +44,7 @@ const Priorizacao = () => {
       </TabPanel>
 
       <TabPanel value={value} index={3}>
-        <Typography>Priorização Global</Typography>
+        <PriorizacaoGlobal />
       </TabPanel>
     </>
   )

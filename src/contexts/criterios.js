@@ -9,6 +9,8 @@ const Criterio = ({ children }) => {
   const [vetorPrioritarioCriterio, setVetorPrioritarioCriterio] = useState([])
   const [vetorPrioritarioRequisito, setVetorPrioritarioRequisito] = useState([])
   const [criterio, setCriterio] = useState([])
+  const [priorizacaoIndividual, setPriorizacaoIndividual] = useState([])
+  const [priorizacaoGlobal, setPriorizacaoGlobal] = useState([])
 
   const buscarPonderacaoCriterio = useCallback((usuarioId, projetoId) => {
     api.get(`/priorizacoes_criterio/${usuarioId}&&${projetoId}`)
@@ -38,6 +40,20 @@ const Criterio = ({ children }) => {
       })
   }, [])
 
+  const buscarPriorizacaoIndividual = useCallback((usuarioId, projetoId) => {
+    api.get(`/priorizacoes_individual/${usuarioId}&&${projetoId}`)
+      .then((response) => {
+        setPriorizacaoIndividual(response.data.priorizacao)
+      })
+  }, [])
+
+  const buscarPriorizacaoGlobal = useCallback((projetoId) => {
+    api.get(`/priorizacoes_global/${projetoId}`)
+      .then((response) => {
+        setPriorizacaoGlobal(response.data.priorizacaoGlobal)
+      })
+  }, [])
+
   return (
     <CriterioContext.Provider value={{
       criterio,
@@ -49,7 +65,11 @@ const Criterio = ({ children }) => {
       buscarPonderacaoCriterio,
       buscarCriterio,
       vetorPrioritarioRequisito,
-      buscarPonderacaoRequisito
+      buscarPonderacaoRequisito,
+      buscarPriorizacaoIndividual,
+      priorizacaoIndividual,
+      priorizacaoGlobal,
+      buscarPriorizacaoGlobal
     }}
     >
       {children}

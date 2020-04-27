@@ -54,7 +54,7 @@ const PonderacaoCriterios = () => {
   }
 
   const handleCriterio = (linha) => {
-    const criterio = criterios.filter((c) => c.id === linha.id)
+    const criterio = criterios.filter((c) => c.id === linha.criterioId)
     return criterio[0].nome
   }
   return (

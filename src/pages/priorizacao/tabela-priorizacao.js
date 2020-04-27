@@ -4,11 +4,12 @@ import t from 'prop-types'
 import { TabelaDefault } from 'ui'
 import { handleValorPorcetagem } from 'services/utils'
 
-const TabelaPriorizacao = ({ projeto }) => {
+const TabelaPriorizacao = ({ projeto, priorizacao }) => {
   const colunas = [
     {
-      title: 'Critérios',
-      field: 'criterioId'
+      title: 'Requisitos',
+      field: 'requisitoId',
+      render: (linha) => handleRequisito(linha.requisitoId)
     },
     {
       title: 'Valor',
@@ -17,7 +18,12 @@ const TabelaPriorizacao = ({ projeto }) => {
     }
   ]
 
-  const dados = projeto !== null ? projeto.criterios : []
+  const handleRequisito = (requisitoId) => {
+    const requisito = projeto.requisitos.filter((r) => r.id === requisitoId)
+    return requisito[0].titulo
+  }
+
+  const dados = priorizacao
 
   return (
     <TabelaDefault
@@ -30,7 +36,8 @@ const TabelaPriorizacao = ({ projeto }) => {
 }
 
 TabelaPriorizacao.propTypes = {
-  projeto: t.object
+  projeto: t.object,
+  priorizacao: t.array
 }
 
 export default TabelaPriorizacao
