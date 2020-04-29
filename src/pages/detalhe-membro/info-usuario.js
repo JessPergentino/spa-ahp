@@ -11,7 +11,6 @@ import {
 import ContactMailIcon from '@material-ui/icons/ContactMail'
 import AccountCircleIcon from '@material-ui/icons/AccountCircle'
 import DomainIcon from '@material-ui/icons/Domain'
-import PermIdentityIcon from '@material-ui/icons/PermIdentity'
 import EditIcon from '@material-ui/icons/Edit'
 import VpnKeyIcon from '@material-ui/icons/VpnKey'
 
@@ -123,22 +122,6 @@ const InfoUsuario = () => {
                   <Grid item>
                     <Typography>
                       {usuario.organizacao}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              <Grid item>
-                <Grid container spacing={2}>
-                  <Grid item>
-                    <Tooltip title='Nível de Permissão'>
-                      <PermIdentityIcon />
-                    </Tooltip>
-                  </Grid>
-
-                  <Grid item>
-                    <Typography>
-                      {usuario.permissao === 'ADMIN' ? 'Administrador' : 'Membro'}
                     </Typography>
                   </Grid>
                 </Grid>

@@ -26,7 +26,8 @@ const ModalEdtPerfil = ({ abrirModal, handleFechar, usuario }) => {
     setOpenSnackbar(false)
   }
 
-  const alterarPerfil = () => {
+  const alterarPerfil = (e) => {
+    e.preventDefault()
     api.put(`/usuarios/${perfil.id}`, perfil)
       .then((response) => {
         buscarUsuario(perfil.id)
@@ -60,6 +61,7 @@ const ModalEdtPerfil = ({ abrirModal, handleFechar, usuario }) => {
           width='100%'
           margin='normal'
           fullWidth
+          required
         />
 
         <TextField
@@ -76,6 +78,7 @@ const ModalEdtPerfil = ({ abrirModal, handleFechar, usuario }) => {
           width='100%'
           margin='normal'
           fullWidth
+          required
         />
 
         <TextField
@@ -92,6 +95,7 @@ const ModalEdtPerfil = ({ abrirModal, handleFechar, usuario }) => {
           width='100%'
           margin='normal'
           fullWidth
+          required
         />
       </Modal>
 

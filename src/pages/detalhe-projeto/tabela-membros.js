@@ -23,11 +23,6 @@ const TabelaMembro = ({ projetoAtual }) => {
     {
       title: 'Organização',
       field: 'organizacao'
-    },
-    {
-      title: 'Nível de Permissão',
-      field: 'permissao',
-      lookup: { ADMIN: 'Administrador', MEMBRO: 'Membro' }
     }
   ]
 

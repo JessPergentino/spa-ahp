@@ -22,7 +22,8 @@ const ModalAddMembro = ({ abrir, handleFechar, projetoAtual }) => {
     helper: ''
   })
 
-  const handleAdicionarMembro = () => {
+  const handleAdicionarMembro = (e) => {
+    e.preventDefault()
     const email = {
       email: emailMembro.email,
       membro: userLogin.user.nome
@@ -78,6 +79,7 @@ const ModalAddMembro = ({ abrir, handleFechar, projetoAtual }) => {
           label='Email do Novo Membro'
           type='text'
           fullWidth
+          required
           error={emailMembro.error}
           helperText={emailMembro.helper}
         />

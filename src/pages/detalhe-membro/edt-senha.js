@@ -29,7 +29,8 @@ const ModalEdtSenha = ({ abrirModal, handleFechar, usuario }) => {
     setOpenSnackbar(false)
   }
 
-  const alterarSenha = () => {
+  const alterarSenha = (e) => {
+    e.preventDefault()
     if (formSenha.novaSenha === formSenha.confirmSenha) {
       api.put(`/usuarios_senha/${usuario.id}`, formSenha)
         .then((response) => {
@@ -68,6 +69,7 @@ const ModalEdtSenha = ({ abrirModal, handleFechar, usuario }) => {
           width='100%'
           margin='normal'
           fullWidth
+          required
           error={formSenha.error}
         />
 
@@ -85,6 +87,7 @@ const ModalEdtSenha = ({ abrirModal, handleFechar, usuario }) => {
           width='100%'
           margin='normal'
           fullWidth
+          required
           error={formSenha.error}
           helperText={formSenha.helper}
         />
