@@ -4,7 +4,7 @@ import api from 'services/api'
 
 export const ProjetoContext = createContext()
 
-function Projeto ({ children }) {
+const Projeto = ({ children }) => {
   const [projetos, setProjetos] = useState([])
   const [projetoAtual, setProjetoAtual] = useState(null)
   const [owner, setOwner] = useState(null)
@@ -30,6 +30,17 @@ function Projeto ({ children }) {
       })
   }, [])
 
+  const setAddProjeto = useCallback((projeto) => {
+    setProjetos(projetos.concat(projeto))
+  }, [projetos])
+
+  const setCriteriosProjetoAtual = useCallback((criterios) => {
+    setProjetoAtual((projetoAtual) => ({
+      ...projetoAtual,
+      criterios
+    }))
+  }, [])
+
   return (
     <ProjetoContext.Provider value={{
       projetoAtual,
@@ -40,7 +51,9 @@ function Projeto ({ children }) {
       buscarProjeto,
       buscarOwner,
       owner,
-      setOwner
+      setOwner,
+      setAddProjeto,
+      setCriteriosProjetoAtual
     }}
     >
       {children}

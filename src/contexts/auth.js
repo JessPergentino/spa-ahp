@@ -7,12 +7,18 @@ import { AUTENTICAR, LOGOUT } from 'routes'
 
 export const AuthContext = createContext()
 
-function Auth ({ children }) {
-  const [userLogin, setUserLogin] = useState({
+const Auth = ({ children }) => {
+  const estadoInicial = {
     user: null,
     isUserLoggedIn: false,
-    token: null
-  })
+    token: null,
+    error: {
+      isError: false,
+      message: ''
+    }
+  }
+
+  const [userLogin, setUserLogin] = useState(estadoInicial)
 
   const login = useCallback((email, senha) => {
     api.post(AUTENTICAR, { email, senha })
@@ -23,7 +29,11 @@ function Auth ({ children }) {
           isUserLoggedIn: true,
           user: response.data.usuario,
           token: response.data.token,
-          primeiroNome: response.data.usuario.nome.split(' ')[0]
+          primeiroNome: response.data.usuario.nome.split(' ')[0],
+          error: {
+            isError: false,
+            message: ''
+          }
         })
       }).catch(function (error) {
         if (error.response) {
@@ -36,13 +46,9 @@ function Auth ({ children }) {
     api.get(LOGOUT)
       .then((response) => {
         del('usuario')
-        setUserLogin({
-          isUserLoggedIn: false,
-          user: null,
-          token: null
-        })
+        setUserLogin(estadoInicial)
       })
-  }, [])
+  }, [estadoInicial])
 
   return (
     <AuthContext.Provider value={{

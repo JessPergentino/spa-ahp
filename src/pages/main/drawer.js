@@ -13,11 +13,13 @@ import {
 
 import ListAltIcon from '@material-ui/icons/ListAlt'
 import EventNoteIcon from '@material-ui/icons/EventNote'
-import PieChartIcon from '@material-ui/icons/PieChart'
+/* import PieChartIcon from '@material-ui/icons/PieChart' */
 import SwapVertIcon from '@material-ui/icons/SwapVert'
 import HomeIcon from '@material-ui/icons/Home'
 
-const drawerWidth = 240
+import { HOME, PROJETOS, REQUISITOS, PRIORIZACAO/* , GRAFICOS */ } from 'routes'
+
+const drawerWidth = 200
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -48,40 +50,41 @@ const DrawerMain = () => {
       <div className={classes.toolbar} />
       <Divider />
       <List>
-        <ListItem component={Link} to='/' button>
+        <ListItem component={Link} to={HOME} button>
           <ListItemIcon>
             <HomeIcon />
           </ListItemIcon>
           <ListItemText primary='Home' />
         </ListItem>
 
-        <ListItem component={Link} to='/projetos' button>
+        <ListItem component={Link} to={PROJETOS} button>
           <ListItemIcon>
             <EventNoteIcon />
           </ListItemIcon>
           <ListItemText primary='Projetos' />
         </ListItem>
 
-        <ListItem component={Link} to='/requisitos' button>
+        <ListItem component={Link} to={REQUISITOS} button>
           <ListItemIcon>
             <ListAltIcon />
           </ListItemIcon>
           <ListItemText primary='Requisitos' />
         </ListItem>
 
-        <ListItem component={Link} to='/priorizacao' button>
+        <ListItem component={Link} to={PRIORIZACAO} button>
           <ListItemIcon>
             <SwapVertIcon />
           </ListItemIcon>
           <ListItemText primary='Priorização' />
         </ListItem>
 
-        <ListItem component={Link} to='/graficos' button>
+        {/* <ListItem component={Link} to={GRAFICOS} button>
           <ListItemIcon>
             <PieChartIcon />
           </ListItemIcon>
           <ListItemText primary='Gráficos' />
         </ListItem>
+         */}
       </List>
     </Drawer>
   )

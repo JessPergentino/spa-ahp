@@ -17,10 +17,13 @@ import { SnackBar } from 'ui'
 
 import { AuthContext } from 'contexts/auth'
 import api from 'services/api'
+import { CriterioContext } from 'contexts/criterios'
 
-const TabelaPonderacao = ({ projeto, matriz, setMatriz, refazer }) => {
+const TabelaEdtPonderacao = ({ projeto, handleFechar }) => {
   const { userLogin } = useContext(AuthContext)
+  const { buscarPonderacaoCriterio } = useContext(CriterioContext)
 
+  const [matriz, setMatriz] = useState(Array.from({ length: projeto.criterios.length }, () => Array.from({ length: projeto.criterios.length }, () => 1)))
   const [openSnackbar, setOpenSnackbar] = useState(false)
 
   const handleClickSnackbar = () => {
@@ -53,17 +56,12 @@ const TabelaPonderacao = ({ projeto, matriz, setMatriz, refazer }) => {
       criterios: projeto.criterios
     }
 
-    if (refazer) {
-      api.put('/priorizacoes_criterio', matrizComparacao)
-        .then((response) => {
-          handleClickSnackbar()
-        })
-    } else {
-      api.post('/priorizacoes_criterio', matrizComparacao)
-        .then((response) => {
-          handleClickSnackbar()
-        })
-    }
+    api.put('/priorizacoes_criterio', matrizComparacao)
+      .then((response) => {
+        buscarPonderacaoCriterio(userLogin.user.id, projeto.id)
+        handleFechar()
+        handleClickSnackbar()
+      })
   }
 
   return (
@@ -133,11 +131,9 @@ const TabelaPonderacao = ({ projeto, matriz, setMatriz, refazer }) => {
   )
 }
 
-TabelaPonderacao.propTypes = {
-  projeto: t.object.isRequired,
-  matriz: t.any.isRequired,
-  setMatriz: t.func.isRequired,
-  refazer: t.bool.isRequired
+TabelaEdtPonderacao.propTypes = {
+  projeto: t.any,
+  handleFechar: t.func
 }
 
-export default TabelaPonderacao
+export default TabelaEdtPonderacao

@@ -1,38 +1,30 @@
-import React, { useState, useContext } from 'react'
-import { Link } from 'react-router-dom'
-import {
-  TextField,
-  IconButton,
-  Typography,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Tooltip
-} from '@material-ui/core'
-import InfoIcon from '@material-ui/icons/Info'
-import { MTableToolbar } from 'material-table'
+import React, { useState, useContext, useEffect } from 'react'
 
-import { Modal, TabelaDefault } from 'ui'
+import ModalAddRequisito from 'pages/requisitos/add-requisito'
+import ModalEdtRequisito from 'pages/requisitos/edt-requisito'
+import ModalDelRequisito from 'pages/requisitos/del-requisito'
+import TabelaRequisitos from 'pages/requisitos/tabela-requisitos'
+import { SelectProjeto, Page } from 'ui'
 
-import { AuthContext } from 'contexts/auth'
 import { ProjetoContext } from 'contexts/projetos'
-import { RequisitoContext } from 'contexts/requisitos'
-import { UsuarioContext } from 'contexts/usuarios'
+import { AuthContext } from 'contexts/auth'
+import { Typography, Grid } from '@material-ui/core'
 
-import api from 'services/api'
-import { DETALHE_REQUISITO } from 'routes'
-
-const Requisitos = () => {
-  const { requisitos, listarRequisitos, buscarRequisito } = useContext(RequisitoContext)
+const PageRequisitos = () => {
+  const { projetos, listarProjetos } = useContext(ProjetoContext)
   const { userLogin } = useContext(AuthContext)
-  const { projetoAtual, projetos, buscarProjeto } = useContext(ProjetoContext)
-  const { buscarUsuario } = useContext(UsuarioContext)
+
+  const [projeto, setProjeto] = useState('')
+
+  useEffect(() => {
+    if (userLogin.user.id !== undefined) {
+      listarProjetos(userLogin.user.id)
+    }
+  }, [listarProjetos, userLogin.user.id])
 
   const [abrirModalAdd, setAbrirModalAdd] = useState(false)
   const [abrirModalEdt, setAbrirModalEdt] = useState(false)
   const [abrirModalDel, setAbrirModalDel] = useState(false)
-  const [projetoSelect, setProjetoSelect] = useState('')
 
   const [requisitoInfo, setRequisitoInfo] = useState({
     id: null,
@@ -47,53 +39,9 @@ const Requisitos = () => {
     UsuarioId: null
   })
 
-  const colunas = [
-    {
-      title: 'Código de Referência',
-      field: 'codReferencia'
-    },
-    {
-      title: 'Título',
-      field: 'titulo'
-    },
-    {
-      title: 'Estimativa',
-      field: 'estimativa'
-    }
-  ]
-
-  const dados = projetoSelect ? requisitos : []
-
-  const actions = [
-    {
-      icon: () => (
-        <IconButton component={Link} to={{ pathname: DETALHE_REQUISITO }} color='inherit'>
-          <InfoIcon />
-        </IconButton>),
-      tooltip: 'info',
-      onClick: (evt, data) => {
-        buscarRequisito(data.id)
-        buscarUsuario(data.usuarioId)
-      }
-    },
-    {
-      icon: 'add',
-      tooltip: 'Add Requisito',
-      isFreeAction: true,
-      onClick: () => setAbrirModalAdd(true)
-    },
-    {
-      icon: 'edit',
-      tooltip: 'Editar Requisito',
-      isFreeAction: false,
-      onClick: (evt, data) => handleAbriModalEdt(evt, data)
-    },
-    {
-      icon: 'delete',
-      tooltip: 'Deletar Requisito',
-      onClick: (evt, data) => handleAbriModalDel(evt, data)
-    }
-  ]
+  const handleAbriModalAdd = () => {
+    setAbrirModalAdd(true)
+  }
 
   const handleAbriModalEdt = (evt, data) => {
     setAbrirModalEdt(true)
@@ -105,222 +53,69 @@ const Requisitos = () => {
     setRequisitoInfo({ ...data })
   }
 
-  const handleSalvarNovoRequisito = () => {
-    const { titulo, descricao, estimativa, codReferencia } = requisitoInfo
-
-    const novoRequisito = {
-      titulo,
-      descricao,
-      codReferencia,
-      estimativa,
-      ProjetoId: projetoAtual.id,
-      UsuarioId: userLogin.user.id
-    }
-
-    api.post('/requisitos', novoRequisito)
-      .then((response) => {
-        listarRequisitos(projetoAtual.id)
-      })
-    setAbrirModalAdd(false)
-  }
-
-  const handleSalvarRequisitoAlterado = () => {
-    api.put(`/requisitos/${requisitoInfo.id}`, requisitoInfo)
-      .then((response) => {
-        listarRequisitos(projetoAtual.id)
-      })
-
-    setAbrirModalEdt(false)
-  }
-
-  const handleDeletarRequisito = () => {
-    api.delete(`/requisitos/${requisitoInfo.id}`)
-      .then((response) => {
-        listarRequisitos(projetoAtual.id)
-      })
-
-    setAbrirModalDel(false)
-  }
-
-  const handleChangeProjeto = (e) => {
-    setProjetoSelect(e.target.value)
-    buscarProjeto(e.target.value.id)
-    listarRequisitos(e.target.value.id)
-  }
-
-  const toolbar = {
-    Toolbar: props => (
-      <div>
-        <MTableToolbar {...props} />
-        <div style={{ padding: '0px 10px' }}>
-          <FormControl
-            variant='outlined'
-            style={{
-              margin: '8px',
-              minWidth: 200
-            }}
-          >
-            <InputLabel id='label-select-projeto'>Selecione o Projeto</InputLabel>
-            <Select
-              labelId='label-select-projeto'
-              id='select-projeto'
-              value={projetoSelect}
-              onChange={handleChangeProjeto}
-              label='Selecione o Projeto'
-            >
-              {projetos ? projetos.map((projeto) => (
-                <MenuItem
-                  key={projeto.id}
-                  value={projeto}
-                >
-                  {projeto.nome}
-                </MenuItem>
-              )) : []}
-            </Select>
-          </FormControl>
-        </div>
-      </div>
-    )
+  const handleChangeProjeto = (evt, data) => {
+    setProjeto(evt.target.value)
   }
 
   return (
     <>
-      <TabelaDefault titulo='Requisitos' columns={colunas} data={dados} actions={actions} components={toolbar} />
+      <Page>
+        <Grid
+          container
+          direction='column'
+          justify='center'
+          alignItems='stretch'
+          spacing={3}
+        >
 
-      <Modal titulo='Novo Requisito' open={abrirModalAdd} handleClose={() => setAbrirModalAdd(false)} handleSave={handleSalvarNovoRequisito} operacao='Salvar'>
-        <TextField
-          onChange={(e) => {
-            const val = e.target.value
-            setRequisitoInfo(prevState => {
-              return { ...prevState, codReferencia: val }
-            })
-          }}
-          autoFocus
-          margin='normal'
-          id='codReferencia'
-          label='Código de Referência'
-          type='text'
-          fullWidth
-        />
+          <Grid item>
+            <Typography>Selecione um projeto para visualizar os Requisitos</Typography>
+          </Grid>
 
-        <TextField
-          onChange={(e) => {
-            const val = e.target.value
-            setRequisitoInfo(prevState => {
-              return { ...prevState, titulo: val }
-            })
-          }}
-          margin='normal'
-          id='titulo'
-          label='Título'
-          type='text'
-          fullWidth
-        />
+          <Grid item>
+            <SelectProjeto
+              projetos={projetos}
+              projetoSelecionado={projeto}
+              handleChangeProjeto={handleChangeProjeto}
+            />
+          </Grid>
 
-        <TextField
-          onChange={(e) => {
-            const val = e.target.value
-            setRequisitoInfo(prevState => {
-              return { ...prevState, descricao: val }
-            })
-          }}
-          margin='normal'
-          id='descricao'
-          label='Descrição'
-          type='text'
-          multiline
-          rows='4'
-          fullWidth
-        />
-        <Tooltip title='A estimativa deve ser em dias'>
-          <TextField
-            onChange={(e) => {
-              const val = e.target.value
-              setRequisitoInfo(prevState => {
-                return { ...prevState, estimativa: val }
-              })
-            }}
-            margin='normal'
-            id='estimativa'
-            label='Estimativa'
-            type='number'
-          />
-        </Tooltip>
-      </Modal>
+          <Grid item>
+            {projeto && (
+              <>
+                <TabelaRequisitos
+                  projeto={projeto}
+                  handleAbrirAdd={handleAbriModalAdd}
+                  handleAbriModalEdt={handleAbriModalEdt}
+                  handleAbriModalDel={handleAbriModalDel}
+                />
 
-      <Modal titulo='Editar Requisito' open={abrirModalEdt} handleClose={() => setAbrirModalEdt(false)} handleSave={handleSalvarRequisitoAlterado} operacao='Alterar'>
-        <TextField
-          onChange={(e) => {
-            const val = e.target.value
-            setRequisitoInfo(prevState => {
-              return { ...prevState, codReferencia: val }
-            })
-          }}
-          autoFocus
-          margin='normal'
-          value={requisitoInfo.codReferencia}
-          id='codReferencia'
-          label='Código de Referência'
-          type='text'
-          fullWidth
-        />
+                <ModalAddRequisito
+                  projeto={projeto}
+                  abrir={abrirModalAdd}
+                  handleFechar={() => setAbrirModalAdd(false)}
+                />
 
-        <TextField
-          onChange={(e) => {
-            const val = e.target.value
-            setRequisitoInfo(prevState => {
-              return { ...prevState, titulo: val }
-            })
-          }}
-          value={requisitoInfo.titulo}
-          margin='normal'
-          id='titulo'
-          label='Título'
-          type='text'
-          fullWidth
-        />
+                <ModalEdtRequisito
+                  projeto={projeto}
+                  abrir={abrirModalEdt}
+                  handleFechar={() => setAbrirModalEdt(false)}
+                  requisitoAtual={requisitoInfo}
+                />
 
-        <TextField
-          onChange={(e) => {
-            const val = e.target.value
-            setRequisitoInfo(prevState => {
-              return { ...prevState, descricao: val }
-            })
-          }}
-          margin='normal'
-          value={requisitoInfo.descricao}
-          id='descricao'
-          label='Descrição'
-          type='text'
-          multiline
-          rows='4'
-          fullWidth
-        />
-
-        <Tooltip title='A estimativa deve ser em dias'>
-          <TextField
-            onChange={(e) => {
-              const val = e.target.value
-              setRequisitoInfo(prevState => {
-                return { ...prevState, estimativa: val }
-              })
-            }}
-            margin='normal'
-            id='estimativa'
-            value={requisitoInfo.estimativa}
-            label='Estimativa'
-            type='number'
-          />
-        </Tooltip>
-      </Modal>
-
-      <Modal titulo='Deseja mesmo deletar este requisito?' open={abrirModalDel} handleClose={() => setAbrirModalDel(false)} handleSave={handleDeletarRequisito} operacao='Deletar'>
-        <Typography>
-          O requisito {requisitoInfo.titulo} e todas as suas dependencias serão deletadas!
-        </Typography>
-      </Modal>
+                <ModalDelRequisito
+                  projeto={projeto}
+                  requisitoAtual={requisitoInfo}
+                  abrir={abrirModalDel}
+                  handleFechar={() => setAbrirModalDel(false)}
+                />
+              </>
+            )}
+          </Grid>
+        </Grid>
+      </Page>
     </>
   )
 }
 
-export default Requisitos
+export default PageRequisitos

@@ -4,96 +4,44 @@ import api from 'services/api'
 
 export const CriterioContext = createContext()
 
-function Criterio ({ children }) {
-  const [criteriosBeneficio, setCriteriosBeneficio] = useState([])
-  const [criteriosCusto, setCriteriosCusto] = useState([])
-  const [criteriosRisco, setCriteriosRisco] = useState([])
-  const [criteriosPenalidade, setCriteriosPenalidade] = useState([])
-  const [criteriosEmpresarial, setCriteriosEmpresarial] = useState([])
-  const [criteriosTecnico, setCriteriosTecnico] = useState([])
-  const [ponderacaoCriterio, setPonderacaoCriterio] = useState([])
+const Criterio = ({ children }) => {
+  const [criterios, setCriterios] = useState([])
+  const [vetorPrioritarioCriterio, setVetorPrioritarioCriterio] = useState([])
+  const [vetorPrioritarioRequisito, setVetorPrioritarioRequisito] = useState([])
   const [criterio, setCriterio] = useState([])
+  const [priorizacaoIndividual, setPriorizacaoIndividual] = useState([])
+  const [priorizacaoGlobal, setPriorizacaoGlobal] = useState([])
 
-  const listarPonderacaoCriterio = useCallback((usuarioId, projetoId) => {
+  const limparStateVetorPrioritarioRequisito = useCallback(() => {
+    setVetorPrioritarioRequisito([])
+  }, [])
+
+  const limparStateVetorPriorizacaoIndividual = useCallback(() => {
+    setPriorizacaoIndividual([])
+  }, [])
+
+  const limparStateVetorPriorizacaoGlobal = useCallback(() => {
+    setPriorizacaoGlobal([])
+  }, [])
+
+  const buscarPonderacaoCriterio = useCallback((usuarioId, projetoId) => {
     api.get(`/priorizacoes_criterio/${usuarioId}&&${projetoId}`)
       .then((response) => {
-        setPonderacaoCriterio(response.data.vetor)
+        setVetorPrioritarioCriterio(response.data.itemPonderacaoCriterio)
       })
   }, [])
 
-  const listarCriteriosPorCategoria = useCallback((categoria) => {
-    switch (categoria) {
-      case 'BENEFICIO':
-        api.get(`/criterios_categoria/${categoria}`)
-          .then((response) => {
-            setCriteriosBeneficio(response.data)
-          })
-        break
-      case 'CUSTO':
-        api.get(`/criterios_categoria/${categoria}`)
-          .then((response) => {
-            setCriteriosCusto(response.data)
-          })
-        break
-      case 'RISCO':
-        api.get(`/criterios_categoria/${categoria}`)
-          .then((response) => {
-            setCriteriosRisco(response.data)
-          })
-        break
-      case 'PENALIDADE':
-        api.get(`/criterios_categoria/${categoria}`)
-          .then((response) => {
-            setCriteriosPenalidade(response.data)
-          })
-        break
-      case 'EMPRESARIAL':
-        api.get(`/criterios_categoria/${categoria}`)
-          .then((response) => {
-            setCriteriosEmpresarial(response.data)
-          })
-        break
-      case 'TECNICO':
-        api.get(`/criterios_categoria/${categoria}`)
-          .then((response) => {
-            setCriteriosTecnico(response.data)
-          })
-        break
-
-      default:
-        break
-    }
+  const buscarPonderacaoRequisito = useCallback((usuarioId, projetoId) => {
+    api.get(`/priorizacoes_requisito/${usuarioId}&&${projetoId}`)
+      .then((response) => {
+        setVetorPrioritarioRequisito(response.data.itemPonderacaoRequisito)
+      })
   }, [])
 
-  const listarTodosCriteriosPorCategoria = useCallback(() => {
-    api.get('/criterios_categoria/BENEFICIO')
+  const listarTodosCriterios = useCallback(() => {
+    api.get('/criterios')
       .then((response) => {
-        setCriteriosBeneficio(response.data)
-      })
-
-    api.get('/criterios_categoria/CUSTO')
-      .then((response) => {
-        setCriteriosCusto(response.data)
-      })
-
-    api.get('/criterios_categoria/RISCO')
-      .then((response) => {
-        setCriteriosRisco(response.data)
-      })
-
-    api.get('/criterios_categoria/PENALIDADE')
-      .then((response) => {
-        setCriteriosPenalidade(response.data)
-      })
-
-    api.get('/criterios_categoria/EMPRESARIAL')
-      .then((response) => {
-        setCriteriosEmpresarial(response.data)
-      })
-
-    api.get('/criterios_categoria/TECNICO')
-      .then((response) => {
-        setCriteriosTecnico(response.data)
+        setCriterios(response.data)
       })
   }, [])
 
@@ -104,28 +52,37 @@ function Criterio ({ children }) {
       })
   }, [])
 
+  const buscarPriorizacaoIndividual = useCallback((usuarioId, projetoId) => {
+    api.get(`/priorizacoes_individual/${usuarioId}&&${projetoId}`)
+      .then((response) => {
+        setPriorizacaoIndividual(response.data.priorizacao)
+      })
+  }, [])
+
+  const buscarPriorizacaoGlobal = useCallback((projetoId) => {
+    api.get(`/priorizacoes_global/${projetoId}`)
+      .then((response) => {
+        setPriorizacaoGlobal(response.data.priorizacaoGlobal)
+      })
+  }, [])
+
   return (
     <CriterioContext.Provider value={{
       criterio,
-      setCriterio,
-      criteriosBeneficio,
-      setCriteriosBeneficio,
-      criteriosCusto,
-      setCriteriosCusto,
-      criteriosRisco,
-      setCriteriosRisco,
-      criteriosPenalidade,
-      setCriteriosPenalidade,
-      criteriosEmpresarial,
-      setCriteriosEmpresarial,
-      criteriosTecnico,
-      setCriteriosTecnico,
-      listarCriteriosPorCategoria,
-      listarTodosCriteriosPorCategoria,
-      ponderacaoCriterio,
-      setPonderacaoCriterio,
-      listarPonderacaoCriterio,
-      buscarCriterio
+      criterios,
+      listarTodosCriterios,
+      vetorPrioritarioCriterio,
+      buscarPonderacaoCriterio,
+      buscarCriterio,
+      vetorPrioritarioRequisito,
+      limparStateVetorPrioritarioRequisito,
+      buscarPonderacaoRequisito,
+      buscarPriorizacaoIndividual,
+      priorizacaoIndividual,
+      priorizacaoGlobal,
+      buscarPriorizacaoGlobal,
+      limparStateVetorPriorizacaoIndividual,
+      limparStateVetorPriorizacaoGlobal
     }}
     >
       {children}

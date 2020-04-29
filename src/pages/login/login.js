@@ -5,7 +5,7 @@ import LockIcon from '@material-ui/icons/Lock'
 import { TextField, Button, Grid, Typography } from '@material-ui/core'
 
 import { AuthContext } from 'contexts/auth'
-import { Paper } from 'ui'
+import { Page } from 'ui'
 import { CADASTRAR } from 'routes'
 
 const Login = () => {
@@ -34,7 +34,7 @@ const Login = () => {
   return (
     <Form onSubmit={handleLogin} noValidate autoComplete='off'>
       <Container>
-        <Paper>
+        <Page>
           <Grid container direction='column' justify='center' alignItems='center' spacing={2}>
             <Grid item>
               <LogoLogin />
@@ -80,7 +80,7 @@ const Login = () => {
               </Button>
             </Grid>
           </Grid>
-        </Paper>
+        </Page>
       </Container>
     </Form>
   )

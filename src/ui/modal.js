@@ -8,22 +8,24 @@ import {
   DialogTitle
 } from '@material-ui/core'
 
-const Modal = ({ children, open, handleClose, handleSave = () => {}, titulo, operacao }) => {
+const Modal = ({ children, open, handleClose, handleSave, titulo, operacao }) => {
   return (
     <Dialog open={open} onClose={handleClose} aria-labelledby='form-dialog-title'>
       <DialogTitle id='form-dialog-title'>{titulo}</DialogTitle>
-      <DialogContent>
-        {children}
-      </DialogContent>
+      <form onSubmit={handleSave}>
+        <DialogContent>
+          {children}
+        </DialogContent>
 
-      <DialogActions>
-        <Button onClick={handleClose} color='primary'>
-          Cancelar
-        </Button>
-        <Button onClick={handleSave} color='primary'>
-          {operacao}
-        </Button>
-      </DialogActions>
+        <DialogActions>
+          <Button onClick={handleClose} color='primary'>
+            Cancelar
+          </Button>
+          <Button type='submit' color='primary'>
+            {operacao}
+          </Button>
+        </DialogActions>
+      </form>
     </Dialog>
   )
 }

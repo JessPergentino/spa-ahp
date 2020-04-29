@@ -1,114 +1,213 @@
 import React, { useState } from 'react'
-import styled from 'styled-components'
+import { useParams, useHistory } from 'react-router-dom'
 import AccountCircleIcon from '@material-ui/icons/AccountCircle'
 import { TextField, Button, Grid, Typography } from '@material-ui/core'
 
-import { Paper } from 'ui'
+import { Page, SnackBar } from 'ui'
+
+import api from 'services/api'
+import { validarEmail } from 'services/utils'
+import { LOGIN } from 'routes'
 
 const Cadastro = () => {
+  const { id } = useParams()
+  const history = useHistory()
+
+  const [openSnackbar, setOpenSnackbar] = useState(false)
   const [userInfo, setUserInfo] = useState({
+    nome: '',
     email: '',
     senha: '',
-    error: ''
+    confSenha: '',
+    organizacao: '',
+    codProjeto: '',
+    errorSenha: '',
+    errorEmail: ''
   })
 
-  const handleLogin = async e => {
+  const handleClickSnackbar = () => {
+    setOpenSnackbar(true)
+  }
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setOpenSnackbar(false)
+  }
+
+  const handleCadastrar = e => {
     e.preventDefault()
-    console.log('Cadastrou', userInfo)
+    const { nome, email, senha, organizacao, codProjeto } = userInfo
+
+    const usuario = {
+      nome,
+      email,
+      senha,
+      organizacao,
+      codProjeto
+    }
+
+    if (senha === userInfo.confSenha && validarEmail(usuario.email)) {
+      api.post('/usuarios', usuario)
+        .then((response) => {
+          handleClickSnackbar()
+          history.push(LOGIN)
+        })
+    } else if (senha !== userInfo.confSenha || validarEmail(email) === false) {
+      setUserInfo(prevState => {
+        return {
+          ...prevState,
+          errorSenha: senha !== userInfo.confSenha ? 'A confirmação de senha não confere' : '',
+          errorEmail: validarEmail(email) === false ? 'Digite um email válido' : ''
+        }
+      })
+    }
   }
   return (
     <>
-      <Form onSubmit={handleLogin} noValidate autoComplete='off'>
-        <Container>
-          <Paper>
-            <Grid container direction='column' justify='center' alignItems='center' spacing={2}>
-              <Grid item>
-                <LogoCadastro />
-              </Grid>
+      <Page>
+        <form onSubmit={handleCadastrar}>
+          <Grid
+            container
+            direction='column'
+            alignItems='center'
+            spacing={3}
+          >
+            <Grid item>
+              <AccountCircleIcon color='primary' style={{ fontSize: 60 }} />
+            </Grid>
 
-              <Grid item>
-                <Typography>Cadastre-se</Typography>
-              </Grid>
+            <Grid item>
+              <Typography variant='h5'>Cadastre-se</Typography>
+            </Grid>
 
-              <Grid item>
-                <EmailText onChange={(e) => {
+            <Grid item>
+              <Typography variant='subtitle1'>Preencha os campos abaixo para se cadastrar</Typography>
+            </Grid>
+
+            <Grid item>
+              <TextField
+                required
+                id='outlined-nome'
+                label='Nome Completo'
+                variant='outlined'
+                onChange={(e) => {
+                  const val = e.target.value
+                  setUserInfo(prevState => {
+                    return { ...prevState, nome: val }
+                  })
+                }}
+                style={{ width: '400px' }}
+              />
+            </Grid>
+
+            <Grid item>
+              <TextField
+                required
+                id='outlined-email'
+                label='Email'
+                variant='outlined'
+                onChange={(e) => {
                   const val = e.target.value
                   setUserInfo(prevState => {
                     return { ...prevState, email: val }
                   })
                 }}
-                />
-              </Grid>
-
-              <Grid item>
-                <PasswordText onChange={(e) => {
-                  const val = e.target.value
-                  setUserInfo(prevState => {
-                    return { ...prevState, senha: val }
-                  })
-                }}
-                />
-              </Grid>
-
-              <Grid item>
-                <PasswordText onChange={(e) => {
-                  const val = e.target.value
-                  setUserInfo(prevState => {
-                    return { ...prevState, senha: val }
-                  })
-                }}
-                />
-              </Grid>
-
-              <Grid item>
-                <Button type='submit' variant='contained' color='primary'>
-                  Entrar
-                </Button>
-              </Grid>
+                error={userInfo.errorEmail !== ''}
+                helperText={userInfo.errorEmail}
+                style={{ width: '400px' }}
+              />
             </Grid>
-          </Paper>
-        </Container>
-      </Form>
+
+            <Grid item>
+              <TextField
+                required
+                id='outlined-senha'
+                label='Senha'
+                variant='outlined'
+                type='password'
+                onChange={(e) => {
+                  const val = e.target.value
+                  setUserInfo(prevState => {
+                    return { ...prevState, senha: val }
+                  })
+                }}
+                error={userInfo.errorSenha !== ''}
+                helperText={userInfo.errorSenha}
+                style={{ width: '400px' }}
+              />
+            </Grid>
+
+            <Grid item>
+              <TextField
+                required
+                id='outlined-conf-senha'
+                label='Confirme a Sennha'
+                variant='outlined'
+                type='password'
+                onChange={(e) => {
+                  const val = e.target.value
+                  setUserInfo(prevState => {
+                    return { ...prevState, confSenha: val }
+                  })
+                }}
+                style={{ width: '400px' }}
+              />
+            </Grid>
+
+            <Grid item>
+              <TextField
+                required
+                id='outlined-organizacao'
+                label='Organização'
+                variant='outlined'
+                onChange={(e) => {
+                  const val = e.target.value
+                  setUserInfo(prevState => {
+                    return { ...prevState, organizacao: val }
+                  })
+                }}
+                style={{ width: '400px' }}
+              />
+            </Grid>
+
+            {id !== undefined && (
+              <Grid item>
+                <TextField
+                  required
+                  id='outlined-projeto'
+                  label='Código do Projeto'
+                  variant='outlined'
+                  onChange={(e) => {
+                    const val = e.target.value
+                    setUserInfo(prevState => {
+                      return { ...prevState, codProjeto: val }
+                    })
+                  }}
+                  style={{ width: '400px' }}
+                />
+              </Grid>
+            )}
+
+            <Grid item>
+              <Button type='submit' variant='contained' color='primary'>
+                Cadastrar
+              </Button>
+            </Grid>
+          </Grid>
+        </form>
+      </Page>
+
+      <SnackBar
+        openSnackbar={openSnackbar}
+        duracao={4000}
+        handleClose={handleCloseSnackbar}
+        tipo='success'
+        mensagem='Cadastro efetuado com sucesso!'
+      />
     </>
   )
 }
-
-const Container = styled.div`
-padding: 70px;
-width: 100%;
-`
-
-const Form = styled.form`
-`
-
-const LogoCadastro = styled(AccountCircleIcon).attrs({
-  color: 'primary',
-  fontSize: 'large'
-})`
-  && {
-  }
-`
-
-const EmailText = styled(TextField).attrs({
-  id: 'email-input',
-  label: 'email',
-  variant: 'outlined'
-})`
-&& {
-  width: 400px;
-}
-`
-
-const PasswordText = styled(TextField).attrs({
-  id: 'password-input',
-  variant: 'outlined',
-  label: 'Senha',
-  type: 'password',
-  autoComplete: 'current-password'
-})`
-&& {
-  width: 400px;
-}
-`
 
 export default Cadastro

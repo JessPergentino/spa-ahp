@@ -19,9 +19,9 @@ const TabelaDefault = ({ titulo, columns, data, actions, search = true, componen
 }
 
 TabelaDefault.propTypes = {
-  columns: t.array.isRequired,
-  data: t.array.isRequired,
-  titulo: t.string.isRequired,
+  columns: t.array,
+  data: t.array,
+  titulo: t.string,
   actions: t.array,
   search: t.bool,
   components: t.object
