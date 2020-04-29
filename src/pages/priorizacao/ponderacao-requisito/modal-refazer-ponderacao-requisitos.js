@@ -18,6 +18,7 @@ const ModalRefazerPonderacaoRequisitos = ({ projetoSelecionado, abrir, handleFec
         <DialogContent>
           <EdtAssistente
             projetoSelecionado={projetoSelecionado}
+            handleFechar={handleFechar}
           />
         </DialogContent>
 

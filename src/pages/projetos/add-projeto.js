@@ -11,7 +11,7 @@ import { AuthContext } from 'contexts/auth'
 
 const ModalAddProjeto = ({ abrir, handleFecharModal, ownerId }) => {
   const [projeto, setProjeto] = useState({})
-  const [dataSelecionada, setDataSelecionada] = useState(null)
+  const [dataSelecionada, setDataSelecionada] = useState(new Date())
   const [openSnackbar, setOpenSnackbar] = useState(false)
 
   const { listarProjetos } = useContext(ProjetoContext)
@@ -31,14 +31,25 @@ const ModalAddProjeto = ({ abrir, handleFecharModal, ownerId }) => {
     })
   }
 
-  const cadastrarProjeto = () => {
+  const cadastrarProjeto = (e) => {
+    e.preventDefault()
     const { nome, descricao, dataEntrega } = projeto
+    let novoProjeto = {}
 
-    const novoProjeto = {
-      nome,
-      descricao,
-      dataEntrega,
-      ownerId: ownerId
+    if (dataEntrega === undefined) {
+      novoProjeto = {
+        nome,
+        descricao,
+        dataEntrega: dataSelecionada,
+        ownerId: ownerId
+      }
+    } else {
+      novoProjeto = {
+        nome,
+        descricao,
+        dataEntrega: dataSelecionada,
+        ownerId: ownerId
+      }
     }
 
     api.post('/projetos', novoProjeto)
@@ -66,6 +77,7 @@ const ModalAddProjeto = ({ abrir, handleFecharModal, ownerId }) => {
           label='Nome'
           type='text'
           fullWidth
+          required
         />
         <TextField
           onChange={(e) => {
@@ -81,6 +93,7 @@ const ModalAddProjeto = ({ abrir, handleFecharModal, ownerId }) => {
           multiline
           rows='4'
           fullWidth
+          required
         />
 
         <CampoData

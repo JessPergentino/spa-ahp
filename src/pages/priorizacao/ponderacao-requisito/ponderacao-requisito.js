@@ -7,7 +7,7 @@ import {
 } from '@material-ui/core'
 import AutorenewIcon from '@material-ui/icons/Autorenew'
 
-import { Page, SelectProjeto } from 'ui'
+import { Page, SelectProjeto, Alerta } from 'ui'
 import AddAssistente from 'pages/priorizacao/ponderacao-requisito/add-assistente'
 import { ProjetoContext } from 'contexts/projetos'
 import { AuthContext } from 'contexts/auth'
@@ -18,25 +18,31 @@ import ModalRefazerPonderacaoRequisitos from 'pages/priorizacao/ponderacao-requi
 const PonderacaoRequisito = () => {
   const { projetos, listarProjetos } = useContext(ProjetoContext)
   const { userLogin } = useContext(AuthContext)
-  const { vetorPrioritarioRequisito, buscarPonderacaoRequisito } = useContext(CriterioContext)
+  const { vetorPrioritarioRequisito, buscarPonderacaoRequisito, limparStateVetorPrioritarioRequisito } = useContext(CriterioContext)
 
   const [projetoSelecionado, setProjetoSelecionado] = useState('')
   const [abrirModalEdt, setAbrirModalEdt] = useState(false)
   const [matriz, setMatriz] = useState([[]])
 
-  const exibirVetor = projetoSelecionado !== '' && vetorPrioritarioRequisito.length > 0
-  const exibirTabela = projetoSelecionado !== '' && vetorPrioritarioRequisito.length === 0
+  const exibirVetor = projetoSelecionado !== '' && projetoSelecionado.requisitos.length > 0 && vetorPrioritarioRequisito.length > 0
+  const exibirTabela = projetoSelecionado !== '' && projetoSelecionado.requisitos.length > 0 && vetorPrioritarioRequisito.length === 0
+  const exibirAlerta = projetoSelecionado !== '' && projetoSelecionado.requisitos.length === 0
 
   useEffect(() => {
-    listarProjetos(userLogin.user.id)
+    if (userLogin.user.id !== undefined) {
+      listarProjetos(userLogin.user.id)
+    }
   }, [listarProjetos, userLogin.user.id])
 
   useEffect(() => {
-    buscarPonderacaoRequisito(userLogin.user.id, projetoSelecionado.id)
+    if (userLogin.user.id !== undefined && projetoSelecionado.id !== undefined) {
+      buscarPonderacaoRequisito(userLogin.user.id, projetoSelecionado.id)
+    }
   }, [buscarPonderacaoRequisito, userLogin, projetoSelecionado])
 
   const handleChangeProjeto = (e) => {
     setProjetoSelecionado(e.target.value)
+    limparStateVetorPrioritarioRequisito()
     setMatriz(Array.from({ length: e.target.value.requisitos.length }, () => Array.from({ length: e.target.value.requisitos.length }, () => 1)))
   }
 
@@ -81,7 +87,7 @@ const PonderacaoRequisito = () => {
                 />
               </Grid>
               <Grid item>
-                {projetoSelecionado !== '' && (
+                {projetoSelecionado !== '' && !exibirAlerta && (
                   <Tooltip title='Refazer Ponderação dos Requisitos'>
                     <IconButton onClick={handleAbriModalEdt}>
                       <AutorenewIcon />
@@ -93,6 +99,13 @@ const PonderacaoRequisito = () => {
           </Grid>
 
           <Grid item>
+            {exibirAlerta && (
+              <Alerta
+                severidade='info'
+                mensagem='É necessário adicionar requisitos ao projeto para realizar a ponderação dos Requisitos.'
+              />
+            )}
+
             {exibirTabela && (
               <AddAssistente
                 matriz={matriz}

@@ -3,7 +3,7 @@ import {
   Grid, Typography
 } from '@material-ui/core'
 
-import { Page, SelectProjeto } from 'ui'
+import { Page, SelectProjeto, Alerta } from 'ui'
 import TabelaAddPonderacao from 'pages/priorizacao/ponderacao-criterio/add-ponderacao'
 import TabelaVetorPrioritarioCriterio from 'pages/priorizacao/ponderacao-criterio/tabela-vetor-prioritario-criterio'
 import ModalRefazerPonderacaoCriterios from 'pages/priorizacao/ponderacao-criterio/modal-refazer-ponderacao-criterio'
@@ -22,11 +22,15 @@ const PonderacaoCriterios = () => {
   const { vetorPrioritarioCriterio, buscarPonderacaoCriterio, criterios, listarTodosCriterios } = useContext(CriterioContext)
 
   useEffect(() => {
-    listarProjetos(userLogin.user.id)
+    if (userLogin.user.id !== undefined) {
+      listarProjetos(userLogin.user.id)
+    }
   }, [listarProjetos, userLogin.user.id])
 
   useEffect(() => {
-    buscarPonderacaoCriterio(userLogin.user.id, projetoSelect.id)
+    if (userLogin.user.id !== undefined && projetoSelect.id !== undefined) {
+      buscarPonderacaoCriterio(userLogin.user.id, projetoSelect.id)
+    }
   }, [buscarPonderacaoCriterio, userLogin, projetoSelect])
 
   useEffect(() => {
@@ -34,7 +38,8 @@ const PonderacaoCriterios = () => {
   }, [listarTodosCriterios])
 
   const exibirVetor = projetoSelect !== '' && vetorPrioritarioCriterio.length > 0
-  const exibirTabela = projetoSelect !== '' && vetorPrioritarioCriterio.length === 0
+  const exibirTabela = projetoSelect !== '' && projetoSelect.criterios.length > 0 && vetorPrioritarioCriterio.length === 0
+  const exibirAlerta = projetoSelect !== '' && projetoSelect.criterios.length === 0
 
   const handleChangeMatriz = (copy) => {
     setMatriz(copy)
@@ -54,8 +59,11 @@ const PonderacaoCriterios = () => {
   }
 
   const handleCriterio = (linha) => {
-    const criterio = criterios.filter((c) => c.id === linha.criterioId)
-    return criterio[0].nome
+    if (linha.criterioId !== null && linha.ponderacaoId !== null) {
+      const criterio = criterios.filter((c) => c.id === linha.criterioId)
+      return criterio[0].nome
+    }
+    return ''
   }
   return (
     <>
@@ -80,6 +88,13 @@ const PonderacaoCriterios = () => {
           </Grid>
 
           <Grid item>
+            {exibirAlerta && (
+              <Alerta
+                severidade='info'
+                mensagem='É necessário adicionar critérios ao projeto para realizar a ponderação dos Critérios'
+              />
+            )}
+
             {exibirVetor &&
               (
                 <TabelaVetorPrioritarioCriterio

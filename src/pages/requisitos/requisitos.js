@@ -17,7 +17,9 @@ const PageRequisitos = () => {
   const [projeto, setProjeto] = useState('')
 
   useEffect(() => {
-    listarProjetos(userLogin.user.id)
+    if (userLogin.user.id !== undefined) {
+      listarProjetos(userLogin.user.id)
+    }
   }, [listarProjetos, userLogin.user.id])
 
   const [abrirModalAdd, setAbrirModalAdd] = useState(false)

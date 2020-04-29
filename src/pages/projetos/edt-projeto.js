@@ -36,7 +36,8 @@ const ModalEdtProjeto = ({ abrir, handleFechar, projetoAtual }) => {
     })
   }
 
-  const AlterarProjeto = () => {
+  const AlterarProjeto = (e) => {
+    e.preventDefault()
     api.put(`/projetos/${projeto.id}`, projeto)
       .then((response) => {
         listarProjetos(userLogin.user.id)
@@ -63,6 +64,7 @@ const ModalEdtProjeto = ({ abrir, handleFechar, projetoAtual }) => {
           width='100%'
           margin='normal'
           fullWidth
+          required
         />
 
         <TextField
@@ -81,6 +83,7 @@ const ModalEdtProjeto = ({ abrir, handleFechar, projetoAtual }) => {
           width='100%'
           margin='normal'
           fullWidth
+          required
         />
 
         <CampoData

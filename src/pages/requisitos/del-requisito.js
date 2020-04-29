@@ -15,7 +15,8 @@ const ModalDelRequisito = ({ projeto, requisitoAtual, abrir, handleFechar }) => 
 
   const [openSnackbar, setOpenSnackbar] = useState(false)
 
-  const deletarRequisito = () => {
+  const deletarRequisito = (e) => {
+    e.preventDefault()
     api.delete(`/requisitos/${requisitoAtual.id}`)
       .then((response) => {
         listarRequisitos(projeto.id)

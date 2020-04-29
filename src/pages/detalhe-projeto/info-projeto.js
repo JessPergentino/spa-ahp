@@ -7,11 +7,11 @@ import { useParams } from 'react-router-dom'
 
 const InfoProjeto = () => {
   const { projetoAtual, buscarProjeto } = useContext(ProjetoContext)
-  const { id } = useParams()
+  const { idProjeto } = useParams()
 
   useEffect(() => {
-    buscarProjeto(id)
-  }, [buscarProjeto, id])
+    buscarProjeto(idProjeto)
+  }, [buscarProjeto, idProjeto])
 
   return (
     <>

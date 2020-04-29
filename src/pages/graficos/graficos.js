@@ -20,7 +20,9 @@ const Graficos = () => {
   const { userLogin } = useContext(AuthContext)
 
   useEffect(() => {
-    listarProjetos(userLogin.user.id)
+    if (userLogin.user.id !== undefined) {
+      listarProjetos(userLogin.user.id)
+    }
   }, [listarProjetos, userLogin.user.id])
 
   const handleChange = (event, newValue) => {

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import styled from 'styled-components'
 import {
   Divider as MaterialDivider,
@@ -13,7 +13,13 @@ import { ProjetoContext } from 'contexts/projetos'
 
 const PaginaInical = () => {
   const { userLogin } = useContext(AuthContext)
-  const { projetos } = useContext(ProjetoContext)
+  const { projetos, listarProjetos } = useContext(ProjetoContext)
+
+  useEffect(() => {
+    if (userLogin.user.id !== undefined) {
+      listarProjetos(userLogin.user.id)
+    }
+  }, [listarProjetos, userLogin])
 
   return (
     <>

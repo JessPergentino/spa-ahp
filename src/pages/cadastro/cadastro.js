@@ -126,6 +126,7 @@ const Cadastro = () => {
                 id='outlined-senha'
                 label='Senha'
                 variant='outlined'
+                type='password'
                 onChange={(e) => {
                   const val = e.target.value
                   setUserInfo(prevState => {
@@ -144,6 +145,7 @@ const Cadastro = () => {
                 id='outlined-conf-senha'
                 label='Confirme a Sennha'
                 variant='outlined'
+                type='password'
                 onChange={(e) => {
                   const val = e.target.value
                   setUserInfo(prevState => {

@@ -19,7 +19,8 @@ const ModalAddRequisito = ({ projeto, abrir, handleFechar }) => {
   const [requisito, setRequisito] = useState({})
   const [openSnackbar, setOpenSnackbar] = useState(false)
 
-  const cadastrarRequisito = () => {
+  const cadastrarRequisito = (e) => {
+    e.preventDefault()
     const { titulo, descricao, estimativa, codReferencia } = requisito
 
     const novoRequisito = {
@@ -66,6 +67,7 @@ const ModalAddRequisito = ({ projeto, abrir, handleFechar }) => {
           label='Código de Referência'
           type='text'
           fullWidth
+          required
         />
 
         <TextField
@@ -80,6 +82,7 @@ const ModalAddRequisito = ({ projeto, abrir, handleFechar }) => {
           label='Título'
           type='text'
           fullWidth
+          required
         />
 
         <TextField
@@ -96,6 +99,7 @@ const ModalAddRequisito = ({ projeto, abrir, handleFechar }) => {
           multiline
           rows='4'
           fullWidth
+          required
         />
         <Tooltip title='A estimativa deve ser em dias'>
           <TextField
@@ -109,6 +113,7 @@ const ModalAddRequisito = ({ projeto, abrir, handleFechar }) => {
             id='estimativa'
             label='Estimativa'
             type='number'
+            required
           />
         </Tooltip>
       </Modal>

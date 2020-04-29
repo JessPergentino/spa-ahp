@@ -20,7 +20,8 @@ const ModalEdtRequisito = ({ projeto, abrir, handleFechar, requisitoAtual }) => 
     setRequisito(requisitoAtual)
   }, [requisitoAtual])
 
-  const alterarRequisito = () => {
+  const alterarRequisito = (e) => {
+    e.preventDefault()
     api.put(`/requisitos/${requisito.id}`, requisito)
       .then((response) => {
         listarRequisitos(projeto.id)
@@ -57,6 +58,7 @@ const ModalEdtRequisito = ({ projeto, abrir, handleFechar, requisitoAtual }) => 
           label='Código de Referência'
           type='text'
           fullWidth
+          required
         />
 
         <TextField
@@ -72,6 +74,7 @@ const ModalEdtRequisito = ({ projeto, abrir, handleFechar, requisitoAtual }) => 
           label='Título'
           type='text'
           fullWidth
+          required
         />
 
         <TextField
@@ -89,6 +92,7 @@ const ModalEdtRequisito = ({ projeto, abrir, handleFechar, requisitoAtual }) => 
           multiline
           rows='4'
           fullWidth
+          required
         />
 
         <Tooltip title='A estimativa deve ser em dias'>
@@ -104,6 +108,7 @@ const ModalEdtRequisito = ({ projeto, abrir, handleFechar, requisitoAtual }) => 
             value={requisito.estimativa}
             label='Estimativa'
             type='number'
+            required
           />
         </Tooltip>
       </Modal>

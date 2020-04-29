@@ -6,14 +6,22 @@ import CampoPage from 'ui/campo-page'
 import { RequisitoContext } from 'contexts/requisitos'
 import { useParams } from 'react-router-dom'
 import { Typography } from '@material-ui/core'
+import { UsuarioContext } from 'contexts/usuarios'
 
 const DetalheRequisito = () => {
   const { requisitoAtual, buscarRequisito } = useContext(RequisitoContext)
+  const { usuario, buscarUsuario } = useContext(UsuarioContext)
   const { idRequisito } = useParams()
 
   useEffect(() => {
     buscarRequisito(idRequisito)
   }, [buscarRequisito, idRequisito])
+
+  useEffect(() => {
+    if (requisitoAtual !== null) {
+      buscarUsuario(requisitoAtual.usuarioId)
+    }
+  }, [buscarUsuario, requisitoAtual])
 
   return (
     <>
@@ -48,7 +56,7 @@ const DetalheRequisito = () => {
 
           <CampoPage
             titulo='Criado Por'
-            info={`${requisitoAtual.usuarioId} - ${requisitoAtual.createdAt}`}
+            info={`${usuario.nome} - ${requisitoAtual.createdAt}`}
           />
         </Page>
       )}

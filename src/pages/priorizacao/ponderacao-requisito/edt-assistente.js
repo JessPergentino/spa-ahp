@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const EdtAssistente = ({ projetoSelecionado }) => {
+const EdtAssistente = ({ projetoSelecionado, handleFechar }) => {
   const classes = useStyles()
 
   const { userLogin } = useContext(AuthContext)
@@ -72,7 +72,9 @@ const EdtAssistente = ({ projetoSelecionado }) => {
 
   const steps = getSteps()
 
-  const handleNext = () => {
+  const handleNext = (e) => {
+    e.preventDefault()
+    e.target.reset()
     const criterio = projetoSelecionado.criterios.filter((c, index) => index === activeStep)
 
     const ponderacao = {
@@ -88,6 +90,7 @@ const EdtAssistente = ({ projetoSelecionado }) => {
         .then((response) => {
           buscarPonderacaoRequisito(userLogin.user.id, projetoSelecionado.id)
           handleOpenSnackbar()
+          handleFechar()
         })
     } else {
       api.put('/priorizacoes_requisito', ponderacao)
@@ -99,44 +102,34 @@ const EdtAssistente = ({ projetoSelecionado }) => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1)
   }
 
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1)
-  }
-
   return (
     <>
       <div className={classes.root}>
-        <Stepper activeStep={activeStep} alternativeLabel>
-          {steps.map((label) => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-        <div>
-          {activeStep === steps.length ? (
-            <div>
-              <Typography className={classes.instructions}>Todas as Ponderações foram feitas!</Typography>
-            </div>
-          ) : (
-            <div>
-              {getStepContent(activeStep)}
+        <form onSubmit={handleNext}>
+          <Stepper activeStep={activeStep} alternativeLabel>
+            {steps.map((label) => (
+              <Step key={label}>
+                <StepLabel>{label}</StepLabel>
+              </Step>
+            ))}
+          </Stepper>
+          <div>
+            {activeStep === steps.length ? (
               <div>
-                <Button
-                  disabled={activeStep === 0}
-                  onClick={handleBack}
-                  className={classes.backButton}
-                >
-                  Voltar
-                </Button>
-
-                <Button style={{ margin: '20px' }} variant='contained' color='primary' onClick={handleNext}>
-                  {activeStep === steps.length - 1 ? 'Finalizar' : 'Próximo'}
-                </Button>
+                <Typography className={classes.instructions}>Todas as Ponderações foram feitas!</Typography>
               </div>
-            </div>
-          )}
-        </div>
+            ) : (
+              <div>
+                {getStepContent(activeStep)}
+                <div>
+                  <Button type='submit' style={{ margin: '20px' }} variant='contained' color='primary'>
+                    {activeStep === steps.length - 1 ? 'Finalizar' : 'Salvar'}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        </form>
       </div>
 
       <SnackBar
@@ -151,7 +144,8 @@ const EdtAssistente = ({ projetoSelecionado }) => {
 }
 
 EdtAssistente.propTypes = {
-  projetoSelecionado: t.any
+  projetoSelecionado: t.any,
+  handleFechar: t.func
 }
 
 export default EdtAssistente

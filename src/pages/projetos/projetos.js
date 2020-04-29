@@ -15,7 +15,9 @@ const PageProjetos = () => {
   const { usuarios, listarUsuarios } = useContext(UsuarioContext)
 
   useEffect(() => {
-    listarProjetos(userLogin.user.id)
+    if (userLogin.user.id !== undefined) {
+      listarProjetos(userLogin.user.id)
+    }
   }, [listarProjetos, userLogin.user.id])
 
   useEffect(() => {

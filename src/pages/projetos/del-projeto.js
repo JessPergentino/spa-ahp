@@ -22,7 +22,8 @@ const ModalDelProjeto = ({ abrir, handleFechar, projetoAtual }) => {
     setOpenSnackbar(false)
   }
 
-  const deletarProjeto = () => {
+  const deletarProjeto = (e) => {
+    e.preventDefault()
     api.delete(`/projetos/${projetoAtual.id}`)
       .then((response) => {
         listarProjetos(userLogin.user.id)

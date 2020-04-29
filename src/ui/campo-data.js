@@ -15,6 +15,7 @@ const CampoData = ({ label, dataSelecionada, handleAlterarData }) => (
       onChange={date => handleAlterarData(date)}
       minDate={new Date()}
       format='dd/MM/yyyy'
+      required
     />
   </MuiPickersUtilsProvider>
 )

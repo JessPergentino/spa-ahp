@@ -26,7 +26,7 @@ const Priorizacao = () => {
         <Tabs value={value} onChange={handleChangeTab} aria-label='simple tabs example'>
           <Tab label='Critérios' {...a11yProps(0)} />
           <Tab label='Requisitos' {...a11yProps(1)} />
-          <Tab label='Priorização' {...a11yProps(2)} />
+          <Tab label='Priorização Individual' {...a11yProps(2)} />
           <Tab label='Priorização Global' {...a11yProps(3)} />
         </Tabs>
       </AppBar>
