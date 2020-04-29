@@ -2,7 +2,7 @@ import axios from 'axios'
 import { get } from 'idb-keyval'
 
 const api = axios.create({
-  baseURL: 'http://b10f335b.sa.ngrok.io'
+  baseURL: 'https://ahp-api.herokuapp.com'
 })
 
 api.interceptors.request.use(async config => {

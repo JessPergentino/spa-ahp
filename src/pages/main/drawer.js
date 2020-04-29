@@ -13,11 +13,11 @@ import {
 
 import ListAltIcon from '@material-ui/icons/ListAlt'
 import EventNoteIcon from '@material-ui/icons/EventNote'
-import PieChartIcon from '@material-ui/icons/PieChart'
+/* import PieChartIcon from '@material-ui/icons/PieChart' */
 import SwapVertIcon from '@material-ui/icons/SwapVert'
 import HomeIcon from '@material-ui/icons/Home'
 
-import { HOME, PROJETOS, REQUISITOS, PRIORIZACAO, GRAFICOS } from 'routes'
+import { HOME, PROJETOS, REQUISITOS, PRIORIZACAO/* , GRAFICOS */ } from 'routes'
 
 const drawerWidth = 200
 
@@ -78,12 +78,13 @@ const DrawerMain = () => {
           <ListItemText primary='Priorização' />
         </ListItem>
 
-        <ListItem component={Link} to={GRAFICOS} button>
+        {/* <ListItem component={Link} to={GRAFICOS} button>
           <ListItemIcon>
             <PieChartIcon />
           </ListItemIcon>
           <ListItemText primary='Gráficos' />
         </ListItem>
+         */}
       </List>
     </Drawer>
   )
