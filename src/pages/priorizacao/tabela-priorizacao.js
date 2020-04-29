@@ -19,11 +19,7 @@ const TabelaPriorizacao = ({ projeto, priorizacao }) => {
   ]
 
   const handleRequisito = (requisitoId) => {
-    console.log('requisitoId', requisitoId)
-    console.log('projeto', projeto)
-    console.log('priorizacao', priorizacao)
     const requisito = projeto.requisitos.filter((r) => r.id === requisitoId)
-    console.log('requisito', requisito)
     return requisito[0].titulo
   }
 
