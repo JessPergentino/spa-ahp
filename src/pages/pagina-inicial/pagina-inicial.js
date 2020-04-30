@@ -38,7 +38,7 @@ const PaginaInical = () => {
                   <Grafico />
 
                   <Divider />
-                  <Typography>Titulo do Gráfico</Typography>
+                  <Typography>Titulo do Gráfico 1</Typography>
                 </PaperGrafico>
               </Grid>
 
@@ -47,7 +47,7 @@ const PaginaInical = () => {
                   <Grafico />
 
                   <Divider />
-                  <Typography>Titulo do Gráfico</Typography>
+                  <Typography>Titulo do Gráfico 2</Typography>
                 </PaperGrafico>
               </Grid>
             </GraficosGrid>
