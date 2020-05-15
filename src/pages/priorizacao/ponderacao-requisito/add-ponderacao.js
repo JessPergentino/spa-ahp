@@ -12,6 +12,17 @@ import {
 } from '@material-ui/core'
 
 const TabelaAddPonderacaoRequisito = ({ projetoSelecionado, criterio, matriz, handleChangeMatriz }) => {
+  const requisitosOrdenados = projetoSelecionado.requisitos.sort((a, b) => {
+    if (a.codReferencia > b.codReferencia) {
+      return 1
+    }
+
+    if (a.codReferencia < b.codReferencia) {
+      return -1
+    }
+    return 0
+  })
+
   const handleChange = (row, column, event) => {
     const copy = [...matriz]
     if (event.target.value.includes('/')) {
@@ -29,7 +40,7 @@ const TabelaAddPonderacaoRequisito = ({ projetoSelecionado, criterio, matriz, ha
           <TableHead>
             <TableRow>
               <TableCell>{criterio}</TableCell>
-              {projetoSelecionado.requisitos.map((requisito) => (
+              {requisitosOrdenados.map((requisito) => (
                 <TableCell key={requisito.id}>{requisito.titulo}</TableCell>
               ))}
             </TableRow>
@@ -37,7 +48,7 @@ const TabelaAddPonderacaoRequisito = ({ projetoSelecionado, criterio, matriz, ha
           <TableBody>
             {matriz.map((row, rowIndex) => (
               <TableRow key={rowIndex}>
-                <TableCell key={projetoSelecionado.requisitos[rowIndex].id}>{projetoSelecionado.requisitos[rowIndex].titulo}</TableCell>
+                <TableCell key={requisitosOrdenados[rowIndex].id}>{requisitosOrdenados[rowIndex].titulo}</TableCell>
                 {row.map((column, columnIndex) => {
                   if (rowIndex === columnIndex) {
                     return (
