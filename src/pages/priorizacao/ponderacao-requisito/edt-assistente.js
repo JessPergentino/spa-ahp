@@ -55,7 +55,15 @@ const EdtAssistente = ({ projetoSelecionado, handleFechar }) => {
   }
 
   const getSteps = () => {
-    const criterios = projetoSelecionado.criterios.map((item) => item.nome)
+    const criterios = projetoSelecionado.criterios.sort((a, b) => {
+      if (a.id > b.id) {
+        return 1
+      }
+      if (a.id < b.id) {
+        return -1
+      }
+      return 0
+    }).map((item) => item.nome)
     return criterios
   }
 

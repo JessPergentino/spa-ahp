@@ -25,6 +25,16 @@ const TabelaAddPonderacao = ({ projeto, matriz, handleChangeMatriz }) => {
 
   const [openSnackbar, setOpenSnackbar] = useState(false)
 
+  const criteriosOrdenados = projeto.criterios.sort((a, b) => {
+    if (a.id > b.id) {
+      return 1
+    }
+    if (a.id < b.id) {
+      return -1
+    }
+    return 0
+  })
+
   const handleClickSnackbar = () => {
     setOpenSnackbar(true)
   }
@@ -72,7 +82,7 @@ const TabelaAddPonderacao = ({ projeto, matriz, handleChangeMatriz }) => {
               <TableHead>
                 <TableRow>
                   <TableCell>Poderação dos Critérios</TableCell>
-                  {projeto.criterios.map((criterio) => (
+                  {criteriosOrdenados.map((criterio) => (
                     <TableCell key={criterio.id}>{criterio.nome}</TableCell>
                   ))}
                 </TableRow>
@@ -80,7 +90,7 @@ const TabelaAddPonderacao = ({ projeto, matriz, handleChangeMatriz }) => {
               <TableBody>
                 {matriz.map((row, rowIndex) => (
                   <TableRow key={rowIndex}>
-                    <TableCell key={projeto.criterios[rowIndex].id}>{projeto.criterios[rowIndex].nome}</TableCell>
+                    <TableCell key={criteriosOrdenados[rowIndex].id}>{criteriosOrdenados[rowIndex].nome}</TableCell>
                     {row.map((column, columnIndex) => {
                       if (rowIndex === columnIndex) {
                         return (
