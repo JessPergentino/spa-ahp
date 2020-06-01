@@ -51,7 +51,7 @@ const TabelaEdtPonderacao = ({ projeto, handleFechar }) => {
   const handleChange = (row, column, event) => {
     const copy = [...matriz]
     if (event.target.value.includes('/')) {
-      copy[row][column] = Number((1 / event.target.value.slice(-1)).toFixed(2))
+      copy[row][column] = Number((1 / event.target.value.slice(-1)))
     } else {
       copy[row][column] = +event.target.value
     }
